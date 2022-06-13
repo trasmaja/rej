@@ -72,6 +72,15 @@ io.on("connection", (socket) => {
     if (err) console.error(err);
     else console.debug(`Saved socketID: ${session.socketID}`);
   });
+
+  socket.on("nextTurn", (obj) => {
+    model.nextTurn();
+    io.emit("updateGame", model.getGameData())
+  })
+  socket.emit("updateGame", model.getGameData())
+
+
+
 });
 
 const currentPath = dirname(fileURLToPath(import.meta.url));
@@ -80,6 +89,10 @@ const publicPath = join(currentPath, "..", "..", "client", "build");
 // Serve static files.
 app.use(express.static(publicPath));
 
+// Catch all
+app.get('*', (_req, res) => {
+  res.sendFile('index.html', { root: publicPath });
+});
 server.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
 });
