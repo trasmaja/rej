@@ -1,9 +1,4 @@
-import numpy as np
-import pandas as pd
-
-df = pd.read_excel('sample.xlsx')
-
-print(df)
+print("hey")
 
 
 sektor_A = ["Beslut 1", "Beslut 2"]
