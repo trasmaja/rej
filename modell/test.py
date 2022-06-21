@@ -1,20 +1,45 @@
-print("hey")
+import pandas as pd
 
-def fakultet(test):
-    t = 1
-    for number in range(test):
-        t = t * number
+# Read and write from/to excel
+# df = pd.read_excel (r'excelData.xlsx')
+# print (df)
+# df.to_excel("excelData.xlsx")
+# []
+
+excel_in = pd.read_excel (r'excelData.xlsx')
+originalParams = excel_in.iloc[0]
+
+industry = ["reduceWACC", "doNothing"]
+policy = ["increaseCO2pris", "doNothing"]
+
+print(originalParams[1])
+
+for industryDecision in industry:
+    for policyDecision in policy:
+        #print(industryDecision == "reduceWACC" and policyDecision == "increaseCO2pris")
+        #print(policyDecision == "increaseCO2pris")
+        if industryDecision == "reduceWACC" and policyDecision == "increaseCO2pris":
+            copy = originalParams.copy()
+            copy["WACC"] = copy["WACC"]*0.8
+            copy["CO2-pris"] = copy["CO2-pris"]*1.2
+            excel_in.loc[len(excel_in.index)] = copy
+        elif  industryDecision == "reduceWACC" and policyDecision == "doNothing":
+            copy = originalParams.copy()
+            copy["WACC"] = copy["WACC"]*0.8
+            excel_in.loc[len(excel_in.index)] = copy
+        elif industryDecision == "doNothing" and policyDecision == "increaseCO2pris":
+            copy = originalParams.copy()
+            copy["CO2-pris"] = copy["CO2-pris"]*1.2
+            excel_in.loc[len(excel_in.index)] = copy
+        elif industryDecision == "doNothing" and policyDecision == "doNothing":
+            copy = originalParams.copy()
+            excel_in.loc[len(excel_in.index)] = copy
 
 
-def fakultet(var):
-    if var == 1:
-        return 1 
-    return var*fakultet(var-1)
+excel_in.to_excel("test.xlsx")
 
 
-sektor_A = ["Beslut 1", "Beslut 2"]
-sektor_B = ["Beslut A", "Beslut B", "Beslut C", "Beslut D"]
-turns = ["one", "two", "three"]
+
 
 # TURN 1 4^1
 # beslut 1 och beslut A => test = 10

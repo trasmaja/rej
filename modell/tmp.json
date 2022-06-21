@@ -1,0 +1,27 @@
+,
+        "Nätbolag": [
+            {
+                "Namn": "Bygg ut",
+                "Description": "TODO",
+                "Effekt": {
+                    "Parametrar": [
+                    ],
+                    "TypeOfChange": [
+                    ],
+                    "changeValue": [
+                    ]
+                }
+            },
+            {
+                "Namn": "Gör ingeting",
+                "Description": "TODO",
+                "Effekt": {
+                    "Parametrar": [
+                    ],
+                    "TypeOfChange": [
+                    ],
+                    "changeValue": [
+                    ]
+                }
+            }
+        ]
