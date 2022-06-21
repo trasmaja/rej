@@ -62,7 +62,7 @@ io.use(
 app.use("/api", test.router);
 
 // Initialize model.
-model.init(io);
+model.initIO(io);
 
 // Handle socket.io connections.
 io.on("connection", (socket) => {
@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
     else console.debug(`Saved socketID: ${session.socketID}`);
   });
 
-  socket.on("nextTurn", (obj) => {
+  socket.on("nextTurn", () => {
     model.nextTurn();
     io.emit("updateGame", model.getGameData())
   })
