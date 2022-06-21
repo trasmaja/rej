@@ -5,6 +5,13 @@ def fakultet(test):
     for number in range(test):
         t = t * number
 
+
+def fakultet(var):
+    if var == 1:
+        return 1 
+    return var*fakultet(var-1)
+
+
 sektor_A = ["Beslut 1", "Beslut 2"]
 sektor_B = ["Beslut A", "Beslut B", "Beslut C", "Beslut D"]
 turns = ["one", "two", "three"]
