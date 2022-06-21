@@ -1,5 +1,9 @@
 print("hey")
 
+def fakultet(test):
+    t = 1
+    for number in range(test):
+        t = t * number
 
 sektor_A = ["Beslut 1", "Beslut 2"]
 sektor_B = ["Beslut A", "Beslut B", "Beslut C", "Beslut D"]
