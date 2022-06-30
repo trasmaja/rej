@@ -1,0 +1,16 @@
+.wrapper-PastEvents {
+    margin: 0;
+    padding: 0;
+}
+.wrapper-PastEvents h3 {
+    padding: 0;
+    margin: 0;
+}
+.wrapper-PastEvents-content {
+    padding: 0;
+    margin-top: 15px;
+}
+.wrapper-PastEvents-content p {
+    padding: 0;
+    margin: 5px;
+}

@@ -1,51 +1,43 @@
 import './Home.css';
-import React from 'react';
-import LoadingConnection from '../../components/loadingConnection/loadingConnection';
-import SectorSelection from '../../components/sectorSelection/sectorSelection';
-import PlayerTurnView from '../../components/playerTurnView/PlayerTurnView';
-class Home extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: undefined,
-            sectorSelection: undefined,
-            meta: undefined,
-        };
-    }
+import PropTypes from 'prop-types';
+import { useSearchParams } from "react-router-dom";
+import SelectSector from '../SelectSector/SelectSector';
+import IndustryView from '../IndustryView/IndustryView';
 
-    componentDidMount() {
-        this.props.socket.emit("getGameData");
-        this.props.socket.on("getGameDataResponse", (data) => {
-            console.log(data);
-            setTimeout(() => {
-                this.setState({ data: data.gameData, meta: data.metaData });         
-            }, 1000);
-        });
-    }
+const Home = (props) => {
+    const [searchParams] = useSearchParams();
+    // Recieved from server or hard coded in client
+    const listOfSectors = ["industri", "policy", "nätbolag"]
+    // get the param we care about
+    const sectorParam = searchParams.get("sector");
+    const hasSelectedSector = listOfSectors.includes(sectorParam);
 
-    onSectorSelect(sector) {
-        this.props.socket.emit("playerSelectedSector", sector);
-        this.setState({sectorSelection: sector});
-    }
-
-    render() {
-        // console.log(this.props)
-        let mainComponent;
-        if (this.state.data === undefined) {
-            mainComponent = <LoadingConnection />;
-        } else if (this.state.sectorSelection === undefined) {
-            mainComponent = <SectorSelection data={this.state.data} onSectorSelect={this.onSectorSelect.bind(this)} />;
+    if (hasSelectedSector) {
+        switch (sectorParam) {
+            case "industri":
+                return <IndustryView sectorName={sectorParam}/>;
+            case "policy":
+                return <main>
+                    <h2>Has selected</h2>
+                </main>
+            case "nätbolag":
+                return <main>
+                    <h2>Has selected</h2>
+                </main>
+            default:
+                return <main>
+                    <h2>Has selected</h2>
+                </main>
         }
-        else {
-            mainComponent = <PlayerTurnView socket={this.props.socket} data={this.state.data} sectorSelection={this.state.sectorSelection} meta={this.state.meta}/>;
-        }
-
+    } else {
         return (
-            <div className="Home">
-                {mainComponent}
-            </div>
+            <SelectSector sectors={listOfSectors} />
         );
     }
+}
+
+Home.propTypes = {
+    socket: PropTypes.object.isRequired
 }
 
 export default Home;

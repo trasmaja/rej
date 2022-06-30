@@ -1,0 +1,54 @@
+.wrapper-selectSector {
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 95vh;
+}
+.wrapper-selectSector h2{
+    color: rgb(33, 33, 33);
+    font-size: min(10vw, 50px);
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.wrapper-selectSector-title {
+    margin-top: 15px;
+}
+.wrapper-selectSector-sectorsCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 15px;
+    flex-grow: 1;
+}
+.wrapper-selectSector-sectorsCard-card {
+    margin: 10px 0 10px 0;
+}
+.wrapper-selectSector-sectorsCard-card-content {
+    display: flex;
+    flex-direction: row;
+}
+.wrapper-selectSector-sectorsCard-card-content-media {
+    display: flex;
+    width: 30%;
+}
+.wrapper-selectSector-sectorsCard-card-content-text{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+}
+.wrapper-selectSector-sectorsCard-card-content-text h3 {
+    color:rgb(33, 33, 33);
+    margin: 0 15px 0 15px;
+    padding: 0;
+    font-size: min(5vw, 36px);
+    text-transform:capitalize;
+}
+.wrapper-selectSector-sectorsCard-card-content-text p {
+    color: rgb(33, 33, 33);
+    margin: 5px 15px 0 15px;
+    font-size: min(4vw, 18px);
+}

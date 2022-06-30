@@ -1,0 +1,21 @@
+.wrapper-lineChart {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0 15px 0;
+}
+.wrapper-lineChart h3 {
+    font-size: min(6vw, 26px);
+    margin: 0;
+    padding: 0;
+    align-self: flex-start;
+}
+
+.lineChart {
+    height: 300px;
+}
+.wrapper-lineChart-graph {
+    width: 100%;
+}

@@ -1,0 +1,6 @@
+.wrapper-currentStatus {
+    margin: 15px;
+}
+.wrapper-currentStatus h2{
+    font-size: min(10vw, 36px);
+} 
