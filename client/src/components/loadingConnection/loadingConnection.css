@@ -1,0 +1,13 @@
+.wrapper-loading {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loading-icon {
+    width: 200px;
+    height: 200px;
+}
+.loading-text {
+    color: #fff;
+}

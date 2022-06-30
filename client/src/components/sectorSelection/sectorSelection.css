@@ -1,0 +1,46 @@
+.wrapper-sector-selection {
+    height: 100%;
+    width: 100%;
+}
+
+.sector-selection-header {
+    text-align: center;
+}
+
+.sector-selection-buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+.sector-button-inner {
+    display: flex;
+    margin: 10px;
+    flex-direction: column;
+    background-color: #FFF;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0px 0px 15px rgb(211, 211, 211);
+    transition: 1s ease;
+}
+.sector-button-inner:hover {
+    transition: 0.5s ease;
+    box-shadow: 0px 0px 15px rgb(119, 119, 119);
+}
+
+.sector-button-inner h2{
+    padding: 0;
+    margin: 10px;
+} 
+.sector-button-inner p{
+    padding: 0;
+    margin: 10px;
+    padding-bottom: 20px;
+} 
+.sector-button {
+    flex: 50%;
+    padding: 0;
+    margin: 0;
+    max-width: 50%;
+    min-width: 50%;
+    width: 50%;
+    height: auto;
+}

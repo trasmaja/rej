@@ -1,75 +1,13 @@
+
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
-const readXlsxFile = require('read-excel-file/node')
 const Finance = require("tvm-financejs");
+const fs = require('fs');
 
-const path = "./src/excelData.xlsx";
-const schema = {
-  'WACC': {
-    prop: 'WACC',
-    type: Number,
-    required: true
-  },
-  'CO2-pris': {
-    prop: 'cO2pris',
-    type: Number,
-    required: true
-  },
-  'CO2-utsläpp per MWh': {
-    prop: 'cO2utPerMWh',
-    type: Number,
-    required: true
-  },
-  'CO2-skatt per MWh': {
-    prop: 'cO2skattPerMWh',
-    type: Number,
-    required: true
-  },
-  'Pris ren energi': {
-    prop: 'prisRenEnergi',
-    type: Number,
-    required: true
-  },
-  'Pris CO2-energi': {
-    prop: 'prisCO2Energi',
-    type: Number,
-    required: true
-  },
-  'de facto pris CO2-energi': {
-    prop: 'deFactoPrisCO2Energi',
-    type: Number,
-    required: true
-  },
-  'Differens ren och smutsig energi': {
-    prop: 'diffRenOSmutsEnergi',
-    type: Number,
-    required: true
-  },
-  'Energikonsumtion': {
-    prop: 'energikonsumtion',
-    type: Number,
-    required: true
-  },
-  'Andel CO2-energi': {
-    prop: 'andelCO2Energi',
-    type: Number,
-    required: true
-  },
-  'Start EBIT': {
-    prop: 'EBIT',
-    type: Number,
-    required: true
-  },
-  'CO2 utsläpp industri': {
-    prop: 'totalCO2Industry',
-    type: Number,
-    required: true
-  },
-}
 class Model {
   constructor() {
-    this.financeCalcs = new Finance();
+    this.financeCalcs = new Finance(); // not used atm
     this.io = undefined;
 
     // Data innehåller alla datapunkter vi kommer behöva i spelet
@@ -80,117 +18,99 @@ class Model {
     // Vilket steg spelet är på (0 - 5)
     this.turn = 0;
     this.maxTurn = this.years.length - 1;
-
-
-    this.industryChoices = {
-      "Investera i ny anläggning": {
-        "Desc": "Nya anläggningen kommer vara grön ......",
-        "IRR": undefined,
-        "choiceNumber": 1,
-      },
-      "Investera i energieffektivitet": {
-        "Desc": "Försök minska totala mängden enerig ......",
-        "choiceNumber": 2,
-
-      },
-      "Investera i R&D": {
-        "Desc": "Minska kapitalkostnad ......",
-        "choiceNumber": 3,
-
-      }
-    }
-
-    // Läs in excel data det första som sker
-    this.readExcelFile().then(() => {
-      this.initTurn();
-    });
+    this.industryChoice = undefined;
+    this.policyChoice = undefined;
+    this.code = "";
+    this.hasChosen = false;
+    this.underliningData = undefined;
+    this.allData = [{}, {}, {}, {}, {}, {}];
   }
 
-
-  initTurn() {
-    this.initIndustrySector();
-    console.log(this.industryChoices)
-  }
-
-  initIndustrySector() {
-    const IRR = this.calcIRRForNewFactory();
-    this.industryChoices["Investera i ny anläggning"].IRR = IRR;
-  }
 
 
   /**
-   * Oklart om denna behövs men har kvar för tillfället
    * Initialize the model after its creation.
    * @param {SocketIO.Server} io - The socket.io server instance.
+   * @param {String} pathToBeslutJson - The socket.io server instance.
    * @returns {void}
    */
-  initIO(io) {
+  init(io, pathToBeslutJson) {
     this.io = io;
+    this.readTurnData(pathToBeslutJson);
+    this.readUnderliningData();
   }
 
-  /**
-   * Change a param by a factor
-   * @param {String} param - Name of the param to change
-   * @param {Number} factor - the factor amount of the intended change
-   * @returns {void}
-   */
-  changeParamByFactor(param, factor) {
-    this.data[param] *= factor;
-  }
-
-  /**
-   * set a param to a number
-   * @param {String} param - Name of the param to change
-   * @param {Number} number - the new value of the param
-   * @returns {void}
-   */
-  setParamToNumber(param, number) {
-    this.data[param] = number;
-  }
-
-  /**
-    * Reads excel file with data 
-    * @param {String} path - global constant where the excel file is stored
-    * @param {Object} schema - global constant with schema of excel file to properly translate it into json object
-    * @returns {void}
-    */
-  async readExcelFile() {
-    const rows = await readXlsxFile(path, { schema });
-    console.log("howdy")
-    console.log(rows)
-    if (rows.errors.length > 0) {
-      console.log("ERROR reading data from excel file when initing")
-      console.log(rows.errors)
+  readUnderliningData() {
+    for (let i = 0; i < 6; i += 1) {
+      const tmpJson = JSON.parse(fs.readFileSync(`../model/jsonFiles/turn${i}.json`, 'utf8'));
+      console.log(i)
+      tmpJson.forEach((row) => {
+        this.allData[i][row.key.value] = row;
+      })
     }
-    // eslint-disable-next-line prefer-destructuring
-    this.data = rows.rows[0];
+    if(this.turn === 0) {
+    this.underliningData = this.allData[0]["-1"];
+    } else {
+      this.underliningData = this.allData[this.turn][this.code];
+    }
+    console.log(this.underliningData)
+    // this.underliningData = JSON.parse(fs.readFileSync(`../model/jsonFiles/turn${this.turn}.json`, 'utf8'));
+    // console.log(this.underliningData)
+    // if(this.turn != 0) {
 
+    // }
   }
 
-  changeWACC(changeFactor) {
-    this.data.WACC *= changeFactor;
+  readTurnData(pathToBeslutJson) {
+    this.data = JSON.parse(fs.readFileSync(pathToBeslutJson, 'utf8'));
   }
 
-  changeEnergyConsumtion(changeFactor) {
-    this.data.energikonsumtion *= changeFactor;
+  getTurn() {
+    return [this.turn, this.years[this.turn]];
   }
 
-  changeCO2Ratio(changeFactor) {
-    this.data.andelCO2Energi *= changeFactor;
+
+  addCountToSector(sectorName) {
+    this.sectors.forEach((sector, index) => {
+      if (sector.name === sectorName) {
+        this.sectors[index].count += 1;
+      }
+    })
   }
 
-  calcIRRForNewFactory() {
-    const { energikonsumtion, andelCO2Energi, deFactoPrisCO2Energi, prisRenEnergi } = this.data;
-    const changeFactor = 0.5;
+  getSectorCount(sectorName) {
+    this.sectors.forEach((sector, index) => {
+      if (sector.name === sectorName) {
+        return this.sectors[index].count;
+      }
+      return null
+    })
+  }
 
-    const currentStateCosts = energikonsumtion * (andelCO2Energi * deFactoPrisCO2Energi + (1 - andelCO2Energi) * prisRenEnergi);
-    const AfterInvestmentCosts = energikonsumtion * (andelCO2Energi * changeFactor * deFactoPrisCO2Energi + (1 - andelCO2Energi * changeFactor) * prisRenEnergi);
-    const savings = currentStateCosts - AfterInvestmentCosts;
+  tmpSelect(data) {
+    if (this.hasChosen) {
+      return
+    }
+    if (data.sector === "Industry") {
+      this.industryChoice = data.decision;
+    } else if (data.sector === "Policy") {
+      this.policyChoice = data.decision;
+    }
 
-    const values = [-500000, savings, savings, savings, savings];
-    const IRR = Math.round(this.financeCalcs.IRR(values) * 100) / 100;
-    return IRR;
-    // console.log(Math.round(this.financeCalcs.IRR(values) * 100) / 100 * 100);
+    if (this.industryChoice && this.policyChoice) {
+      this.code += this.industryChoice + this.policyChoice;
+      this.hasChosen = true;
+    }
+    console.log("partner")
+    console.log(data)
+    console.log(this.hasChosen)
+    console.log(this.industryChoice)
+    console.log(this.policyChoice)
+    console.log(this.code)
+  }
+
+  getSectors() {
+    return this.sectors
   }
 
   nextTurn() {
@@ -198,15 +118,15 @@ class Model {
       console.log("already on final turn")
       return;
     }
-    // Alla beräknignar mellan turnsen här
-    // this.calcIRRForNewFactory();
-    // this.changeEnergyConsumtion(0.9);
-
-    this.changeParamByFactor("deFactoPrisCO2Energi", 1.2)
-    // this.setParamToNumber("WACC", 0.20)
-
     this.turn += 1;
-    this.initTurn();
+    this.hasChosen = false;
+    this.industryChoice = undefined;
+    this.policyChoice = undefined;
+    this.readUnderliningData();
+  }
+
+  getGameDataForCurrentTurn() {
+    return {gameData: this.data[this.turn] , metaData: this.underliningData}
   }
 
   getGameData() {

@@ -62,7 +62,7 @@ io.use(
 app.use("/api", test.router);
 
 // Initialize model.
-model.initIO(io);
+model.init(io, "../model/jsonFiles/beslut.json");
 
 // Handle socket.io connections.
 io.on("connection", (socket) => {
@@ -73,9 +73,35 @@ io.on("connection", (socket) => {
     else console.debug(`Saved socketID: ${session.socketID}`);
   });
 
+  socket.on("tmpSelection", (data) => {
+    model.tmpSelect(data);
+  });
+
+  socket.on("getTurn", () => {
+    socket.emit("getTurnResponse", model.getTurn());
+  });
+
+
+  socket.on("getGameData", () => {
+    const gameData = model.getGameDataForCurrentTurn();
+    socket.emit("getGameDataResponse", gameData);
+  })
+  
+  
+  socket.on("getSectors", () => {
+    socket.emit("recieveSectors", model.getSectors());
+  });
+  
+
+  socket.on("selectSector", sectorName => {
+    model.addCountToSector(sectorName)
+  })
+
   socket.on("nextTurn", () => {
     model.nextTurn();
-    io.emit("updateGame", model.getGameData())
+    const gameData = model.getGameDataForCurrentTurn();
+    io.emit("getGameDataResponse", gameData);
+    io.emit("getTurnResponse", model.getTurn());
   })
   socket.emit("updateGame", model.getGameData())
 
