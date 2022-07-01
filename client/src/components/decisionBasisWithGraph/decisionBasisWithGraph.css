@@ -1,4 +1,4 @@
-.wrapper-lineChart {
+.wrapper-decisionBasisWithGraph {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -6,14 +6,15 @@
     align-items: center;
     margin: 15px 0 15px 0;
 }
-.wrapper-lineChart h3 {
+.wrapper-decisionBasisWithGraph h3 {
     font-size: min(6vw, 26px);
     margin: 0;
     padding: 0;
     align-self: flex-start;
 }
-
-.wrapper-lineChart-graph {
+.wrapper-decisionBasisWithGraph-graph {
     width: 100%;
     max-width: 400px;
 }
+
+

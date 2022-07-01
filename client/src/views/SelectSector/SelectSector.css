@@ -6,49 +6,64 @@
     justify-content: space-between;
     min-height: 95vh;
 }
-.wrapper-selectSector h2{
-    color: rgb(33, 33, 33);
-    font-size: min(10vw, 50px);
+
+.wrapper-selectSector h2 {
+    font-size: min(8vw, 40px);
     font-weight: bold;
     margin: 0;
     padding: 0;
-    text-align: center;
 }
+
 .wrapper-selectSector-title {
-    margin-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 0px;
 }
+
 .wrapper-selectSector-sectorsCard {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 15px;
     flex-grow: 1;
 }
+
 .wrapper-selectSector-sectorsCard-card {
     margin: 10px 0 10px 0;
+    background-color: #2AA784 !important;
 }
+
 .wrapper-selectSector-sectorsCard-card-content {
     display: flex;
     flex-direction: row;
 }
+
 .wrapper-selectSector-sectorsCard-card-content-media {
     display: flex;
     width: 30%;
 }
-.wrapper-selectSector-sectorsCard-card-content-text{
+
+.wrapper-selectSector-sectorsCard-card-content-text {
     display: flex;
     flex-direction: column;
     width: 70%;
 }
+
 .wrapper-selectSector-sectorsCard-card-content-text h3 {
-    color:rgb(33, 33, 33);
     margin: 0 15px 0 15px;
     padding: 0;
     font-size: min(5vw, 36px);
-    text-transform:capitalize;
+    text-transform: capitalize;
+    color: #FFF;
 }
+
 .wrapper-selectSector-sectorsCard-card-content-text p {
-    color: rgb(33, 33, 33);
     margin: 5px 15px 0 15px;
     font-size: min(4vw, 18px);
+    color: #FFF
+}
+
+.logo {
+    width: 90%;
+    margin-top:15px;
+    max-width: 600px;
 }

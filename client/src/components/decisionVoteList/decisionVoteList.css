@@ -1,0 +1,12 @@
+.wrapper-decisionVoteList {
+    width: 100%;
+}
+.wrapper-decisionVoteList-buttonGroup {
+    width: 100%;
+}
+.wrapper-decisionVoteList-button {
+    height: 60px;
+    justify-content: "flex-start" !important;
+}
+.wrapper-decisionVoteList-button p{
+}

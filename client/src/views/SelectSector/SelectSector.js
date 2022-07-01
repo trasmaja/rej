@@ -12,8 +12,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 
-const imageTest = require('./tmp.png');
-
+const logo = require('./logo.png');
 
 const SelectSector = (props) => {
     const [open, setOpen] = React.useState(false);
@@ -42,6 +41,7 @@ const SelectSector = (props) => {
 
     const sectorCards = sectors.map((sector, index) => {
         const delay = index * 100 + 'ms';
+        const imageTest = require('./tmp' + index +'.png');
         return (
             <Slide direction="up" key={sector} style={{ transitionDelay: delay }} in={true}>
                 <Card raised className="wrapper-selectSector-sectorsCard-card">
@@ -67,6 +67,7 @@ const SelectSector = (props) => {
 
     return (
         <main className="wrapper-selectSector">
+            <img className="logo" src={logo} alt="REJLERS" />
             <Slide direction="down" in={true}>
                 <div className="wrapper-selectSector-title">
                     <h2>Välj aktör</h2>
@@ -82,11 +83,11 @@ const SelectSector = (props) => {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {"Vill du spela som " + selectedSector + " sektorn?"}
+                    {"Vill du spela som " + selectedSector + "-sektorn?"}
                 </DialogTitle>
                 <DialogActions>
-                    <Button variant="outlined" onClick={() => handleClose(false)}>Nej</Button>
                     <Button variant="contained" onClick={() => handleClose(true)} autoFocus>Ja</Button>
+                    <Button variant="outlined" onClick={() => handleClose(false)}>Nej</Button>
                 </DialogActions>
             </Dialog>
         </main>

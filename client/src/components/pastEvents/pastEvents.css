@@ -5,6 +5,7 @@
 .wrapper-PastEvents h3 {
     padding: 0;
     margin: 0;
+    font-size: min(6vw, 26px);
 }
 .wrapper-PastEvents-content {
     padding: 0;
