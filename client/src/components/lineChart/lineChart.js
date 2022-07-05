@@ -1,5 +1,6 @@
 import './lineChart.css';
 import PropTypes from 'prop-types';
+import React from 'react';
 const imageTest = require('./graph.png');
 
 const LineChart = (props) => {

@@ -11,7 +11,7 @@ import test from "./controllers/test.controller.js";
 
 import model from "./model.js";
 
-const port = 5000;
+const port = 8080;
 const app = express(); // Create express app.
 const server = createServer(app);
 const io = new Server(server); // Create socket.io app.
@@ -62,7 +62,7 @@ io.use(
 app.use("/api", test.router);
 
 // Initialize model.
-model.init(io, "../model/jsonFiles/beslut.json");
+model.init(io);
 
 // Handle socket.io connections.
 io.on("connection", (socket) => {
@@ -71,41 +71,41 @@ io.on("connection", (socket) => {
   session.save((err) => {
     if (err) console.error(err);
     else console.debug(`Saved socketID: ${session.socketID}`);
+
+    socket.on("vote", (data) => {
+      // data={ sector: "industry", decisionIndex: 0 }
+      console.log("voted")
+      model.game.voting(data.sector, data.decisionIndex);
+    }) 
+    socket.on("endTurn", () => {
+      if(model.game.getState() === "EndOfTurnCalc") {
+        return;
+      }
+
+      model.game.changeState("EndOfTurnCalc");
+      io.emit("gameState", model.game.getState());
+      io.emit("gameData", model.game.getGameData());
+    })
+
+    socket.on("startTurn", () => {
+      if(model.game.getState() === "votingInProgress") {
+        console.log("in if")
+        return;
+      }
+      model.game.changeState("votingInProgress");
+      io.emit("gameState", model.game.getState());
+      io.emit("gameData", model.game.getGameData());
+    })
+
+    socket.on("getState", () => {
+      socket.emit("gameState", model.game.getState());
+    })
+
+    socket.on("getGameData", () => {
+      socket.emit("gameData", model.game.getGameData());
+    })
+
   });
-
-  socket.on("tmpSelection", (data) => {
-    model.tmpSelect(data);
-  });
-
-  socket.on("getTurn", () => {
-    socket.emit("getTurnResponse", model.getTurn());
-  });
-
-
-  socket.on("getGameData", () => {
-    const gameData = model.getGameDataForCurrentTurn();
-    socket.emit("getGameDataResponse", gameData);
-  })
-  
-  
-  socket.on("getSectors", () => {
-    socket.emit("recieveSectors", model.getSectors());
-  });
-  
-
-  socket.on("selectSector", sectorName => {
-    model.addCountToSector(sectorName)
-  })
-
-  socket.on("nextTurn", () => {
-    model.nextTurn();
-    const gameData = model.getGameDataForCurrentTurn();
-    io.emit("getGameDataResponse", gameData);
-    io.emit("getTurnResponse", model.getTurn());
-  })
-  socket.emit("updateGame", model.getGameData())
-
-
 
 });
 

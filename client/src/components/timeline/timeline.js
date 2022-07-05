@@ -9,7 +9,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const steps = ['2025', '2030', '2035', '2040', '2045'];
+
 
 const TimeLine = (props) => {
     const activeStep = 2//Math.floor(Math.random()* steps.length);
@@ -19,8 +19,8 @@ const TimeLine = (props) => {
                 <h2>{props.sectorName}</h2>
             </div>
             <div className="wrapper-timeline-timeline">
-                <Stepper activeStep={activeStep} alternativeLabel>
-                    {steps.map((label, index) => {
+                <Stepper activeStep={props.turn} alternativeLabel>
+                    {props.turns.map((label, index) => {
                         const stepProps = {};
                         const labelProps = {};
                         return (

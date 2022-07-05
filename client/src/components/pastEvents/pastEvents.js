@@ -6,8 +6,8 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
 const PastEvents = (props) => {
-    const [value, setValue] = React.useState(2);
-    const text = ["Lorem ipsum dolar sit amet", "Praesent condimentum sagittis", "Orci varius natoque"]
+    const [value, setValue] = React.useState(props.turn);
+    const text = ["Lorem ipsum dolar sit amet", "Praesent condimentum sagittis", "Orci varius natoque", "Lorem ipsum dolar sit amet", "Praesent condimentum sagittis"]
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };

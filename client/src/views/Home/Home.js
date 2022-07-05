@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSearchParams } from "react-router-dom";
 import SelectSector from '../SelectSector/SelectSector';
 import IndustryView from '../IndustryView/IndustryView';
-
+import React from 'react';
 const Home = (props) => {
     const [searchParams] = useSearchParams();
     // Recieved from server or hard coded in client
@@ -15,7 +15,7 @@ const Home = (props) => {
     if (hasSelectedSector) {
         switch (sectorParam) {
             case "industri":
-                return <IndustryView sectorName={sectorParam}/>;
+                return <IndustryView socket={props.socket} sectorName={sectorParam}/>;
             case "policy":
                 return <main>
                     <h2>Has selected</h2>

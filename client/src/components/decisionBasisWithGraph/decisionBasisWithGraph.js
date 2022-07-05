@@ -1,5 +1,7 @@
 import './decisionBasisWithGraph.css';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 const imageTest = require('./IRR.png');
 
 const DecisionBasisWithGraph = (props) => {

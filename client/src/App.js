@@ -1,11 +1,12 @@
 
 import './App.css';
-// import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import Home from './views/Home/Home';
 import Admin from './views/Admin/Admin';
@@ -31,12 +32,14 @@ const theme = createTheme({
 
 
 function App() {
+  const socket = io();
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home socket={{}} />} />
-          <Route path="admin" element={<Admin socket={{}} />} />
+          <Route path="/" element={<Home socket={socket} />} />
+          <Route path="admin" element={<Admin socket={socket} />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
