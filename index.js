@@ -11,7 +11,7 @@ import test from "./controllers/test.controller.js";
 
 import model from "./model.js";
 
-const port = 8080;
+const port = process.env.PORT ||8080;
 const app = express(); // Create express app.
 const server = createServer(app);
 const io = new Server(server); // Create socket.io app.
@@ -110,7 +110,7 @@ io.on("connection", (socket) => {
 });
 
 const currentPath = dirname(fileURLToPath(import.meta.url));
-const publicPath = join(currentPath, "..", "..", "client", "build");
+const publicPath = join(currentPath, "client", "build");
 
 // Serve static files.
 app.use(express.static(publicPath));
