@@ -1,13 +1,32 @@
 // states: votingInProgress, EndOfTurnCalc
 // sectors: industry, policy, netbolag
 
+import { irr } from 'node-irr';
 import Params from './Params.js';
+
+function indexOfMax(arr) {
+    if (arr.length === 0) {
+        return -1;
+    }
+
+    let max = arr[0];
+    let maxIndex = 0;
+
+    for (let i = 1; i < arr.length; i+=1) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        }
+    }
+
+    return maxIndex;
+}
 
 export default class Game {
     constructor() {
         this.state = "votingInProgress";
         
-        this.turn = -1; // in update() turn is incremented so first iteration becomes 0
+        this.turn = 0; // in update() turn is incremented so first iteration becomes 0
         this.turns = ["2025", "2030", "2035", "2040", "2045"];
 
         this.industryVotes = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
@@ -16,7 +35,7 @@ export default class Game {
 
         this.isVotingOpen = true;
 
-        this.params = new Params();
+        this.params = [new Params(), null, null, null, null];
 
         this.update();
 
@@ -56,12 +75,19 @@ export default class Game {
             case "votingInProgress":
                 console.log("votingInProgress");
                 this.isVotingOpen = true;
-                this.turn += 1;
                 break
             case "EndOfTurnCalc":
                 console.log("EndOfTurnCalc");
-                console.log(this.industryVotes[this.turn]);
                 this.isVotingOpen = false;
+                console.log(this.industryVotes[this.turn]);
+                // eslint-disable-next-line no-case-declarations
+                const decisionIndex = indexOfMax(this.industryVotes[this.turn])
+                console.log(decisionIndex);
+                // eslint-disable-next-line no-case-declarations
+                const turnParamsCopy = Object.assign(Object.create(Object.getPrototypeOf(this.params[this.turn])), this.params[this.turn])
+                this.turn += 1;
+                this.params[this.turn] = turnParamsCopy;
+                this.params[this.turn].makeIndustryChanges(decisionIndex);
                 break
             default:
                 break
@@ -71,8 +97,9 @@ export default class Game {
     getGameData() {
         const data = {}
         data.turn = this.turn;
-        data.params = this.params.getData();
+        data.params = this.params;
         data.state = this.state;
+        data.irr = this.params[this.turn].getIRR();
         return data;
     }
 }

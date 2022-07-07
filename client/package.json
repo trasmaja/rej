@@ -18,11 +18,12 @@
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "recharts": "^2.1.12",
     "socket.io-client": "^4.5.1",
     "svg-loaders-react": "^2.2.1",
     "web-vitals": "^2.1.0"
   },
-  "proxy": "http://localhost:5000",
+  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

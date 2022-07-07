@@ -2,7 +2,7 @@ import './IndustryView.css';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import TimeLine from '../../components/timeline/timeline';
-import LineChart from '../../components/lineChart/lineChart';
+import LineChartComp from '../../components/lineChart/lineChart';
 import PastEvents from '../../components/pastEvents/pastEvents';
 import DecisionBasisWithGraph from '../../components/decisionBasisWithGraph/decisionBasisWithGraph';
 import DecisionBasisWithText from '../../components/decisionBasisWithText/decisionBasisWithText';
@@ -25,8 +25,6 @@ const IndustryView = (props) => {
 
     useEffect(() => {
         props.socket.on("gameData", gameData => {
-            console.log("gameData");
-            console.log(gameData)
             setGameData(gameData);
         });
 
@@ -50,20 +48,18 @@ const IndustryView = (props) => {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
-                <LineChart title="CO2-pris" />
-                <LineChart title="EBIT" />
+                <LineChartComp propData={gameData.params} dataKey="co2" progKey="co2prog" title="CO2-utsläpp" />
+                <LineChartComp propData={gameData.params} dataKey="ebit" progKey="ebitprog"title="EBIT" />
                 <PastEvents turn={turn}/>
                 <h2>Beslutsunderlag</h2>
-                <DecisionBasisWithGraph title={decisions[0]} />
-                <DecisionBasisWithGraph title={decisions[1]} />
+                <DecisionBasisWithGraph propData={gameData.irr} title={decisions[0]} />
+                <DecisionBasisWithGraph propData={gameData.irr} title={decisions[1]} />
                 <DecisionBasisWithText title={decisions[2]} text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem." />
                 <h2>Rösta på beslut</h2>
                 <DecisionVoteList vote={vote} decisions={decisions} />
             </div>
         );
     }
-
-    console.log(gameData)
 
     return (
         <main>

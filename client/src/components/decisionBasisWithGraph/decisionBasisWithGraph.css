@@ -10,6 +10,7 @@
     font-size: min(6vw, 26px);
     margin: 0;
     padding: 0;
+    padding-bottom: 10px;
     align-self: flex-start;
 }
 .wrapper-decisionBasisWithGraph-graph {

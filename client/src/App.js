@@ -15,9 +15,9 @@ import Admin from './views/Admin/Admin';
 const theme = createTheme({
   palette: {
     primary: {
-      light: '#2AA784',
+      light: '#bfe5da',
       main: '#2AA784',
-      dark: '#FFF',
+      dark: '#1c8668',
       contrastText: '#fff',
     },
     secondary: {
