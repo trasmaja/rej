@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
-const data = [{ turn: '2025', co2: null, co2prog: 100, ebit: null, ebitprog: 0.10 }, { turn: '2030', co2: null, co2prog: 75, ebit: null, ebitprog: 0.10 }, { turn: '2035', co2: null, co2prog: 50, ebit: null, ebitprog: 0.10 }, { turn: '2040', co2: null, co2prog: 25, ebit: null, ebitprog: 0.10 }, { turn: '2045', co2: null, co2prog: 0, ebit: null, ebitprog: 0.10 }];
-
-
 const LineChartComp = (props) => {
     const { propData, dataKey, progKey } = props;
+    const data = [{ turn: '2025', co2: null, co2prog: 100, ebit: null, ebitprog: 0.10 }, { turn: '2030', co2: null, co2prog: 75, ebit: null, ebitprog: 0.10 }, { turn: '2035', co2: null, co2prog: 50, ebit: null, ebitprog: 0.10 }, { turn: '2040', co2: null, co2prog: 25, ebit: null, ebitprog: 0.10 }, { turn: '2045', co2: null, co2prog: 0, ebit: null, ebitprog: 0.10 }];
     propData.forEach((element, index) => {
         console.log(index, element)
         if(element) {

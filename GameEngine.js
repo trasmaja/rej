@@ -26,7 +26,7 @@ export default class Game {
     constructor() {
         this.state = "votingInProgress";
         
-        this.turn = 0; // in update() turn is incremented so first iteration becomes 0
+        this.turn = 0;
         this.turns = ["2025", "2030", "2035", "2040", "2045"];
 
         this.industryVotes = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
@@ -70,9 +70,30 @@ export default class Game {
         return this.state;
     }
 
+    resetGame() {
+        this.state = "votingInProgress";
+        
+        this.turn = 0;
+        this.turns = ["2025", "2030", "2035", "2040", "2045"];
+
+        this.industryVotes = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
+        this.policyVotes = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
+        this.netBolagVotes = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
+
+        this.isVotingOpen = true;
+
+        this.params = [new Params(), null, null, null, null];
+
+        this.update();        
+    }
+
     update() {
         switch (this.state) {
             case "votingInProgress":
+                if(this.turn === 5) {
+                    this.resetGame();
+                    return
+                }
                 console.log("votingInProgress");
                 this.isVotingOpen = true;
                 break
