@@ -8,7 +8,7 @@ node_modules/
 reactTest
 *.reactTest
 .reactTest/*
-model/*
-.model/*
-*.model
-model
+models/*
+.models/*
+*.models
+models
