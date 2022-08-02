@@ -5,15 +5,15 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } fro
 
 const LineChartComp = (props) => {
     const { propData, dataKey, progKey } = props;
-    const data = [{ turn: '2025', co2: null, co2prog: 100, ebit: null, ebitprog: 0.10 }, { turn: '2030', co2: null, co2prog: 75, ebit: null, ebitprog: 0.10 }, { turn: '2035', co2: null, co2prog: 50, ebit: null, ebitprog: 0.10 }, { turn: '2040', co2: null, co2prog: 25, ebit: null, ebitprog: 0.10 }, { turn: '2045', co2: null, co2prog: 0, ebit: null, ebitprog: 0.10 }];
+    const data = [{ turn: '2025', co2: null, co2prog: 1, ebit: null, ebitprog: 0.10 }, { turn: '2030', co2: null, co2prog: 0.75, ebit: null, ebitprog: 0.10 }, { turn: '2035', co2: null, co2prog: 0.50, ebit: null, ebitprog: 0.10 }, { turn: '2040', co2: null, co2prog: 0.25, ebit: null, ebitprog: 0.10 }, { turn: '2045', co2: null, co2prog: 0, ebit: null, ebitprog: 0.10 }];
     propData.forEach((element, index) => {
-        console.log(index, element)
+        // console.log(index, element)
         if(element) {
-            if(element.cO2EmissionsValue) {
-                data[index].co2 = element.cO2EmissionsValue;
+            if(element.industry_carbon_emissions) {
+                data[index].co2 = element.industry_carbon_emissions;
             }
-            if(element.EBITValue) {
-                data[index].ebit = element.EBITValue;
+            if(element.industry_EBIT_marginal) {
+                data[index].ebit = element.industry_EBIT_marginal;
             }
         }
     });

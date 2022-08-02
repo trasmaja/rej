@@ -15,7 +15,7 @@ const IndustryView = (props) => {
             decisionIndex: decisionIndex
         });
     }
-    const decisions = ["1) Investera i biodrivmedel", "2) Investera i el", "3) Investera i R&D"]
+    const decisions = ["1) Investera i biodrivmedel", "2) Investera i elektrifiering", "3) Investera i R&D", "4) Investera i energieffektivisering"]
 
     const [gameData, setGameData] = useState(null);
 
@@ -25,6 +25,7 @@ const IndustryView = (props) => {
 
     useEffect(() => {
         props.socket.on("gameData", gameData => {
+            console.log(gameData)
             setGameData(gameData);
         });
 
@@ -35,25 +36,25 @@ const IndustryView = (props) => {
 
     let turn = 0;
     if(gameData && gameData.turn) {
-        turn = gameData.turn;
+        turn = gameData.turn - 1;
     }
     
     let mainBody;
-    if (gameData && gameData.state === "EndOfTurnCalc") {
+    if (gameData && gameData.state === "presenting") {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Runda avslutad</h2>
             </div>);
-    } else if (gameData && gameData.state === "votingInProgress") {
+    } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
-                <LineChartComp propData={gameData.params} dataKey="co2" progKey="co2prog" title="CO2-utsläpp" />
-                <LineChartComp propData={gameData.params} dataKey="ebit" progKey="ebitprog"title="EBIT" />
-                <PastEvents turn={turn}/>
+                <LineChartComp propData={gameData.data} dataKey="co2" progKey="co2prog" title="CO2-utsläpp" />
+                <LineChartComp propData={gameData.data} dataKey="ebit" progKey="ebitprog"title="EBIT" />
+                {/* <PastEvents turn={turn}/> */}
                 <h2>Beslutsunderlag</h2>
-                <DecisionBasisWithGraph propData={gameData.irr} title={decisions[0]} />
-                <DecisionBasisWithGraph propData={gameData.irr} title={decisions[1]} />
+                <DecisionBasisWithGraph propData={[gameData.data[turn].industry_IRR_bio, gameData.data[turn].industry_IRR_bio, gameData.data[turn].industry_IRR_bio]} title={decisions[0]} />
+                <DecisionBasisWithGraph propData={[gameData.data[turn].industry_IRR_electricity, gameData.data[turn].industry_IRR_electricity, gameData.data[turn].industry_IRR_electricity]} title={decisions[1]} />
                 <DecisionBasisWithText title={decisions[2]} text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem." />
                 <h2>Rösta på beslut</h2>
                 <DecisionVoteList vote={vote} decisions={decisions} />
