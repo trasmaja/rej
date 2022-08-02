@@ -9,175 +9,258 @@ const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n)));
 const WACC = 0.1;
 class Params {
   constructor() {
-    this.industry_energy_consumtion = 100;
-    this.industry_electricity_ratio = 0; // between 0-1
-    this.industry_bio_ratio = 0; // between 0-1
-    this.industry_green_premium = 100 * (this.industry_electricity_ratio + this.industry_bio_ratio);
-    this.industry_electricity_CAPEX = 400;
-    this.industry_bio_CAPEX = 400;
-    this.policy_CAPEX_reduction = 0;
-    this.industry_accumulated_annuity = 0;
-    this.industry_income = 1000;
-    this.industry_manufacturing_cost = 500;
+    this.turns_to_go = 6;
 
-    this.electricity_demand = 100;
-    this.bio_demand = 100;
-    this.policy_ev_premium_value = 0;
-    this.price_carbon_energy = 3;
-    this.bio_supply = 100;
-    this.transportation_emissions = 1;
+    // Industry variables 
+    this.ind_turn_ratio = null; // tells how much to replace current turn
 
-    this.electricity_supply = 100;
+    this.ind_energy_consumtion = 100;
+    this.ind_ratio_el = 0; // between 0-1
+    this.ind_ratio_bio = 0; // between 0-1
+    this.ind_ratio_carbon = null; // "null" indicates it is a dependent variable
+    this.ind_CAPEX_base_el = 3000; // cost of reinvesting 100 % of capital
+    this.ind_CAPEX_base_bio = 3000; 
 
-    this.tax_burden = 0.5;
-    this.voters_policy_rating = 0.6;
+    this.ind_CAPEX_turn_el = 3000; // cost of investment a given turn
+    this.ind_CAPEX_turn_bio = 3000;
+    this.ind_annuity = 0; // accumulated annuity
+    this.ind_income = 1000; 
+    this.ind_cost_other = 500; // costs independent of chosen energy
+    this.ind_cost_energy = null; // current cost of energy
+    this.ind_premium = null; // green premium paid to companies
+    
+    this.ind_IRR_bio = null; // these are the ones shown to player
+    this.ind_IRR_el = null;
+    this.ind_EBIT_marginal = null;
+    this.ind_emissions = null;
 
-    this.number_of_blitz_investments_by_stam = 0;
+    // Policy and market variables
+    this.pol_ev_premium = 0;
+    this.pol_price_carbon = 3;
+    this.pol_CAPEX_reduction = 0; // # of times policy has used subsidies, maybe wont use this
+    this.transportation_emissions = 1; // emissions from transport sector
 
-    // variables to be recalculated every turn
-    this.industry_carbon_ratio = null;
-    this.industry_current_energy_costs = null;
-    this.industry_alternative_costs_bio = null;
-    this.industry_alternative_costs_electricity = null;
-    this.industry_cost_savings_bio = null;
-    this.industry_costs_savings_electricity = null;
-    this.industry_IRR_bio = null;
-    this.industry_IRR_electricity = null;
-    this.industry_EBIT_marginal = null;
-    this.industry_carbon_emissions = null;
-
-    this.price_electricity = null;
+    this.demand_el = 100;
+    this.demand_bio = 100;
+    this.supply_bio = 100;
+   
+    this.price_el = null;
     this.price_bio = null;
-    this.national_emissions = null;
+    this.total_emissions = null;
 
-    // For first turn
-    this.turnCalculations();
-
-  }
-
-  turnCalculations() {
-    this.bio_demand += this.policy_ev_premium_value;
-    this.industry_carbon_ratio = 1 - this.industry_electricity_ratio - this.industry_bio_ratio;
-    this.industry_green_premium = 100 * (this.industry_electricity_ratio + this.industry_bio_ratio);
-
-    this.price_electricity = 1 + 1 * (this.electricity_demand - this.electricity_supply) / this.electricity_demand;
-    this.price_bio = 1 + 1 * (this.bio_demand - this.bio_supply) / this.bio_demand;;
-
-    this.industry_current_energy_costs = this.industry_energy_consumtion * ((this.industry_electricity_ratio * this.price_electricity) +
-      (this.industry_bio_ratio * this.price_bio) + (this.industry_carbon_ratio * this.price_carbon_energy)) - this.industry_green_premium;
+    // Electric grid (SVK) variables
+    this.supply_el = 100;
 
 
-    this.industry_alternative_costs_bio = this.calc_alternative_costs_bio(0, 0.2);
+    // Voter variables
+    this.voters_tax_burden = 0.5; 
+    this.svk_tax_penalty = null; // if SVK has over constructed 
+    this.voters_economy = null; 
+    this.voters_rating = 0.6;
+    this.voters_displacement = 0; // if displaced by ruthless investment by SVK
+    
 
-    this.industry_alternative_costs_electricity = this.calc_alternative_costs_bio(0.2, 0);
-
-    this.industry_cost_savings_bio = this.industry_current_energy_costs - this.industry_alternative_costs_bio;
-    this.industry_costs_savings_electricity = this.industry_current_energy_costs - this.industry_alternative_costs_electricity;
-
-
-    const irr_bio_list = [-this.industry_bio_CAPEX + this.policy_CAPEX_reduction];
-    for (let i = 0; i < 19; i += 1) {
-      irr_bio_list.push(this.industry_cost_savings_bio);
-    }
-    this.industry_IRR_bio = irr(irr_bio_list);
-
-    const irr_electricity_list = [-this.industry_electricity_CAPEX + this.policy_CAPEX_reduction];
-    for (let i = 0; i < 19; i += 1) {
-      irr_electricity_list.push(this.industry_costs_savings_electricity);
-    }
-    // console.log(irr_electricity_list);
-    // console.log(irr_bio_list);
-    this.industry_IRR_electricity = irr(irr_electricity_list);
-
-
-    const numerator = (this.industry_income - this.industry_manufacturing_cost - this.industry_current_energy_costs - this.industry_accumulated_annuity)
-    const denomenator = this.industry_income;
-    this.industry_EBIT_marginal = numerator / denomenator;
-
-    this.industry_carbon_emissions = this.industry_carbon_ratio * (this.industry_energy_consumtion / 100);
-
-    this.national_emissions = (this.industry_carbon_emissions + this.transportation_emissions) / 2;
-
+    // For first turn, determines all dependent values
+    this.basicTurnCalculations();
+    this.calcIrr();
 
   }
 
-  calc_alternative_costs_bio(el, bio) {
-    const new_industry_electricity_ratio = this.industry_electricity_ratio + el;
-    const new_industry_bio_ratio = this.industry_bio_ratio + bio; // Now hard coded 20 % but in future function of how much is left calculation
-    const new_industry_carbon_ratio = 1 - new_industry_electricity_ratio - new_industry_bio_ratio;
-    const new_inudstry_green_premium = 100 * (new_industry_electricity_ratio + new_industry_bio_ratio);
+  basicTurnCalculations() {
+    /*Recalibrates the values of all dependent variables*/
+    this.turns_to_go -= 1;
 
-    const cost = this.industry_energy_consumtion * ((new_industry_electricity_ratio * this.price_electricity) +
-      (new_industry_bio_ratio * this.price_bio) + (new_industry_carbon_ratio * this.price_carbon_energy)) - new_inudstry_green_premium;
+    if (this.supply_el - this.demand_el > 30) {
+      this.svk_tax_penalty = 0.05;
+    } else {
+        this.svk_tax_penalty = 0;
+    }
+    this.voters_economy = this.svk_tax_penalty + this.voters_tax_burden; 
 
-    return cost;
+
+    this.demand_bio += this.pol_ev_premium;
+    this.price_el = 1 + 1 * (this.demand_el - this.supply_el) / this.demand_el;
+    this.price_bio = Math.max(0.5, 1 + 1 * (this.demand_bio - this.supply_bio) / this.demand_bio);
+
+    this.ind_IRR_bio = []; // reset the previous IRRs 
+    this.ind_IRR_el = [];
+    this.ind_ratio_carbon = 1 - this.ind_ratio_el - this.ind_ratio_bio;
+    this.ind_premium = 100 * (this.ind_ratio_el + this.ind_ratio_bio);
+    this.ind_CAPEX_turn_el = this.ind_CAPEX_base_el * this.ind_turn_ratio;
+    this.ind_CAPEX_turn_bio = this.ind_CAPEX_base_bio * this.ind_turn_ratio;
+
+    this.ind_turn_ratio = this.ind_ratio_carbon / this.turns_to_go; 
+    this.ind_CAPEX_turn_bio = 
+    this.ind_CAPEX_turn_el = 
+
+    this.ind_cost_energy = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
+      (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.pol_price_carbon)) - this.ind_premium;
+
+    const numerator = (this.ind_income - this.ind_cost_other - this.ind_cost_energy - this.ind_annuity)
+    const denomenator = this.ind_income;
+    this.ind_EBIT_marginal = numerator / denomenator;
+
+    this.ind_emissions = this.ind_ratio_carbon * (this.ind_energy_consumtion / 100);
+
+    this.total_emissions = (this.ind_emissions + this.transportation_emissions) / 2;
+    
+    
+  }
+
+  calcIrr() {
+    /*Calculates the IRRs*/
+    const alt_energy_savings_bio = this.calc_alt_energy_cost_savings(0, this.ind_turn_ratio)
+    const alt_energy_savings_el = this.calc_alt_energy_cost_savings(this.ind_turn_ratio, 0)
+ 
+    const ind_savings_bio_low = alt_energy_savings_bio.shift();
+    const ind_savings_bio_mid = alt_energy_savings_bio.shift();
+    const ind_savings_bio_high = alt_energy_savings_bio.shift();
+ 
+    const ind_savings_el_low = alt_energy_savings_el.shift();
+    const ind_savings_el_mid = alt_energy_savings_el.shift();
+    const ind_savings_el_high = alt_energy_savings_el.shift();
+
+ 
+    // kanske går att formulera på nåt mer effektivt sätt:
+    const irr_bio_list_low = [-this.ind_CAPEX_turn_bio + this.pol_CAPEX_reduction];
+     for (let i = 0; i < 19; i += 1) {
+       irr_bio_list_low.push(ind_savings_bio_low);
+    }
+    const irr_bio_list_mid = [-this.ind_CAPEX_turn_bio + this.pol_CAPEX_reduction];
+       for (let i = 0; i < 19; i += 1) {
+         irr_bio_list_mid.push(ind_savings_bio_mid);
+    }
+    const irr_bio_list_high = [-this.ind_CAPEX_turn_bio + this.pol_CAPEX_reduction];
+       for (let i = 0; i < 19; i += 1) {
+         irr_bio_list_high.push(ind_savings_bio_high);
+    }
+    const irr_el_list_low = [-this.ind_CAPEX_turn_el + this.pol_CAPEX_reduction];
+     for (let i = 0; i < 19; i += 1) {
+       irr_el_list_low.push(ind_savings_el_low);
+    }
+    const irr_el_list_mid = [-this.ind_CAPEX_turn_el + this.pol_CAPEX_reduction];
+     for (let i = 0; i < 19; i += 1) {
+       irr_el_list_mid.push(ind_savings_el_mid);
+    }
+    const irr_el_list_high = [-this.ind_CAPEX_turn_el + this.pol_CAPEX_reduction];
+     for (let i = 0; i < 19; i += 1) {
+       irr_el_list_high.push(ind_savings_el_high);
+    }
+    
+    this.ind_IRR_bio.push(irr(irr_bio_list_low));
+    this.ind_IRR_bio.push(irr(irr_bio_list_mid));
+    this.ind_IRR_bio.push(irr(irr_bio_list_high));
+    this.ind_IRR_el.push(irr(irr_el_list_low));
+    this.ind_IRR_el.push(irr(irr_el_list_mid));
+    this.ind_IRR_el.push(irr(irr_el_list_high));
+  }
+
+
+
+  calc_alt_energy_cost_savings(el, bio) {
+    /*Gives an alternative cost structure based on current market values*/
+    const alt_ind_ratio_el = this.ind_ratio_el + el;
+    const alt_ind_ratio_bio = this.ind_ratio_bio + bio; // Now hard coded 20 % but in future function of how much is left calculation
+    const alt_ind_ratio_carbon = 1 - alt_ind_ratio_el - alt_ind_ratio_bio;
+    const alt_ind_premium = 100 * (alt_ind_ratio_el + alt_ind_ratio_bio);
+
+    // alternative costs three scenarios
+    const alt_cost_low = this.ind_energy_consumtion * ((alt_ind_ratio_el * this.price_el) +
+      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.pol_price_carbon * 0.7)) - alt_ind_premium;
+    
+    const alt_cost_mid = this.ind_energy_consumtion * ((alt_ind_ratio_el * this.price_el) +
+      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.pol_price_carbon)) - alt_ind_premium;
+
+    const alt_cost_high = this.ind_energy_consumtion * ((alt_ind_ratio_el * this.price_el) +
+      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.pol_price_carbon * 1.3)) - alt_ind_premium;
+
+    // current composition three CO2 scenarios
+    const cost_low = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
+    (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.pol_price_carbon * 0.7)) - this.ind_premium;
+
+    const cost_high = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
+    (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.pol_price_carbon * 1.3)) - this.ind_premium;
+
+
+    const savings_low = cost_low - alt_cost_low
+    const savings_mid = this.ind_cost_energy - alt_cost_mid
+    const savings_high = cost_high - alt_cost_high
+
+
+    return [savings_low, savings_mid, savings_high];
   }
 
   industry_electrify() {
-    this.industry_electricity_ratio += 0.2;
-    this.industry_accumulated_annuity += annuity(this.industry_electricity_CAPEX - this.policy_CAPEX_reduction, WACC, 20);
-    this.electricity_demand += 20;
+    this.ind_ratio_el += this.ind_turn_ratio;
+    this.ind_annuity += annuity(this.ind_CAPEX_turn_el - this.pol_CAPEX_reduction, WACC, 20);
+    this.demand_el += 20;
   }
 
   industry_biofy() {
-    this.industry_bio_ratio += 0.2;
-    this.industry_accumulated_annuity += annuity(this.industry_bio_CAPEX - this.policy_CAPEX_reduction, WACC, 20);
-    this.bio_demand += 20;
+    this.ind_ratio_bio += this.ind_turn_ratio;
+    this.ind_annuity += annuity(this.ind_CAPEX_turn_bio - this.pol_CAPEX_reduction, WACC, 20);
+    this.demand_bio += 20;
   }
 
   // Todo addera oallkoerad mängd till nästa runda
   industry_RnD() {
-    this.industry_bio_CAPEX *= 0.85;
-    this.industry_electricity_CAPEX *= 0.85;
+    this.ind_CAPEX_base_bio *= 0.85;
+    this.ind_CAPEX_base_el *= 0.85;
   }
 
   industry_increase_energy_efficiency() {
-    this.industry_energy_consumtion *= 0.9;
+    this.ind_energy_consumtion *= 0.9;
   }
 
   policy_change_carbon_price(level) {
     if (level === 1) {
-      this.price_carbon_energy *= 0.7;
+      this.pol_price_carbon *= 0.7;
+      this.voters_tax_burden *= 0.7;
     } else if (level === 2) {
-      this.price_carbon_energy *= 0.85;
+      this.pol_price_carbon *= 0.85;
+      this.voters_tax_burden *= 0,85
     } else if (level === 3) {
-      this.price_carbon_energy *= 1;
+      this.pol_price_carbon *= 1;
+      this.voters_tax_burden *= 1;
     } else if (level === 4) {
-      this.price_carbon_energy *= 1.15;
+      this.pol_price_carbon *= 1.15;
+      this.voters_tax_burden *= 1.15;
     } else if (level === 5) {
-      this.price_carbon_energy *= 1.3;
+      this.pol_price_carbon *= 1.3;
+      this.voters_tax_burden *= 1,3;
     }
   }
 
   policy_subsidies(level) {
     if (level === 1) {
-      this.bio_demand *= 1;
+      this.demand_bio *= 1;
     } else if (level === 2) {
-      this.bio_demand *= 0.9;
+      this.demand_bio *= 0.9;
     } else if (level === 3) {
-      this.bio_demand *= 0.8;
+      this.demand_bio *= 0.8;
     } 
   }
 
   policy_ev_premium(level) {
     if (level === 1) {
-      this.policy_ev_premium_value = 0;
+      this.pol_ev_premium = 0;
       this.transportation_emissions *= 1;
     } else if (level === 2) {
-      this.policy_ev_premium_value = -5;
+      this.pol_ev_premium = -5;
       this.transportation_emissions *= 0.8;
     } else if (level === 3) {
-      this.policy_ev_premium_value = -10;
+      this.pol_ev_premium = -10;
       this.transportation_emissions *= 0.7;
     } 
   }
   
   svk_investing(level) {
     if(level === 1) {
-      this.electricity_supply += 20; // double check so their is oppertunity for supply to be less than demand
+      this.supply_el += 20; // double check so their is oppertunity for supply to be less than demand
     }
     else if (level === 2) {
-      this.electricity_supply += 33;
+      this.supply_el += 33;
+      this.voters_displacement += 1
     }
   }
 
@@ -197,42 +280,47 @@ function test() {
   console.log(p);
   while (true) {
     if(turn === 1) {
-      p.policy_change_carbon_price(3);
+      p.policy_change_carbon_price(5);
       p.policy_ev_premium(2);
       p.policy_subsidies(2);
       p.svk_investing(1);
-      p.industry_electrify();
+      p.industry_RnD();
     } else if (turn === 2) {
       p.policy_change_carbon_price(5);
       p.policy_ev_premium(3);
       p.policy_subsidies(3);
       p.svk_investing(1);
-      p.industry_electrify();
+      p.industry_RnD();
     } else if (turn === 3) {
-      p.policy_change_carbon_price(3);
+      p.policy_change_carbon_price(5);
       p.policy_ev_premium(2);
       p.policy_subsidies(2);
       p.svk_investing(2);
       p.industry_electrify();
     } else if (turn === 4) {
-      p.policy_change_carbon_price(3);
+      p.policy_change_carbon_price(5);
       p.policy_ev_premium(2);
       p.policy_subsidies(2);
       p.svk_investing(2);
       p.industry_electrify();
     } else if (turn === 5) {
-      p.policy_change_carbon_price(3);
+      p.policy_change_carbon_price(5);
       p.policy_ev_premium(2);
       p.policy_subsidies(2);
       p.svk_investing(2);
       p.industry_electrify();
+    } else{
+      break;
     }
     
-    p.turnCalculations();
+    p.basicTurnCalculations();
+    p.calcIrr();
     console.log(`Turn: ${turn}`);
     console.log(p);
     prompt("Press enter to continue...");
     turn += 1;
+    
+
   }
 }
 
