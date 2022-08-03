@@ -9,7 +9,7 @@ const Home = (props) => {
     const { socket } = props;
     // Recieved from server or hard coded in client
     const listOfSectors = ["Industrimagnat", "Politiker", "Stamnätsoperatör", "Väljare"]
-    const random = 3//Math.floor(Math.random() * listOfSectors.length);
+    const random = Math.floor(Math.random() * listOfSectors.length);
     const sectorParam = listOfSectors[random];
 
     switch (sectorParam) {

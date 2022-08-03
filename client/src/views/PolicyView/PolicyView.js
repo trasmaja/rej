@@ -7,6 +7,7 @@ import PastEvents from '../../components/pastEvents/pastEvents';
 import DecisionBasisWithGraph from '../../components/decisionBasisWithGraph/decisionBasisWithGraph';
 import DecisionBasisWithText from '../../components/decisionBasisWithText/decisionBasisWithText';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
+import SingleLineChart from '../../components/singleLineChart/singleLineChart';
 
 const PolicyView = (props) => {
     const vote = (decisionIndex, qIndex) => {
@@ -54,6 +55,9 @@ const PolicyView = (props) => {
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
                 <LineChartComp propData={gameData.data} domain={[0,1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
+                <LineChartComp propData={gameData.data} domain={[0,0.4]} dataKey="ebit" progKey="ebitprog" title="Industrins lönsamhet" />
+                <SingleLineChart propData={gameData.data} domain={[0,1]} dataKey="voters_rating" title="Approval rating" />
+
                 <h2>Rösta på beslut</h2>
                 <p>Vad vill ni göra med CO2 priest?</p>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} />
