@@ -33,7 +33,6 @@ const theme = createTheme({
 
 function App() {
   const socket = io();
-  console.log("howdy")
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>

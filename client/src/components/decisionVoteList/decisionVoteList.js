@@ -25,7 +25,7 @@ const DecisionVoteList = (props) => {
             return;
         }
         if(confirmVote === true) {
-            props.vote(selectedIndex);
+            props.vote(selectedIndex, props.qIndex);
             setVotedOn(selectedIndex);
         }
         setOpen(false);

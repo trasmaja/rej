@@ -1,4 +1,4 @@
-import './IndustryView.css';
+import './PolicyView.css';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import TimeLine from '../../components/timeline/timeline';
@@ -8,14 +8,18 @@ import DecisionBasisWithGraph from '../../components/decisionBasisWithGraph/deci
 import DecisionBasisWithText from '../../components/decisionBasisWithText/decisionBasisWithText';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
 
-const IndustryView = (props) => {
-    const vote = (decisionIndex) => {
+const PolicyView = (props) => {
+    const vote = (decisionIndex, qIndex) => {
         props.socket.emit("vote", {
             sector: props.sectorName,
-            decisionIndex: decisionIndex
+            decisionIndex: decisionIndex,
+            question: qIndex,
         });
     }
-    const decisions = ["1) Investera i biodrivmedel", "2) Investera i elektrifiering", "3) Investera i R&D", "4) Investera i energieffektivisering"]
+
+    const co2dec = ["Höj mycket", "Höj lite", "Behåll nuvarande", "Sänk lite", "Sänk mycket"];
+    const subdec = ["Hög nivå", "Mellan nivå", "Låg nivå"];
+    const evdec = ["Hög nivå", "Mellan nivå", "Låg nivå"];
 
     const [gameData, setGameData] = useState(null);
 
@@ -35,10 +39,10 @@ const IndustryView = (props) => {
     })
 
     let turn = 0;
-    if(gameData && gameData.turn) {
+    if (gameData && gameData.turn) {
         turn = gameData.turn - 1;
     }
-    
+
     let mainBody;
     if (gameData && gameData.state === "presenting") {
         mainBody = (
@@ -49,16 +53,14 @@ const IndustryView = (props) => {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
-                <LineChartComp propData={gameData.data} domain={[0,1]} dataKey="co2" progKey="co2prog" title="CO2-utsläpp" />
-                <LineChartComp propData={gameData.data} domain={[0,0.4]} dataKey="ebit" progKey="ebitprog" title="EBIT" />
-                {/* <PastEvents turn={turn}/> */}
-                <h2>Beslutsunderlag</h2>
-                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_bio} title={decisions[0]} />
-                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_el} title={decisions[1]} />
-                <DecisionBasisWithText title={decisions[2]} text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem." />
-                <DecisionBasisWithText title={decisions[3]} text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem." />
+                <LineChartComp propData={gameData.data} domain={[0,1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
                 <h2>Rösta på beslut</h2>
-                <DecisionVoteList vote={vote} decisions={decisions} />
+                <p>Vad vill ni göra med CO2 priest?</p>
+                <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} />
+                <p>Vad vill ni göra med subventioner?</p>
+                <DecisionVoteList vote={vote} qIndex={1} decisions={subdec} />
+                <p>Vad vill ni göra med EV-premier?</p>
+                <DecisionVoteList vote={vote} qIndex={2} decisions={evdec} />
             </div>
         );
     }
@@ -71,9 +73,9 @@ const IndustryView = (props) => {
     );
 }
 
-IndustryView.propTypes = {
+PolicyView.propTypes = {
     sectorName: PropTypes.string.isRequired,
     socket: PropTypes.object.isRequired
 }
 
-export default IndustryView;
+export default PolicyView;

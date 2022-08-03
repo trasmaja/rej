@@ -58,7 +58,6 @@ const DecisionBasisWithGraph = (props) => {
         },
     ];
     props.propData.forEach((element, index) => {
-        console.log(index, element)
         data[index].irr = Math.floor(element*100);
     });
 
@@ -81,7 +80,7 @@ const DecisionBasisWithGraph = (props) => {
                     <XAxis xAxisId={1} dataKey="name" />
                     <XAxis xAxisId={2} hide={true} />
 
-                    <YAxis  domain={[0, 20]} width={10} />
+                    <YAxis domain={[0, 30]} width={10} />
                     <Bar xAxisId={1} dataKey="irr" fill="#2AA784" />
                     <Line data={lineDdata} xAxisId={2} type="linear" dot={false} dataKey="wacc" stroke="#ccc" strokeWidth={3} strokeDasharray="3 3" />
                     <Legend />

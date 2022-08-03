@@ -1,6 +1,6 @@
 import { createRequire } from "module";
 import Params from './params.js';
-import { Industri, Policy } from "./sector.js";
+import { Industri, Policy, Stam, Voter } from "./sector.js";
 
 const require = createRequire(import.meta.url);
 const Finance = require("tvm-financejs");
@@ -22,7 +22,9 @@ class Model {
 
   addSectors() {
     this.sectors.push(new Industri(0, this.params));
-    // this.sectors.push(new Policy(1, this.params));
+    this.sectors.push(new Policy(1, this.params));
+    this.sectors.push(new Stam(2, this.params));
+    this.sectors.push(new Voter(3, this.params));
   }
 
 
@@ -33,7 +35,8 @@ class Model {
     }
     if (this.state === "playing") {
       this.executeVotes();
-      this.params.turnCalculations();
+      this.params.basicTurnCalculations();
+      this.params.calcIrr();
       this.state = "presenting";
     } else {
       this.currentTurn += 1;
@@ -43,12 +46,15 @@ class Model {
     }
   }
 
-  incomingVote(sector, decisionIndex) {
+  incomingVote(sector, decisionIndex, question) {
     const nameToIndex = {
       "Industrimagnat": 0,
+      "Politiker": 1,
+      "Stamnätsoperatör": 2,
+      "Väljare": 3,
     }
     const index = nameToIndex[sector];
-    this.sectors[index].vote(decisionIndex);
+    this.sectors[index].vote(decisionIndex, question);
   }
 
   resetVotes() {

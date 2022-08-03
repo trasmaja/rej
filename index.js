@@ -75,7 +75,8 @@ io.on("connection", (socket) => {
     socket.on("vote", (data) => {
       // data={ sector: "industry", decisionIndex: 0 }
       console.log("voted")
-      model.incomingVote(data.sector, data.decisionIndex);
+      console.log(data)
+      model.incomingVote(data.sector, data.decisionIndex, data.question);
     })
 
     socket.on("getGameData", () => {
