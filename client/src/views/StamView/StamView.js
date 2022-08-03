@@ -18,7 +18,7 @@ const StamView = (props) => {
         });
     }
 
-    const decisionList = ["Blitz-investera", "Investera med hänsyn"];
+    const decisionList = ["Investera med hänsyn", "Blitz-investera"];
 
     const [gameData, setGameData] = useState(null);
 

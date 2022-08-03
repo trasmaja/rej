@@ -18,6 +18,7 @@ class Model {
     this.dataForEachTurn[0] = Object.assign(Object.create(this.params), this.params);
     this.state = "playing"; // "playing" or "presenting"
 
+    this.decisionsMade = [];
   }
 
   addSectors() {
@@ -37,7 +38,13 @@ class Model {
       this.executeVotes();
       this.params.basicTurnCalculations();
       this.params.calcIrr();
+      const decisionsMade = {};
+      this.sectors.forEach(sector => {
+        decisionsMade[sector.name] = sector.getDecisionsMade();
+      })
+      this.decisionsMade.push(decisionsMade);
       this.state = "presenting";
+      console.log(this.decisionsMade);
     } else {
       this.currentTurn += 1;
       this.dataForEachTurn[this.currentTurn-1] = Object.assign(Object.create(this.params), this.params);

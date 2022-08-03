@@ -3,7 +3,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { irr } = require('node-irr')
-const prompt = require("prompt-sync")({ sigint: true });
+// const prompt = require("prompt-sync")({ sigint: true });
 
 const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n)));
 const WACC = 0.1;
@@ -67,7 +67,7 @@ class Params {
   }
 
   basicTurnCalculations() {
-    /*Recalibrates the values of all dependent variables*/
+    /* Recalibrates the values of all dependent variables */
     this.turns_to_go -= 1;
 
     if (this.supply_el - this.demand_el > 30) {
@@ -88,11 +88,7 @@ class Params {
     this.ind_premium = 100 * (this.ind_ratio_el + this.ind_ratio_bio);
     this.ind_CAPEX_turn_el = this.ind_CAPEX_base_el * this.ind_turn_ratio;
     this.ind_CAPEX_turn_bio = this.ind_CAPEX_base_bio * this.ind_turn_ratio;
-
     this.ind_turn_ratio = this.ind_ratio_carbon / this.turns_to_go; 
-    this.ind_CAPEX_turn_bio = 
-    this.ind_CAPEX_turn_el = 
-
     this.ind_cost_energy = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
       (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.pol_price_carbon)) - this.ind_premium;
 
@@ -108,7 +104,7 @@ class Params {
   }
 
   calcIrr() {
-    /*Calculates the IRRs*/
+    /* Calculates the IRRs */
     const alt_energy_savings_bio = this.calc_alt_energy_cost_savings(0, this.ind_turn_ratio)
     const alt_energy_savings_el = this.calc_alt_energy_cost_savings(this.ind_turn_ratio, 0)
  
@@ -158,7 +154,7 @@ class Params {
 
 
   calc_alt_energy_cost_savings(el, bio) {
-    /*Gives an alternative cost structure based on current market values*/
+    /* Gives an alternative cost structure based on current market values */
     const alt_ind_ratio_el = this.ind_ratio_el + el;
     const alt_ind_ratio_bio = this.ind_ratio_bio + bio; // Now hard coded 20 % but in future function of how much is left calculation
     const alt_ind_ratio_carbon = 1 - alt_ind_ratio_el - alt_ind_ratio_bio;
@@ -213,21 +209,21 @@ class Params {
   }
 
   policy_change_carbon_price(level) {
-    if (level === 1) {
+    if (level === 5) {
       this.pol_price_carbon *= 0.7;
       this.voters_tax_burden *= 0.7;
-    } else if (level === 2) {
+    } else if (level === 4) {
       this.pol_price_carbon *= 0.85;
-      this.voters_tax_burden *= 0,85
+      this.voters_tax_burden *= 0.85
     } else if (level === 3) {
       this.pol_price_carbon *= 1;
       this.voters_tax_burden *= 1;
-    } else if (level === 4) {
+    } else if (level === 2) {
       this.pol_price_carbon *= 1.15;
       this.voters_tax_burden *= 1.15;
-    } else if (level === 5) {
+    } else if (level === 1) {
       this.pol_price_carbon *= 1.3;
-      this.voters_tax_burden *= 1,3;
+      this.voters_tax_burden *= 1.3;
     }
   }
 
@@ -273,55 +269,55 @@ class Params {
 
 export default Params;
 
-function test() {
-  const p = new Params();
+// function test() {
+//   const p = new Params();
 
-  let turn = 1;
-  console.log(p);
-  while (true) {
-    if(turn === 1) {
-      p.policy_change_carbon_price(5);
-      p.policy_ev_premium(2);
-      p.policy_subsidies(2);
-      p.svk_investing(1);
-      p.industry_RnD();
-    } else if (turn === 2) {
-      p.policy_change_carbon_price(5);
-      p.policy_ev_premium(3);
-      p.policy_subsidies(3);
-      p.svk_investing(1);
-      p.industry_RnD();
-    } else if (turn === 3) {
-      p.policy_change_carbon_price(5);
-      p.policy_ev_premium(2);
-      p.policy_subsidies(2);
-      p.svk_investing(2);
-      p.industry_electrify();
-    } else if (turn === 4) {
-      p.policy_change_carbon_price(5);
-      p.policy_ev_premium(2);
-      p.policy_subsidies(2);
-      p.svk_investing(2);
-      p.industry_electrify();
-    } else if (turn === 5) {
-      p.policy_change_carbon_price(5);
-      p.policy_ev_premium(2);
-      p.policy_subsidies(2);
-      p.svk_investing(2);
-      p.industry_electrify();
-    } else{
-      break;
-    }
+//   let turn = 1;
+//   console.log(p);
+//   while (true) {
+//     if(turn === 1) {
+//       p.policy_change_carbon_price(5);
+//       p.policy_ev_premium(2);
+//       p.policy_subsidies(2);
+//       p.svk_investing(1);
+//       p.industry_RnD();
+//     } else if (turn === 2) {
+//       p.policy_change_carbon_price(5);
+//       p.policy_ev_premium(3);
+//       p.policy_subsidies(3);
+//       p.svk_investing(1);
+//       p.industry_RnD();
+//     } else if (turn === 3) {
+//       p.policy_change_carbon_price(5);
+//       p.policy_ev_premium(2);
+//       p.policy_subsidies(2);
+//       p.svk_investing(2);
+//       p.industry_electrify();
+//     } else if (turn === 4) {
+//       p.policy_change_carbon_price(5);
+//       p.policy_ev_premium(2);
+//       p.policy_subsidies(2);
+//       p.svk_investing(2);
+//       p.industry_electrify();
+//     } else if (turn === 5) {
+//       p.policy_change_carbon_price(5);
+//       p.policy_ev_premium(2);
+//       p.policy_subsidies(2);
+//       p.svk_investing(2);
+//       p.industry_electrify();
+//     } else{
+//       break;
+//     }
     
-    p.basicTurnCalculations();
-    p.calcIrr();
-    console.log(`Turn: ${turn}`);
-    console.log(p);
-    prompt("Press enter to continue...");
-    turn += 1;
+//     p.basicTurnCalculations();
+//     p.calcIrr();
+//     console.log(`Turn: ${turn}`);
+//     console.log(p);
+//     prompt("Press enter to continue...");
+//     turn += 1;
     
 
-  }
-}
+//   }
+// }
 
 // test();
