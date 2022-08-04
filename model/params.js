@@ -152,7 +152,7 @@ class Params {
   }
 
   calcEconomy() {
-    /*An attempt to give a value of voters economic satisfaction*/
+    /* An attempt to give a value of voters economic satisfaction */
     this.voters_el_burden = this.price_el;
     const x = (this.voters_carbon_burden + this.voters_el_burden + this.svk_tax_penalty + this.voters_tax_burden_sub + this.voters_tax_burden_ev) / 5;
     const beta = 2;
@@ -431,4 +431,5 @@ function test() {
   }
 }
 
-test();
+// test();
+
