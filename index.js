@@ -9,9 +9,9 @@ import { fileURLToPath } from "url";
 
 import test from "./controllers/test.controller.js";
 
-import model from "./model.js";
+import model from "./model/model.js";
 
-const port = process.env.PORT ||8080;
+const port = process.env.PORT || 8080;
 const app = express(); // Create express app.
 const server = createServer(app);
 const io = new Server(server); // Create socket.io app.
@@ -62,7 +62,7 @@ io.use(
 app.use("/api", test.router);
 
 // Initialize model.
-model.init(io);
+// model.init(io);
 
 // Handle socket.io connections.
 io.on("connection", (socket) => {
@@ -75,35 +75,24 @@ io.on("connection", (socket) => {
     socket.on("vote", (data) => {
       // data={ sector: "industry", decisionIndex: 0 }
       console.log("voted")
-      model.game.voting(data.sector, data.decisionIndex);
-    }) 
-    socket.on("endTurn", () => {
-      if(model.game.getState() === "EndOfTurnCalc") {
-        return;
-      }
-
-      model.game.changeState("EndOfTurnCalc");
-      io.emit("gameState", model.game.getState());
-      io.emit("gameData", model.game.getGameData());
-    })
-
-    socket.on("startTurn", () => {
-      if(model.game.getState() === "votingInProgress") {
-        console.log("in if")
-        return;
-      }
-      model.game.changeState("votingInProgress");
-      io.emit("gameState", model.game.getState());
-      io.emit("gameData", model.game.getGameData());
-    })
-
-    socket.on("getState", () => {
-      socket.emit("gameState", model.game.getState());
+      console.log(data)
+      model.incomingVote(data.sector, data.decisionIndex, data.question);
     })
 
     socket.on("getGameData", () => {
-      socket.emit("gameData", model.game.getGameData());
+      socket.emit("gameData", model.getGameData());
     })
+
+    socket.on("endTurn", () => {
+      model.next();
+      io.emit("gameData", model.getGameData());
+    })
+
+    socket.on("startTurn", () => {
+      model.next();
+      io.emit("gameData", model.getGameData());
+    })
+
 
   });
 

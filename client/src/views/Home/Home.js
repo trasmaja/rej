@@ -1,39 +1,38 @@
 import './Home.css';
 import PropTypes from 'prop-types';
-import { useSearchParams } from "react-router-dom";
-import SelectSector from '../SelectSector/SelectSector';
 import IndustryView from '../IndustryView/IndustryView';
+import PolicyView from '../PolicyView/PolicyView';
+import StamView from '../StamView/StamView';
+import Voters from '../Voters/Voters';
 import React from 'react';
 const Home = (props) => {
-    const [searchParams] = useSearchParams();
+    const { socket } = props;
     // Recieved from server or hard coded in client
-    const listOfSectors = ["industri", "policy", "nätbolag"]
-    // get the param we care about
-    const sectorParam = searchParams.get("sector");
-    const hasSelectedSector = listOfSectors.includes(sectorParam);
+    const listOfSectors = ["Industrimagnat", "Politiker", "Stamnätsoperatör", "Väljare"]
+    const random = Math.floor(Math.random() * listOfSectors.length);
+    const sectorParam = listOfSectors[random];
 
-    if (hasSelectedSector) {
-        switch (sectorParam) {
-            case "industri":
-                return <IndustryView socket={props.socket} sectorName={sectorParam}/>;
-            case "policy":
-                return <main>
-                    <h2>Has selected</h2>
-                </main>
-            case "nätbolag":
-                return <main>
-                    <h2>Has selected</h2>
-                </main>
-            default:
-                return <main>
-                    <h2>Has selected</h2>
-                </main>
-        }
-    } else {
-        return (
-            <SelectSector sectors={listOfSectors} />
-        );
+    switch (sectorParam) {
+        case "Industrimagnat":
+            return <IndustryView socket={socket} sectorName="Industrimagnat" />
+        case "Politiker":
+            return <main>
+                <PolicyView socket={socket} sectorName="Politiker" />
+            </main>
+        case "Stamnätsoperatör":
+            return <main>
+                <StamView socket={socket} sectorName="Stamnätsoperatör" />
+            </main>
+        case "Väljare":
+            return <main>
+                <Voters socket={socket} sectorName="Väljare" />
+            </main>
+        default:
+            return <main>
+                <h2>Has selected default</h2>
+            </main>
     }
+
 }
 
 Home.propTypes = {
