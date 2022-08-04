@@ -55,7 +55,8 @@ class Params {
     // Voter variables
     this.voters_carbon_burden = 0.5; // cost of emitting for consumers
     this.voters_el_burden = null; // if price of electricity skyrockets
-    this.voters_tax_burden = 0.5; // tax burden for voters
+    this.voters_tax_burden_sub = null; // tax burden for voters from subsedies
+    this.voters_tax_burden_ev = null;
     this.svk_tax_penalty = null; // if SVK has over constructed 
     this.voters_economy = null; 
     this.voters_rating = 0.6;
@@ -152,7 +153,7 @@ class Params {
 
   calcEconomy() {
     this.voters_el_burden = this.price_el;
-    var x = (this.voters_carbon_burden + this.voters_el_burden + this.svk_tax_penalty + this.voters_tax_burden)/5;
+    var x = (this.voters_carbon_burden + this.voters_el_burden + this.svk_tax_penalty + this.voters_tax_burden_sub)/5;
     var beta = 2;
     console.log(x);
     this.voters_economy = 1 / (1 + Math.pow(x / (1 - x), -beta));
@@ -235,13 +236,13 @@ class Params {
   policy_subsidies(level) {
     if (level === 1) {
       this.demand_bio *= 1;
-      this.voters_tax_burden *= 1;
+      this.voters_tax_burden_sub = 0.4;
     } else if (level === 2) {
       this.demand_bio *= 0.9;
-      this.voters_tax_burden *= 1.2;
+      this.voters_tax_burden_sub = 0.5;
     } else if (level === 3) {
       this.demand_bio *= 0.8;
-      this.voters_tax_burden *= 1.5;
+      this.voters_tax_burden_sub = 0.6;
 
     } 
   }
@@ -250,15 +251,15 @@ class Params {
     if (level === 1) {
       this.pol_ev_premium = 0;
       this.transportation_emissions *= 1;
-      this.voters_tax_burden *= 1;
+      this.voters_tax_burden_ev *= 1;
     } else if (level === 2) {
       this.pol_ev_premium = -5;
       this.transportation_emissions *= 0.8;
-      this.voters_tax_burden *= 1.2;
+      this.voters_tax_burden_ev *= 1.2;
     } else if (level === 3) {
       this.pol_ev_premium = -10;
       this.transportation_emissions *= 0.7;
-      this.voters_tax_burden *= 1.5;
+      this.voters_tax_burden_ev *= 1.5;
     } 
   }
   
