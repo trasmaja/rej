@@ -13,6 +13,10 @@
     padding-bottom: 10px;
     align-self: flex-start;
 }
+.wrapper-decisionBasisWithGraph p {
+    margin: 0 10px 10px 10px;
+    padding-top: 0;
+}
 .wrapper-decisionBasisWithGraph-graph {
     width: 100%;
     max-width: 400px;

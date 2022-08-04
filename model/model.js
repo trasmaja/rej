@@ -14,7 +14,7 @@ class Model {
     this.currentTurn = 1;
     this.nrOfTurns = 5;
 
-    this.dataForEachTurn = [null, null, null, null, null];
+    this.dataForEachTurn = [null, null, null, null, null, null];
     this.dataForEachTurn[0] = Object.assign(Object.create(this.params), this.params);
     this.state = "playing"; // "playing" or "presenting"
 
