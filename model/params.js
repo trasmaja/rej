@@ -215,19 +215,19 @@ class Params {
   }
 
   policy_change_carbon_price(level) {
-    if (level === 1) {
+    if (level === 5) {
       this.pol_price_carbon *= 0.7;
       this.voters_carbon_burden *= 0.7;
-    } else if (level === 2) {
+    } else if (level === 4) {
       this.pol_price_carbon *= 0.85;
       this.voters_carbon_burden *= 0.85
     } else if (level === 3) {
       this.pol_price_carbon *= 1;
       this.voters_carbon_burden *= 1;
-    } else if (level === 4) {
+    } else if (level === 2) {
       this.pol_price_carbon *= 1.15;
       this.voters_carbon_burden *= 1.15;
-    } else if (level === 5) {
+    } else if (level === 1) {
       this.pol_price_carbon *= 1.3;
       this.voters_carbon_burden *= 1.3;
     }
