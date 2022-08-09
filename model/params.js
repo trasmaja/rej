@@ -9,11 +9,12 @@ const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n)));
 const WACC = 0.1;
 class Params {
   constructor() {
+    this.turn = 0;
     this.turns_to_go = 6; // playable turns + 1
 
     // Industry variables 
     this.ind_turn_ratio = null; // tells how much to replace current turn
-    this.ind_lateness_penalty = null; 
+    this.ind_lateness_penalty_factor = null; 
       /*^penalty if forced to replace too much capital too quickly, late movers disadvantage - 
       replacing 100 % with one turn to go comes at a cost*/
 
@@ -22,8 +23,8 @@ class Params {
     this.ind_ratio_bio = 0; // between 0-1
     this.ind_ratio_energieff = 0 //
     this.ind_ratio_carbon = null; // "null" indicates it is a dependent variable
-    this.ind_CAPEX_base_el = 3000; // cost of reinvesting 100 % of capital
-    this.ind_CAPEX_base_bio = 2000; 
+    this.ind_CAPEX_base_el = 3000 / 0.9; // cost of reinvesting 100 % of capital
+    this.ind_CAPEX_base_bio = 2000 / 0.9; 
     this.ind_RnD = 0; // # of times RnD has been used
 
     this.ind_CAPEX_turn_el = null; // cost of investment a given turn
@@ -32,6 +33,7 @@ class Params {
     this.ind_income = 1000; 
     this.ind_cost_other = 700; // costs independent of chosen energy
     this.ind_cost_energy = null; // current cost of energy
+    this.ind_premium_factor = 75;
     this.ind_premium = null; // green premium paid to companies
     
     this.ind_IRR_bio = null; // the following parameters are shown to player
@@ -84,10 +86,11 @@ class Params {
 // Turn calculations
   basicTurnCalculations() {
     /* Recalibrates the values of all dependent variables */
+    this.turn += 1;
     this.turns_to_go -= 1;
 
     if (4 * this.price_el > this.price_bio) {
-      this.demand_bio += 10;
+      this.demand_bio += 10; // adds some market demand from things outside the model such as heavy transports
     } 
 
     this.svk_tax_penalty = Math.max((this.supply_el - this.demand_el - 30)/this.demand_el, 0) // excerts a cost when supply is 30 units bigger than 30
@@ -105,14 +108,17 @@ class Params {
     this.ind_ratio_carbon = 1 - this.ind_ratio_el - this.ind_ratio_bio - this.ind_ratio_energieff;
 
 
-    this.ind_premium = 75 * (this.ind_ratio_el + this.ind_ratio_bio);
+    this.ind_premium = this.ind_premium_factor * (this.ind_ratio_el + this.ind_ratio_bio);
     this.ind_turn_ratio = this.ind_ratio_carbon / this.turns_to_go; 
 
     
-    this.ind_lateness_penalty = 2 * Math.max(this.ind_turn_ratio + 0.75, 1) - 1 // applies a penalty when when turn ratio > 25
+    this.ind_lateness_penalty_factor = 2 * Math.max(this.ind_turn_ratio + 0.75, 1) - 1 // applies a penalty when when turn ratio > 25
 
-    this.ind_CAPEX_turn_el = this.ind_CAPEX_base_el * this.ind_turn_ratio * this.ind_lateness_penalty;
-    this.ind_CAPEX_turn_bio = this.ind_CAPEX_base_bio * this.ind_turn_ratio * this.ind_lateness_penalty;
+    // this.ind_CAPEX_base_el *= 1.05; // adjusts cost each turn
+    // this.ind_CAPEX_base_bio *= 1.05; 
+
+    this.ind_CAPEX_turn_el = this.ind_CAPEX_base_el * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
+    this.ind_CAPEX_turn_bio = this.ind_CAPEX_base_bio * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
     
     this.ind_cost_energy = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
       (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.pol_price_carbon)) - this.ind_premium;
@@ -121,6 +127,7 @@ class Params {
     this.ind_emissions = this.ind_ratio_carbon * (this.ind_energy_consumtion / 100);
 
     this.total_emissions = (this.ind_emissions + this.transportation_emissions) / 2;
+
 
   }
 
@@ -173,13 +180,16 @@ class Params {
   calcVoter() {
     /*An attempt to give a value of voters economic satisfaction*/
     this.voters_carbon_burden = this.pol_price_carbon* (this.ind_ratio_carbon + this.transportation_emissions);
-
     this.voters_el_burden = this.price_el;
 
-    const x = (this.voters_carbon_burden + this.voters_el_burden + this.svk_tax_penalty + 
+    var x = (this.voters_carbon_burden + this.voters_el_burden + this.svk_tax_penalty + 
       this.voters_tax_burden_sub + this.voters_tax_burden_ev) - Math.min(4, (this.voters_carbon_burden + 
       this.voters_el_burden + this.svk_tax_penalty + this.voters_tax_burden_sub + this.voters_tax_burden_ev));
-      console.log(x)
+    
+    if (this.ind_EBIT_marginal < 0) {
+      var x = x + 2; // Industry goes badly and fires people
+    }
+    console.log(x)
     this.voters_economy = 1 - 1 / (1.7 + x**2); // a function that can take values [~0.4, 1)
   }
 
@@ -192,7 +202,7 @@ class Params {
     const alt_ind_ratio_el = this.ind_ratio_el + el;
     const alt_ind_ratio_bio = this.ind_ratio_bio + bio; // Now hard coded 20 % but in future function of how much is left calculation
     const alt_ind_ratio_carbon = 1 - alt_ind_ratio_el - alt_ind_ratio_bio;
-    const alt_ind_premium = 50 * (alt_ind_ratio_el + alt_ind_ratio_bio);
+    const alt_ind_premium = this.ind_premium_factor * (alt_ind_ratio_el + alt_ind_ratio_bio);
 
     // alternative costs three scenarios
     const alt_cost_low = this.ind_energy_consumtion * ((alt_ind_ratio_el * this.price_el) +
@@ -283,6 +293,7 @@ class Params {
     
     if (level === 1) {
       this.pol_CAPEX_reduction = 0.2;
+      this.ind_premium_factor *= 1.1; // test
       this.voters_tax_burden_sub = 0.5;
     } else if (level === 2) {
       this.pol_CAPEX_reduction = 0.1;
@@ -335,11 +346,8 @@ export default Params;
 
 function test() {
   const p = new Params();
-
-  let turn = 1;
   console.log(p);
-  while (true) {
-    if(turn === 1) {
+  while (p.turns_to_go > 0) {
       // p.policy_change_carbon_price(5);
       // p.policy_ev_premium(3);
       // p.policy_subsidies(3);
@@ -347,130 +355,34 @@ function test() {
       // p.industry_RnD();
       // p.voters_rate_policy(p.voters_economy)
 
-      var carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "))
-      p.policy_change_carbon_price(carbon)
-      var ev = parseInt(prompt("Välj ev-subventionsnivå 1-3 (från ambitiös till inget): "))
-      p.policy_ev_premium(ev)
-      var sub = parseInt(prompt("Välj nivå för investeringsstöd till industrin 1-3 (från ambitiös till inget): "))
-      p.policy_subsidies(sub)
-      var svk = parseInt(prompt("Välj investeringsnivå SVK 1-2: "))
-      p.svk_investing(svk)
-      var ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "))
-      if (ind === 1) {
-        p.industry_electrify()
-      } else if (ind === 2) {
-        p.industry_biofy()
-      } else if (ind === 3) {
-        p.industry_RnD()
-      } else if (ind === 4) {
-        p.industry_increase_energy_efficiency()
-      }
-      // var vote = parseInt(prompt("Voters vote [0, 1]: "))
-      // p.voters_rate_policy(vote)
-
-    } else if (turn === 2) {
-      var carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "))
-      p.policy_change_carbon_price(carbon)
-      var ev = parseInt(prompt("Välj ev-subventionsnivå 1-3 (från ambitiös till inget): "))
-      p.policy_ev_premium(ev)
-      var sub = parseInt(prompt("Välj nivå för investeringsstöd till industrin 1-3 (från ambitiös till inget): "))
-      p.policy_subsidies(sub)
-      var svk = parseInt(prompt("Välj investeringsnivå SVK 1-2: "))
-      p.svk_investing(svk)
-      var ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "))
-      if (ind === 1) {
-        p.industry_electrify()
-      } else if (ind === 2) {
-        p.industry_biofy()
-      } else if (ind === 3) {
-        p.industry_RnD()
-      } else if (ind === 4) {
-        p.industry_increase_energy_efficiency()
-      }
-      // var vote = parseInt(prompt("Voters vote [0, 1]: "))
-      // p.voters_rate_policy(vote)
-
-
-    } else if (turn === 3) {
-      var carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "))
-      p.policy_change_carbon_price(carbon)
-      var ev = parseInt(prompt("Välj ev-subventionsnivå 1-3 (från ambitiös till inget): "))
-      p.policy_ev_premium(ev)
-      var sub = parseInt(prompt("Välj nivå för investeringsstöd till industrin 1-3 (från ambitiös till inget): "))
-      p.policy_subsidies(sub)
-      var svk = parseInt(prompt("Välj investeringsnivå SVK 1-2: "))
-      p.svk_investing(svk)
-      var ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "))
-      if (ind === 1) {
-        p.industry_electrify()
-      } else if (ind === 2) {
-        p.industry_biofy()
-      } else if (ind === 3) {
-        p.industry_RnD()
-      } else if (ind === 4) {
-        p.industry_increase_energy_efficiency()
-      }
-      // var vote = parseInt(prompt("Voters vote [0, 1]: "))
-      // p.voters_rate_policy(vote)
-
-    } else if (turn === 4) {
-      var carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "))
-      p.policy_change_carbon_price(carbon)
-      var ev = parseInt(prompt("Välj ev-subventionsnivå 1-3 (från ambitiös till inget): "))
-      p.policy_ev_premium(ev)
-      var sub = parseInt(prompt("Välj nivå för investeringsstöd till industrin 1-3 (från ambitiös till inget): "))
-      p.policy_subsidies(sub)
-      var svk = parseInt(prompt("Välj investeringsnivå SVK 1-2: "))
-      p.svk_investing(svk)
-      var ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "))
-      if (ind === 1) {
-        p.industry_electrify()
-      } else if (ind === 2) {
-        p.industry_biofy()
-      } else if (ind === 3) {
-        p.industry_RnD()
-      } else if (ind === 4) {
-        p.industry_increase_energy_efficiency()
-      }
-      // var vote = parseInt(prompt("Voters vote [0, 1]: "))
-      // p.voters_rate_policy(vote)
-
-
-    } else if (turn === 5) {
-      var carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "))
-      p.policy_change_carbon_price(carbon)
-      var ev = parseInt(prompt("Välj ev-subventionsnivå 1-3 (från ambitiös till inget): "))
-      p.policy_ev_premium(ev)
-      var sub = parseInt(prompt("Välj nivå för investeringsstöd till industrin 1-3 (från ambitiös till inget): "))
-      p.policy_subsidies(sub)
-      var svk = parseInt(prompt("Välj investeringsnivå SVK 1-2: "))
-      p.svk_investing(svk)
-      var ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "))
-      if (ind === 1) {
-        p.industry_electrify()
-      } else if (ind === 2) {
-        p.industry_biofy()
-      } else if (ind === 3) {
-        p.industry_RnD()
-      } else if (ind === 4) {
-        p.industry_increase_energy_efficiency()
-      }
-      // var vote = parseInt(prompt("Voters vote [0, 1]: "))
-      // p.voters_rate_policy(vote)
-
-
-    } else{
-      break;
+    var carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "))
+    p.policy_change_carbon_price(carbon)
+    var ev = parseInt(prompt("Välj ev-subventionsnivå 1-3 (från ambitiös till inget): "))
+     p.policy_ev_premium(ev)
+    var sub = parseInt(prompt("Välj nivå för investeringsstöd till industrin 1-3 (från ambitiös till inget): "))
+    p.policy_subsidies(sub)
+    var svk = parseInt(prompt("Välj investeringsnivå SVK 1-2: "))
+    p.svk_investing(svk)
+    var ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "))
+    if (ind === 1) {
+      p.industry_electrify()
+    } else if (ind === 2) {
+      p.industry_biofy()
+    } else if (ind === 3) {
+      p.industry_RnD()
+    } else if (ind === 4) {
+      p.industry_increase_energy_efficiency()
     }
-    
+    // var vote = parseInt(prompt("Voters vote [0, 1]: "))
+    // p.voters_rate_policy(vote)
+
     p.basicTurnCalculations();
     p.calcIrr();
     p.calcVoter();
-    console.log(`Turn: ${turn}`);
     console.log(p);
-    turn += 1;
+
   }
 }
 
-// test();
+test();
 
