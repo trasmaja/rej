@@ -14,7 +14,6 @@ const SingleLineChart = (props) => {
             }
         }
     });
-    console.log(data)
     return (
         <div className="wrapper-lineChart">
             <h3>{props.title}</h3>

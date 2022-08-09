@@ -1,15 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.fc9a2d6a.css",
-    "main.js": "/static/js/main.9d4800dd.js",
+    "main.css": "/static/css/main.ff7f85fc.css",
+    "main.js": "/static/js/main.3ef62a9a.js",
     "static/js/787.c4e7f8f9.chunk.js": "/static/js/787.c4e7f8f9.chunk.js",
+    "static/media/city.png": "/static/media/city.696747ac19f40687db26.png",
+    "static/media/rejlers_logo.png": "/static/media/rejlers_logo.d5c5d067d6bf65b7bbc5.png",
     "index.html": "/index.html",
-    "main.fc9a2d6a.css.map": "/static/css/main.fc9a2d6a.css.map",
-    "main.9d4800dd.js.map": "/static/js/main.9d4800dd.js.map",
+    "main.ff7f85fc.css.map": "/static/css/main.ff7f85fc.css.map",
+    "main.3ef62a9a.js.map": "/static/js/main.3ef62a9a.js.map",
     "787.c4e7f8f9.chunk.js.map": "/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.fc9a2d6a.css",
-    "static/js/main.9d4800dd.js"
+    "static/css/main.ff7f85fc.css",
+    "static/js/main.3ef62a9a.js"
   ]
 }

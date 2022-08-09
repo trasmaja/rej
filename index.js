@@ -84,13 +84,17 @@ io.on("connection", (socket) => {
     })
 
     socket.on("endTurn", () => {
-      model.next();
-      io.emit("gameData", model.getGameData());
+      if (model.state === "playing") {
+        model.next();
+        io.emit("gameData", model.getGameData());
+      }
     })
 
     socket.on("startTurn", () => {
-      model.next();
-      io.emit("gameData", model.getGameData());
+      if (model.state === "presenting") {
+        model.next();
+        io.emit("gameData", model.getGameData());
+      }
     })
 
 

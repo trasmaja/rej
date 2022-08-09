@@ -1,3 +1,122 @@
-.Admin {
-    background-color: red;
+.admin {
+
+}
+.admin-top {
+    width: 100%;
+    height: 80px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: fixed;
+    background-color: #fff;
+}
+.admin-top-left {
+    width: 30%;
+    min-width: 300px;
+    height: 100%;
+}
+.admin-top-mid {
+    width: 40%;
+    min-width: 300px;
+    height: 100%;
+}
+.admin-top-leftIcon {
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    margin-left: 25px;
+}
+.admin-top-right {
+    width: 30%;
+    min-width: 300px;
+    display: flex;
+    height: 100%;
+}
+
+.top-button {
+    height: 40px; 
+    flex: 1;
+    margin: 20px 8% 20px 8% !important;
+    font-size: 14px !important;
+    line-height: 14px !important;
+}
+.admin-main {
+    width: 100vw;
+    height: calc(100vh - 80px);
+    margin: 0;
+    padding: 0;
+}
+.admin-main-first {
+    padding-top: 80px;
+}
+.admin-main:nth-child(even) {
+    background-color: #BFE5DA;
+    color: #2AA784;
+}
+.admin-main:nth-child(odd) {
+    background-color: #FBE0E4;
+    color: #F6B2BB;
+}
+
+.admin-main p {
+    padding: 0;
+    margin: 0;
+}
+.admin-main h2 {
+    padding: 0;
+    margin: 0;
+    font-size: 172px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.admin-main h3 {
+    padding: 0;
+    margin: 0;
+    font-size: 52px;
+    margin-left: 25px;
+    font-weight: bold;
+
+}
+
+.admin-main:nth-child(even) h2{
+    text-align: left;
+}
+.admin-main:nth-child(odd) h2{
+    text-align: right;
+}
+
+.admin-main-left {
+    flex: 50%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+.admin-main-left p {
+    font-size: 26px;
+    margin-left: 25px;
+}
+.admin-main-rigth {
+    flex: 50%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+.admin-main-flex {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 255px);
+}
+.admin-main-title {
+    width: 100%;
+    height: 255px;
+    padding: 0;
+    margin: 0;
+}
+.boldify {
+    font-weight: bold;
 }

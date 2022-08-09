@@ -1,4 +1,4 @@
-import './timeline.css';
+import './adminTimeline.css';
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
@@ -10,14 +10,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 
-const TimeLine = (props) => {
+const AdminTimeline = (props) => {
     const activeStep = 2//Math.floor(Math.random()* steps.length);
     return (
-        <div className="wrapper-timeline">
-            <div className="wrapper-timeline-title">
-                <h2>{props.sectorName}</h2>
-            </div>
-            <div className="wrapper-timeline-timeline">
+        <div className="wrapper-timeline" >
+            <div className="wrapper-timeline-timeline" style={{marginTop: 15}}>
                 <Stepper activeStep={props.turn} alternativeLabel>
                     {props.turns.map((label, index) => {
                         const stepProps = {};
@@ -34,8 +31,7 @@ const TimeLine = (props) => {
     );
 }
 
-TimeLine.propTypes = {
-    sectorName: PropTypes.string.isRequired
+AdminTimeline.propTypes = {
 }
 
-export default TimeLine;
+export default AdminTimeline;

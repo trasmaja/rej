@@ -24,8 +24,8 @@ class Sector {
         this.decisionsMade = [];
     }
 
-    getDecisionsMade() {
-        return this.decisionsMade;
+    getDecisionsMade(turn) {
+        return this.decisionsMade[turn];
     }
 }
 
@@ -51,19 +51,19 @@ export class Industri extends Sector {
         switch (decisionIndex) {
             case 0: // bio
                 this.params.industry_biofy();
-                this.decisionsMade.push("Industrin valde att satsa på biodrivmedel");
+                this.decisionsMade.push("satsade på biodrivmedel");
                 break;
             case 1: // elektrifiering
                 this.params.industry_electrify();
-                this.decisionsMade.push("Industrin valde att satsa på elektrifiering");
+                this.decisionsMade.push("satsade på elektrifiering");
                 break;
             case 2: // R&D
                 this.params.industry_RnD();
-                this.decisionsMade.push("Industrin valde att investera i R&D");
+                this.decisionsMade.push("investerade i R&D");
                 break;
             case 3: // energieffektivisering
                 this.params.industry_increase_energy_efficiency();
-                this.decisionsMade.push("Industrin valde att investera i energieffektivisering");
+                this.decisionsMade.push("investerade i energieffektivisering");
                 break;
             default:
                 break;
@@ -108,18 +108,18 @@ export class Policy extends Sector {
         this.params.policy_subsidies(decisionIndexSub);
         this.params.policy_ev_premium(decisionIndexEv);
 
-        let decisionString = "Policy valde att: ";
+        let decisionString = "";
 
         if(decisionIndexCo2 === 1) {
-            decisionString += "Öka CO2-priset mycket, ";
+            decisionString += "ökade CO2-priset mycket, ";
         } else if (decisionIndexCo2 === 2) {
-            decisionString += "Öka CO2-priset lite, ";
+            decisionString += "ökade CO2-priset lite, ";
         } else if (decisionIndexCo2 === 3) {
-            decisionString += "Behålla samma CO2-priset, ";
+            decisionString += "behöll samma CO2-priset, ";
         } else if (decisionIndexCo2 === 4) {
-            decisionString += "Minska CO2-priset lite, ";
+            decisionString += "minskade CO2-priset lite, ";
         } else if (decisionIndexCo2 === 5) {
-            decisionString += "Minska CO2-priset mycket, ";
+            decisionString += "minskade CO2-priset mycket, ";
         }
 
         if(decisionIndexSub === 1) {
@@ -174,9 +174,9 @@ export class Stam extends Sector {
         this.params.svk_investing(decisionIndex);
         
         if(decisionIndex === 1) {
-            this.decisionsMade.push("Stamnätsoperatörer valde att investera med hänsyn")
+            this.decisionsMade.push("investerade med hänsyn")
         } else if (decisionIndex === 2) {
-            this.decisionsMade.push("Stamnätsoperatörer valde att blitz-investera")
+            this.decisionsMade.push("blitz-investerade")
         }
         
     }
@@ -205,16 +205,16 @@ export class Voter extends Sector {
 
         if(decisionIndex === 0) {
             this.params.voters_rate_policy(0.9);
-            this.decisionsMade.push("Väljare gav Politiker en mycket bra rating")
+            this.decisionsMade.push("gav Politikerna en mycket bra rating")
         } else if (decisionIndex === 1) {
             this.params.voters_rate_policy(0.7);
-            this.decisionsMade.push("Väljare gav Politiker en bra rating")
+            this.decisionsMade.push("gav Politikerna en bra rating")
         } else if (decisionIndex === 2) {
             this.params.voters_rate_policy(0.4);
-            this.decisionsMade.push("Väljare gav Politiker en dålig rating")
+            this.decisionsMade.push("gav Politikerna en dålig rating")
         } else if (decisionIndex === 3) {
             this.params.voters_rate_policy(0.2);
-            this.decisionsMade.push("Väljare gav Politiker en mycket dålig rating")
+            this.decisionsMade.push("gav Politikerna en mycket dålig rating")
         }
     }
 }

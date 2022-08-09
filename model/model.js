@@ -40,7 +40,7 @@ class Model {
       this.params.calcIrr();
       const decisionsMade = {};
       this.sectors.forEach(sector => {
-        decisionsMade[sector.name] = sector.getDecisionsMade();
+        decisionsMade[sector.name] = sector.getDecisionsMade(this.currentTurn-1);
       })
       this.decisionsMade.push(decisionsMade);
       this.state = "presenting";
@@ -83,6 +83,7 @@ class Model {
     data.turn = this.currentTurn;
     data.state = this.state;
     data.data = this.dataForEachTurn;
+    data.history = this.decisionsMade;
     return data;
   }
 

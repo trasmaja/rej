@@ -5,9 +5,9 @@ import PolicyView from '../PolicyView/PolicyView';
 import StamView from '../StamView/StamView';
 import Voters from '../Voters/Voters';
 import React from 'react';
+
 const Home = (props) => {
     const { socket } = props;
-    // Recieved from server or hard coded in client
     const listOfSectors = ["Industrimagnat", "Politiker", "Stamnätsoperatör", "Väljare"]
     const random = Math.floor(Math.random() * listOfSectors.length);
     const sectorParam = listOfSectors[random];
