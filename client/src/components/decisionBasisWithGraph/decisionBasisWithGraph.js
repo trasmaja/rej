@@ -1,71 +1,35 @@
 import './decisionBasisWithGraph.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ComposedChart, BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ReferenceLine, Label, BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
 const DecisionBasisWithGraph = (props) => {
     const data = [
         {
-            name: 'low',
+            name: 'låg',
             irr: 0,
         },
         {
-            name: 'mid',
+            name: 'medel',
             irr: 0,
         },
         {
-            name: 'high',
+            name: 'hög',
             irr: 0,
         },
     ];
-    const lineDdata = [
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-        {
-            wacc: 10,
-        },
-    ];
+
     props.propData.forEach((element, index) => {
-        data[index].irr = Math.floor(element*100);
+        data[index].irr = Math.floor(element * 100);
     });
 
     return (
         <div className="wrapper-decisionBasisWithGraph">
             <h3>{props.title}</h3>
+            <p>Internal rate of return (IRR) för investeringen givet ett lågt, medel eller högt CO2-pris jämfört med weighted average cost of capital (WACC).</p>
             <ResponsiveContainer width="100%" height={300}>
-                <ComposedChart
+                <BarChart
                     width={500}
                     height={300}
                     data={data}
@@ -74,17 +38,16 @@ const DecisionBasisWithGraph = (props) => {
                         right: 30,
                         left: 20,
                         bottom: 5,
-                    }}
-                >
+                    }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis xAxisId={1} dataKey="name" />
-                    <XAxis xAxisId={2} hide={true} />
 
-                    <YAxis domain={[0, 30]} width={10} />
-                    <Bar xAxisId={1} dataKey="irr" fill="#2AA784" />
-                    <Line data={lineDdata} xAxisId={2} type="linear" dot={false} dataKey="wacc" stroke="#ccc" strokeWidth={3} strokeDasharray="3 3" />
-                    <Legend />
-                </ComposedChart>
+                    <XAxis dataKey="name" />
+                    <YAxis width={20} tickCount={3} domain={[datamin => (datamin < 0 ? datamin : 0), datamax => (datamax + 5)]} />
+                    <Bar dataKey="irr" fill="#2AA784" />
+                    <ReferenceLine y={10} stroke="#EC6161" strokeDasharray="3 3" >
+                        <Label fill='#EC6161' value="wacc" position="left" />
+                    </ReferenceLine>
+                </BarChart>
             </ResponsiveContainer>
         </div>
     );

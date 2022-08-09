@@ -173,6 +173,7 @@ class Params {
   calcVoter() {
     /*An attempt to give a value of voters economic satisfaction*/
     this.voters_carbon_burden = this.pol_price_carbon* (this.ind_ratio_carbon + this.transportation_emissions);
+
     this.voters_el_burden = this.price_el;
 
     const x = (this.voters_carbon_burden + this.voters_el_burden + this.svk_tax_penalty + 
@@ -471,4 +472,5 @@ function test() {
   }
 }
 
-test();
+// test();
+

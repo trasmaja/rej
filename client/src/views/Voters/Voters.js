@@ -8,7 +8,8 @@ import DecisionBasisWithGraph from '../../components/decisionBasisWithGraph/deci
 import DecisionBasisWithText from '../../components/decisionBasisWithText/decisionBasisWithText';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
 import SingleLineChart from '../../components/singleLineChart/singleLineChart';
-
+import EBITChart from '../../components/EBITChart/EBITChart';
+import TotalEmissionChart from '../../components/totalEmissionChart/totalEmissionChart';
 const Voters = (props) => {
     const vote = (decisionIndex, qIndex) => {
         props.socket.emit("vote", {
@@ -53,9 +54,9 @@ const Voters = (props) => {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
-                <LineChartComp propData={gameData.data} domain={[0,1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
-                <SingleLineChart propData={gameData.data} domain={[0,1]} dataKey="voters_economy" title="Skattetryck" />
-                <LineChartComp propData={gameData.data} domain={[0,0.4]} dataKey="ebit" progKey="ebitprog" title="Industrins lönsamhet" />
+                <TotalEmissionChart propData={gameData.data} domain={[0,1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
+                <SingleLineChart tick={false} propData={gameData.data} domain={[0,1]} dataKey="voters_economy" title="Skattetryck" />
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
                 <h2>Rösta på beslut</h2>
                 <p>Rating av politkernas jobb</p>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} />
@@ -65,7 +66,7 @@ const Voters = (props) => {
 
     return (
         <main>
-            <TimeLine turns={['2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
+            <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
             {mainBody}
         </main>
     );

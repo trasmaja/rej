@@ -62,7 +62,7 @@ const StamView = (props) => {
 
     return (
         <main>
-            <TimeLine turns={['2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
+            <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
             {mainBody}
         </main>
     );

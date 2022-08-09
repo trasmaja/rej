@@ -1,22 +1,19 @@
 import './lineChart.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Legend, Label } from 'recharts';
 
 const LineChartComp = (props) => {
     const { propData, dataKey, progKey, domain } = props;
-    const data = [{ turn: '2025', co2: 1, co2prog: 1, ebit: null, ebitprog: 0.10, totalCo2: 1, totalCo2prog: 1 }, { turn: '2030', co2: null, co2prog: 0.75, ebit: null, ebitprog: 0.10 , totalCo2: null, totalCo2prog: 0.75 }, { turn: '2035', co2: null, co2prog: 0.50, ebit: null, ebitprog: 0.10 , totalCo2: null, totalCo2prog: 0.50 }, { turn: '2040', co2: null, co2prog: 0.25, ebit: null, ebitprog: 0.10 , totalCo2: null, totalCo2prog: 0.25 }, { turn: '2045', co2: null, co2prog: 0, ebit: null, ebitprog: 0.10 , totalCo2: null, totalCo2prog: 0 }];
+    const data = [{ turn: '2022', co2: null, prog: 100, totalCo2: null, }, { turn: '2025', co2: null, prog: 80, totalCo2: null, }, { turn: '2030', co2: null, prog: 60, totalCo2: null, }, { turn: '2035', co2: null, prog: 40, totalCo2: null, }, { turn: '2040', co2: null, prog: 20, totalCo2: null, }, { turn: '2045', co2: null, prog: 0, totalCo2: null }];
     propData.forEach((element, index) => {
         // console.log(index, element)
-        if(element) {
-            if(element.ind_emissions) {
-                data[index].co2 = element.ind_emissions;
+        if (element != null) {
+            if (element.ind_emissions != null) {
+                data[index].co2 = Math.floor(element.ind_emissions * 100);
             }
-            if(element.ind_EBIT_marginal) {
-                data[index].ebit = element.ind_EBIT_marginal;
-            }
-            if(element.total_emissions) {
-                data[index].totalCo2 = element.total_emissions;
+            if (element.total_emissions != null) {
+                data[index].totalCo2 = Math.floor(element.total_emissions * 100);
             }
         }
     });
@@ -24,12 +21,12 @@ const LineChartComp = (props) => {
         <div className="wrapper-lineChart">
             <h3>{props.title}</h3>
             <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data} margin={{top: 10, right: 20, bottom: 10, left: 20}}>
-                    <Line type="linear" strokeWidth={3} stroke="#2AA784" dataKey={dataKey} />
-                    <Line type="linear" dataKey={progKey} stroke="#ccc" strokeWidth={3} strokeDasharray="3 3"  />
+                <LineChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
-                    <XAxis dataKey="turn" />
-                    <YAxis domain={domain} hide />
+                    <XAxis tickMargin={10} dataKey="turn" />
+                    <YAxis width={5} tickCount={2} domain={['dataMin', 'dataMax']} />
+                    <Line dot={false} type="linear" dataKey={"prog"} stroke="#ccc" strokeWidth={3} strokeDasharray="3 3" />
+                    <Line type="linear" strokeWidth={3} stroke="#2AA784" dataKey={dataKey} />
                 </LineChart>
             </ResponsiveContainer>
         </div>
