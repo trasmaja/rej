@@ -38,6 +38,7 @@ class Model {
       this.executeVotes();
       this.params.basicTurnCalculations();
       this.params.calcIrr();
+      this.params.calcVoter();
       const decisionsMade = {};
       this.sectors.forEach(sector => {
         decisionsMade[sector.name] = sector.getDecisionsMade(this.currentTurn-1);

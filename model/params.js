@@ -15,8 +15,8 @@ class Params {
     // Industry variables 
     this.ind_turn_ratio = null; // tells how much to replace current turn
     this.ind_lateness_penalty_factor = null; 
-      /*^penalty if forced to replace too much capital too quickly, late movers disadvantage - 
-      replacing 100 % with one turn to go comes at a cost*/
+      /* ^penalty if forced to replace too much capital too quickly, late movers disadvantage - 
+      replacing 100 % with one turn to go comes at a cost */
 
     this.ind_energy_consumtion = 100;
     this.ind_ratio_el = 0; // between 0-1
@@ -46,7 +46,7 @@ class Params {
       /* Twice the price of el: With a CO2-price of 550 kr/ton and emissions of 0.85 kr/kWh, that gives rise to a cost of 
       0.4675 kr/kWh for the carbon emissions alone. It's difficult to find what the industry pays for electricity but we've assumed it is 
       roughly within the same ball park. Here the CO2 cost and the cost of a underlying energysorce is combined into one variable. 
-      That's why we chose two times the price as a first approximation of the cost ratios.*/
+      That's why we chose two times the price as a first approximation of the cost ratios. */
     this.pol_CAPEX_reduction = 0; 
     this.transportation_emissions = 1; // emissions from transport sector
 
@@ -178,16 +178,17 @@ class Params {
   }
 
   calcVoter() {
-    /*An attempt to give a value of voters economic satisfaction*/
+    /* An attempt to give a value of voters economic satisfaction */
     this.voters_carbon_burden = this.pol_price_carbon* (this.ind_ratio_carbon + this.transportation_emissions);
     this.voters_el_burden = this.price_el;
 
-    var x = (this.voters_carbon_burden + this.voters_el_burden + this.svk_tax_penalty + 
+    let x = (this.voters_carbon_burden + this.voters_el_burden + this.svk_tax_penalty + 
       this.voters_tax_burden_sub + this.voters_tax_burden_ev) - Math.min(4, (this.voters_carbon_burden + 
       this.voters_el_burden + this.svk_tax_penalty + this.voters_tax_burden_sub + this.voters_tax_burden_ev));
     
     if (this.ind_EBIT_marginal < 0) {
-      var x = x + 2; // Industry goes badly and fires people
+      // var x = x + 2; // Industry goes badly and fires people
+      x += 2;
     }
     console.log(x)
     this.voters_economy = 1 - 1 / (1.7 + x**2); // a function that can take values [~0.4, 1)
@@ -231,30 +232,30 @@ class Params {
   }
 
   industry_electrify() {
-    /**Electrifies a proportion of previously dirty industry */
+    /** Electrifies a proportion of previously dirty industry */
     this.ind_ratio_el += this.ind_turn_ratio;
     this.ind_annuity += annuity(this.ind_CAPEX_turn_el - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el , WACC, 20);
     this.demand_el += this.ind_turn_ratio * this.ind_energy_consumtion;
   }
 
   industry_biofy() {
-    /**Exchanges dirty industrial processes with ones that rely on bio fuel */
+    /** Exchanges dirty industrial processes with ones that rely on bio fuel */
     this.ind_ratio_bio += this.ind_turn_ratio;
     this.ind_annuity += annuity(this.ind_CAPEX_turn_bio - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio, WACC, 20);
     this.demand_bio += this.ind_turn_ratio * this.ind_energy_consumtion;
   }
 
   // Todo addera oallkoera mängd till nästa runda 
-  //- Vad tänkte vi med denna ^ kommentar?
+  // - Vad tänkte vi med denna ^ kommentar?
   industry_RnD() {
-    /**Reduces future CAPEX requirements */
+    /* Reduces future CAPEX requirements */
     this.ind_CAPEX_base_bio *= (1 - 1/(7+7*this.ind_RnD**2)) // just some function that has a slope that increases the way i want it to
     this.ind_CAPEX_base_el *= (1 - 1/(7+7*this.ind_RnD**2))
     this.ind_RnD += 1;
   }
 
   industry_increase_energy_efficiency() {
-    /**Makes processes more effifiant and reduces industrial energy use */
+    /* Makes processes more effifiant and reduces industrial energy use */
     this.ind_energy_consumtion *= 0.9;
     this.ind_ratio_energieff += 0.05;
   }
@@ -263,7 +264,7 @@ class Params {
 
 // Policy functions
   policy_change_carbon_price(level) {
-    /*Constructs a tree of possible carbon prices which the player can ascend*/
+    /* Constructs a tree of possible carbon prices which the player can ascend */
     if (level === 1) {
       this.pol_price_carbon *= 1.3;
     } else if (level === 2) {
@@ -278,7 +279,7 @@ class Params {
   }
 
   policy_subsidies(level) {
-    /*Draft of subsidies function*/
+    /* Draft of subsidies function */
 
     // if (level === 1) {
     //   this.demand_bio *= 0.8;
@@ -384,5 +385,5 @@ function test() {
   }
 }
 
-test();
+// test();
 

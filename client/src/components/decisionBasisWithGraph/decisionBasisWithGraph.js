@@ -47,6 +47,9 @@ const DecisionBasisWithGraph = (props) => {
                     <ReferenceLine y={10} stroke="#EC6161" strokeDasharray="3 3" >
                         <Label fill='#EC6161' value="wacc" position="left" />
                     </ReferenceLine>
+                    <ReferenceLine y={0} stroke="#000" strokeDasharray="3 3" >
+                        <Label fill='#000' value="0" position="left" />
+                    </ReferenceLine>
                 </BarChart>
             </ResponsiveContainer>
         </div>
