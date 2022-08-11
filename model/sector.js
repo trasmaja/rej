@@ -77,8 +77,8 @@ export class Policy extends Sector {
         super("Policy", index, params);
         this.hello = 10;
         this.co2Vote = [0, 0, 0, 0, 0];
-        this.subVote = [0, 0, 0];
-        this.evVote = [0, 0, 0];
+        this.greenPackage = [0, 0, 0];
+        this.svk = [0, 0, 0];
     }
 
     vote(decisionIndex, question) {
@@ -86,27 +86,27 @@ export class Policy extends Sector {
         if(question === 0) {
             this.co2Vote[decisionIndex] += 1;
         } else if (question === 1) {
-            this.subVote[decisionIndex] += 1;
+            this.greenPackage[decisionIndex] += 1;
         } else if (question === 2) {
-            this.evVote[decisionIndex] += 1;
+            this.svk[decisionIndex] += 1;
         }
-        console.log(this.co2Vote, this.subVote, this.evVote);
+        console.log(this.co2Vote, this.greenPackage, this.svk);
     }
 
     resetVotes() {
         this.co2Vote = [0, 0, 0, 0, 0];
-        this.subVote = [0, 0, 0];
-        this.evVote = [0, 0, 0];
+        this.greenPackage = [0, 0, 0];
+        this.svk = [0, 0, 0];
     }
 
     executeVote() {
         const decisionIndexCo2 = 1 + indexOfMax(this.co2Vote);
-        const decisionIndexSub = 1 + indexOfMax(this.subVote);
-        const decisionIndexEv = 1 + indexOfMax(this.evVote);
+        const decisionIndexGreen = 1 + indexOfMax(this.greenPackage);
+        const decisionIndexSVK = 1 + indexOfMax(this.svk);
 
         this.params.policy_change_carbon_price(decisionIndexCo2);
-        this.params.policy_subsidies(decisionIndexSub);
-        this.params.policy_ev_premium(decisionIndexEv);
+        this.params.policy_green_package(decisionIndexGreen);
+        this.params.policy_svk_supply(decisionIndexSVK)
 
         let decisionString = "";
 
@@ -122,24 +122,24 @@ export class Policy extends Sector {
             decisionString += "minskade CO2-priset mycket, ";
         }
 
-        if(decisionIndexSub === 1) {
-            decisionString += "TODO, ";
+        if(decisionIndexGreen === 1) {
+            decisionString += "stort grön paket och";
         }
-        else if (decisionIndexSub === 2) {
-            decisionString += "TODO, ";
+        else if (decisionIndexGreen === 2) {
+            decisionString += "mellan grän paket och";
         }
-        else if (decisionIndexSub === 3) {
-            decisionString += "TODO, ";
+        else if (decisionIndexGreen === 3) {
+            decisionString += "litet grön paket och ";
         }
 
-        if(decisionIndexEv === 1) {
-            decisionString += "TODO.";
+        if(decisionIndexSVK === 1) {
+            decisionString += "byggde ut stamnätet mycket.";
         }
-        else if (decisionIndexEv === 2) {
-            decisionString += "TODO.";
+        else if (decisionIndexSVK === 2) {
+            decisionString += "byggde ut stamnätet lite.";
         }
-        else if (decisionIndexEv === 3) {
-            decisionString += "TODO.";
+        else if (decisionIndexSVK === 3) {
+            decisionString += "Behöll samma nivå i stamnätet";
         }
 
         this.decisionsMade.push(decisionString);
@@ -153,11 +153,11 @@ export class Policy extends Sector {
 
 }
 
-export class Stam extends Sector {
+export class Elco extends Sector {
     constructor(index, params) {
-        super("Stam", index, params);
+        super("Elco", index, params);
         this.hello = 10;
-        this.votesOnDecisions = [0, 0];
+        this.votesOnDecisions = [0, 0, 0];
     }
 
     vote(decisionIndex, question) {
@@ -166,17 +166,19 @@ export class Stam extends Sector {
     }
 
     resetVotes() {
-        this.votesOnDecisions = [0, 0];
+        this.votesOnDecisions = [0, 0, 0];
     }
 
     executeVote() {
         const decisionIndex = 1 + indexOfMax(this.votesOnDecisions);
-        this.params.svk_investing(decisionIndex);
+        this.params.elco_investing(decisionIndex);
         
         if(decisionIndex === 1) {
-            this.decisionsMade.push("investerade med hänsyn")
+            this.decisionsMade.push("valde att öka elproduktionen")
         } else if (decisionIndex === 2) {
-            this.decisionsMade.push("blitz-investerade")
+            this.decisionsMade.push("valde att bibehålla nuvarande elproduktion")
+        } else if (decisionIndex === 3) {
+            this.decisionsMade.push("valde att minska elproduktionen")
         }
         
     }

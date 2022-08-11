@@ -2,13 +2,13 @@ import './Home.css';
 import PropTypes from 'prop-types';
 import IndustryView from '../IndustryView/IndustryView';
 import PolicyView from '../PolicyView/PolicyView';
-import StamView from '../StamView/StamView';
+import ElcoView from '../ElcoView/ElcoView';
 import Voters from '../Voters/Voters';
 import React from 'react';
 
 const Home = (props) => {
     const { socket } = props;
-    const listOfSectors = ["Industrimagnat", "Politiker", "Stamnätsoperatör", "Väljare"]
+    const listOfSectors = ["Industrimagnat", "Politiker", "Elbolag", "Väljare"]
     const random = Math.floor(Math.random() * listOfSectors.length);
     const sectorParam = listOfSectors[random];
 
@@ -19,9 +19,9 @@ const Home = (props) => {
             return <main>
                 <PolicyView socket={socket} sectorName="Politiker" />
             </main>
-        case "Stamnätsoperatör":
+        case "Elbolag":
             return <main>
-                <StamView socket={socket} sectorName="Stamnätsoperatör" />
+                <ElcoView socket={socket} sectorName="Elbolag" />
             </main>
         case "Väljare":
             return <main>

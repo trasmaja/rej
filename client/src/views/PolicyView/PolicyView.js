@@ -21,8 +21,8 @@ const PolicyView = (props) => {
     }
 
     const co2dec = ["Höj mycket", "Höj lite", "Behåll nuvarande", "Sänk lite", "Sänk mycket"];
-    const subdec = ["Hög nivå", "Mellan nivå", "Låg nivå"];
-    const evdec = ["Hög nivå", "Mellan nivå", "Låg nivå"];
+    const greendec = ["Hög nivå", "Mellan nivå", "Låg nivå"];
+    const svkdec = ["Bygg ut mycket", "Bygg ut lite", "Behåll nuvarande"];
 
     const [gameData, setGameData] = useState(null);
 
@@ -63,10 +63,10 @@ const PolicyView = (props) => {
                 <h2>Rösta på beslut</h2>
                 <p>Vad vill ni göra med CO2 priest?</p>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} />
-                <p>Vad vill ni göra med subventioner?</p>
-                <DecisionVoteList vote={vote} qIndex={1} decisions={subdec} />
-                <p>Vad vill ni göra med EV-premier?</p>
-                <DecisionVoteList vote={vote} qIndex={2} decisions={evdec} />
+                <p>Vad vill ni göra med det gröna paketet?</p>
+                <DecisionVoteList vote={vote} qIndex={1} decisions={greendec} />
+                <p>Vad vill ni göra med stamnätet?</p>
+                <DecisionVoteList vote={vote} qIndex={2} decisions={svkdec} />
             </div>
         );
     }

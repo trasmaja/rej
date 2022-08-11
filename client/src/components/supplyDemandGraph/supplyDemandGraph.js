@@ -5,7 +5,7 @@ import { AreaChart, LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveCont
 
 const SupplyDemandGraph = (props) => {
     const { propData, dataKey, progKey, domain } = props;
-    const data = [{ turn: '2022', supply: null, demand: null }, { turn: '2025', supply: null, demand: null }, { turn: '2030', supply: null, demand: null }, { turn: '2035', supply: null, demand: null }, { turn: '2040', supply: null, demand: null }, { turn: '2045', supply: null, demand: null }];
+    const data = [{ turn: '2022', supply: null, demand: null, cap: null }, { turn: '2025', supply: null, demand: null, cap: null }, { turn: '2030', supply: null, demand: null, cap: null }, { turn: '2035', supply: null, demand: null, cap: null }, { turn: '2040', supply: null, demand: null, cap: null }, { turn: '2045', supply: null, demand: null, cap: null }];
     propData.forEach((element, index) => {
         // console.log(index, element)
         if (element != null) {
@@ -14,6 +14,9 @@ const SupplyDemandGraph = (props) => {
             }
             if (element.supply_el != null) {
                 data[index].supply = element.supply_el;
+            }
+            if (element.svk_cap != null) {
+                data[index].cap = element.svk_cap;
             }
         }
     });
@@ -27,6 +30,7 @@ const SupplyDemandGraph = (props) => {
                     <CartesianGrid stroke="#ccc" />
                     <Line name="Efterfrågan" type="linear" strokeWidth={3} stroke="#0094A3" dataKey={"demand"} />
                     <Line name="Utbud" type="linear" dataKey={"supply"} stroke="#EC6161" strokeWidth={3} />
+                    <Line name="Stamnätskapacitet" type="linear" dataKey={"cap"} stroke="#ebb434" strokeWidth={3} />
                     <Legend />
                 </LineChart>
             </ResponsiveContainer>

@@ -1,4 +1,4 @@
-import './StamView.css';
+import './ElcoView.css';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import TimeLine from '../../components/timeline/timeline';
@@ -9,7 +9,7 @@ import DecisionBasisWithGraph from '../../components/decisionBasisWithGraph/deci
 import DecisionBasisWithText from '../../components/decisionBasisWithText/decisionBasisWithText';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
 
-const StamView = (props) => {
+const ElcoView = (props) => {
     const vote = (decisionIndex, qIndex) => {
         props.socket.emit("vote", {
             sector: props.sectorName,
@@ -18,7 +18,7 @@ const StamView = (props) => {
         });
     }
 
-    const decisionList = ["Investera med hänsyn", "Blitz-investera"];
+    const decisionList = ["Bygg ut", "Behåll", "Skär ner"];
 
     const [gameData, setGameData] = useState(null);
 
@@ -54,6 +54,7 @@ const StamView = (props) => {
                 <h2>Nulägesrapport</h2>
                 <SupplyDemandGraph propData={gameData.data} domain={[80,200]}  title="Utbud och efterfrågan på el" />
                 <h2>Rösta på beslut</h2>
+                <p>Vad vill ni göra med elproduktionen?</p>
                 <DecisionVoteList vote={vote}  decisions={decisionList} />
 
             </div>
@@ -68,9 +69,9 @@ const StamView = (props) => {
     );
 }
 
-StamView.propTypes = {
+ElcoView.propTypes = {
     sectorName: PropTypes.string.isRequired,
     socket: PropTypes.object.isRequired
 }
 
-export default StamView;
+export default ElcoView;

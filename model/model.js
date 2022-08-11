@@ -1,6 +1,6 @@
 import { createRequire } from "module";
 import Params from './params.js';
-import { Industri, Policy, Stam, Voter } from "./sector.js";
+import { Industri, Policy, Elco, Voter } from "./sector.js";
 
 const require = createRequire(import.meta.url);
 const Finance = require("tvm-financejs");
@@ -24,7 +24,7 @@ class Model {
   addSectors() {
     this.sectors.push(new Industri(0, this.params));
     this.sectors.push(new Policy(1, this.params));
-    this.sectors.push(new Stam(2, this.params));
+    this.sectors.push(new Elco(2, this.params));
     this.sectors.push(new Voter(3, this.params));
   }
 
@@ -58,7 +58,7 @@ class Model {
     const nameToIndex = {
       "Industrimagnat": 0,
       "Politiker": 1,
-      "Stamnätsoperatör": 2,
+      "Elbolag": 2,
       "Väljare": 3,
     }
     const index = nameToIndex[sector];
