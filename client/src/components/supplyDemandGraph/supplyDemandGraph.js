@@ -9,22 +9,21 @@ const SupplyDemandGraph = (props) => {
     propData.forEach((element, index) => {
         // console.log(index, element)
         if (element != null) {
-            if (element.demand_el_cars != null && element.demand_el_ind != null) {
-                data[index].demand = element.demand_el_cars + element.demand_el_ind;
+            if (element.demand_el_total != null) {
+                data[index].demand = element.demand_el_total;
             }
-            if (element.supply_el != null) {
-                data[index].supply = element.supply_el;
+            if (element.supply_el_usable != null) {
+                data[index].supply = element.supply_el_usable;
             }
-            if (element.svk_cap) {
-                data[index].cap = element.svk_cap;
+            if (element.supply_el_cap) {
+                data[index].cap = element.supply_el_cap;
             }
 
         }
     });
     if (policy && data[turn]) {
-        if (propData[turn - 1].svk_cap_next[0] != null && propData[turn - 1].svk_cap != null) {
-            console.log("dadadadada")
-            data[turn].cap = propData[turn - 1].svk_cap + propData[turn - 1].svk_cap_next[0];
+        if (propData[turn - 1] != null) {
+            data[turn].cap = propData[turn - 1].supply_el_cap + propData[turn - 1].supply_el_cap_next[0];
 
         }
     }
