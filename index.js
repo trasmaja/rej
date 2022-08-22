@@ -63,42 +63,61 @@ app.use("/api", test.router);
 
 // Initialize model.
 // model.init(io);
-
 // Handle socket.io connections.
+const players = {};
+
 io.on("connection", (socket) => {
   const { session } = socket.handshake;
   session.socketID = socket.id;
   session.save((err) => {
     if (err) console.error(err);
     else console.debug(`Saved socketID: ${session.socketID}`);
-
-    socket.on("vote", (data) => {
-      // data={ sector: "industry", decisionIndex: 0 }
-      console.log("voted")
-      console.log(data)
-      model.incomingVote(data.sector, data.decisionIndex, data.question);
-    })
-
-    socket.on("getGameData", () => {
-      socket.emit("gameData", model.getGameData());
-    })
-
-    socket.on("endTurn", () => {
-      if (model.state === "playing") {
-        model.next();
-        io.emit("gameData", model.getGameData());
-      }
-    })
-
-    socket.on("startTurn", () => {
-      if (model.state === "presenting") {
-        model.next();
-        io.emit("gameData", model.getGameData());
-      }
-    })
-
-
   });
+
+  players[session.socketID] = model.getSectorForPlayer();
+  io.emit("adminGameData", model.getGameData());
+
+  socket.on("vote", (data) => {
+    // data={ sector: "industry", decisionIndex: 0 }
+    console.log("voted")
+    console.log(data)
+    model.incomingVote(data.sector, data.decisionIndex, data.question);
+  })
+
+  socket.on("getAdminGameData", () => {
+    socket.emit("adminGameData", model.getGameData());
+  })
+
+  socket.on("getGameData", () => {
+    socket.emit("gameData", model.getGameData());
+  })
+
+  socket.on("endTurn", () => {
+    if (model.state === "playing") {
+      model.next();
+      io.emit("gameData", model.getGameData());
+      io.emit("adminGameData", model.getGameData());
+    }
+  })
+
+  socket.on("startTurn", () => {
+    if (model.state === "presenting") {
+      model.next();
+      io.emit("gameData", model.getGameData());
+      io.emit("adminGameData", model.getGameData());
+    }
+  })
+
+  socket.on("getPlayerSector", () => {
+    socket.emit("playerSector", players[session.socketID]);
+  })
+
+  socket.on("disconnect", () => {
+    console.log("disconnected")
+    model.removePlayerSector(players[session.socketID]);
+    delete players[session.socketID];
+    io.emit("adminGameData", model.getGameData());
+  })
 
 });
 

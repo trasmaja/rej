@@ -4,15 +4,34 @@ import IndustryView from '../IndustryView/IndustryView';
 import PolicyView from '../PolicyView/PolicyView';
 import ElcoView from '../ElcoView/ElcoView';
 import Voters from '../Voters/Voters';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Home = (props) => {
     const { socket } = props;
     const listOfSectors = ["Industrimagnat", "Politiker", "Elbolag", "Väljare"]
-    const random = Math.floor(Math.random() * listOfSectors.length);
-    const sectorParam = listOfSectors[random];
+    // const random = 1//Math.floor(Math.random() * listOfSectors.length);
+    // const sectorParam = listOfSectors[random];
 
-    switch (sectorParam) {
+    const [sector, setSector] = useState(null);
+
+    useEffect(() => {
+        props.socket.emit("getPlayerSector");
+    }, []);
+
+    useEffect(() => {
+        props.socket.on("playerSector", index => {
+            console.log(index)
+            setSector(index);
+        });
+
+        return () => {
+            props.socket.off("playerSector");
+        }
+    })
+
+    console.log(listOfSectors[sector])
+    switch (listOfSectors[sector]) {
+    // switch ("Elbolag") {
         case "Industrimagnat":
             return <IndustryView socket={socket} sectorName="Industrimagnat" />
         case "Politiker":

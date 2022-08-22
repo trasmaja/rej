@@ -1,25 +1,32 @@
 import './supplyDemandGraph.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AreaChart, LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend } from 'recharts';
+import { ReferenceLine, Label, AreaChart, LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend } from 'recharts';
 
 const SupplyDemandGraph = (props) => {
-    const { propData, dataKey, progKey, domain } = props;
-    const data = [{ turn: '2022', supply: null, demand: null, cap: null }, { turn: '2025', supply: null, demand: null, cap: null }, { turn: '2030', supply: null, demand: null, cap: null }, { turn: '2035', supply: null, demand: null, cap: null }, { turn: '2040', supply: null, demand: null, cap: null }, { turn: '2045', supply: null, demand: null, cap: null }];
+    const { propData, turn, policy } = props;
+    const data = [{ turn: '2022', supply: null, demand: null, cap: null, usable_supply_el: null, }, { turn: '2025', supply: null, demand: null, cap: null, usable_supply_el: null, }, { turn: '2030', supply: null, demand: null, cap: null, usable_supply_el: null, }, { turn: '2035', supply: null, demand: null, cap: null, usable_supply_el: null, }, { turn: '2040', supply: null, demand: null, cap: null, usable_supply_el: null, }, { turn: '2045', supply: null, demand: null, cap: null, usable_supply_el: null, }];
     propData.forEach((element, index) => {
         // console.log(index, element)
         if (element != null) {
-            if (element.demand_el != null) {
-                data[index].demand = element.demand_el;
+            if (element.demand_el_total != null) {
+                data[index].demand = element.demand_el_total;
             }
-            if (element.supply_el != null) {
-                data[index].supply = element.supply_el;
+            if (element.supply_el_usable != null) {
+                data[index].supply = element.supply_el_usable;
             }
-            if (element.svk_cap != null) {
-                data[index].cap = element.svk_cap;
+            if (element.supply_el_cap) {
+                data[index].cap = element.supply_el_cap;
             }
+
         }
     });
+    if (policy && data[turn]) {
+        if (propData[turn - 1] != null) {
+            data[turn].cap = propData[turn - 1].supply_el_cap + propData[turn - 1].supply_el_cap_next[0];
+
+        }
+    }
     return (
         <div className="wrapper-lineChart">
             <h3>{props.title}</h3>
@@ -30,7 +37,7 @@ const SupplyDemandGraph = (props) => {
                     <CartesianGrid stroke="#ccc" />
                     <Line name="Efterfrågan" type="linear" strokeWidth={3} stroke="#0094A3" dataKey={"demand"} />
                     <Line name="Utbud" type="linear" dataKey={"supply"} stroke="#EC6161" strokeWidth={3} />
-                    <Line name="Stamnätskapacitet" type="linear" dataKey={"cap"} stroke="#ebb434" strokeWidth={3} />
+                    <Line name="Stamnätskapacitet" type="linear" dataKey={"cap"} stroke="#fcba03" strokeWidth={3} />
                     <Legend />
                 </LineChart>
             </ResponsiveContainer>
@@ -41,6 +48,8 @@ const SupplyDemandGraph = (props) => {
 SupplyDemandGraph.propTypes = {
     title: PropTypes.string.isRequired,
     domain: PropTypes.array.isRequired,
+    turn: PropTypes.number.isRequired,
+    policy: PropTypes.bool.isRequired,
     // socket: PropTypes.object.isRequired
 }
 

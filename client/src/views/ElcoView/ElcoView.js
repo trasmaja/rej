@@ -52,7 +52,7 @@ const ElcoView = (props) => {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
-                <SupplyDemandGraph propData={gameData.data} domain={[80,200]}  title="Utbud och efterfrågan på el" />
+                <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80,200]} turn={gameData.turn}  title="Elmarknaden" />
                 <h2>Rösta på beslut</h2>
                 <p>Vad vill ni göra med elproduktionen?</p>
                 <DecisionVoteList vote={vote}  decisions={decisionList} />

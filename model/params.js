@@ -3,7 +3,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { irr } = require('node-irr')
-const prompt = require("prompt-sync")({ sigint: true });
+// const prompt = require("prompt-sync")({ sigint: true });
 
 const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n)));
 const WACC = 0.1;
@@ -70,6 +70,7 @@ class Params {
     this.supply_el_cap_next = [0, 0];
     this.supply_el_potential = 110;
     this.demand_el_ind = 50;
+
     this.demand_el_cars = 0;
     this.demand_el_society = 90; // will be roughy constant during period so here constant
     
@@ -125,7 +126,7 @@ class Params {
     this.demand_el_total = this.demand_el_society + this.demand_el_cars + this.demand_el_ind;
     this.price_bio = Math.max(0.5, 1 + 4 * (this.demand_bio - this.supply_bio) / this.demand_bio);
 
-    
+
     // electric company variables
     this.supply_el_cap += this.supply_el_cap_next.shift()
     this.supply_el_usable = this.supply_el_potential > this.supply_el_cap ? this.supply_el_cap : this.supply_el_potential;
@@ -144,8 +145,8 @@ class Params {
     this.ind_premium = this.ind_premium_factor * (this.ind_ratio_el + this.ind_ratio_bio);
     this.ind_turn_ratio = this.ind_ratio_carbon / this.turns_to_go;
     this.ind_lateness_penalty_factor = 2 * Math.max(this.ind_turn_ratio + 0.75, 1) - 1 // applies a penalty when when turn ratio > 0.25
-    this.ind_CAPEX_base_el *= 0.9; 
-    this.ind_CAPEX_base_bio *= 0.9; 
+    this.ind_CAPEX_base_el *= 0.9;
+    this.ind_CAPEX_base_bio *= 0.9;
     this.ind_CAPEX_turn_el = this.ind_CAPEX_base_el * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
     this.ind_CAPEX_turn_bio = this.ind_CAPEX_base_bio * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
     this.ind_cost_energy = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
@@ -164,7 +165,6 @@ class Params {
     this.voters_dis_income_after_expenses = (this.voters_income - this.voters_costs_other 
       - this.voters_tax_burden - this.voters_el_burden);
     // console.log(this.voters_dis_income - 137760/12); // melelinkomst minut swedbanks uppskattade levnadskostnader inkl el och bil   
-    
     
     // Policy variables
     this.total_emissions = (this.ind_emissions + this.transportation_emissions) / 2;
@@ -219,8 +219,6 @@ class Params {
     this.ind_IRR_el.push(irr(irr_el_list_mid));
     this.ind_IRR_el.push(irr(irr_el_list_high));
   }
-
-
 
   calcCarCosts() {
     /** Cost of having a gasoline vs an electric car */
@@ -351,7 +349,7 @@ class Params {
       this.pol_CAPEX_reduction = 0.1;
       this.pol_el_car_reduction_factor = 0.9;
       this.voters_tax_burden = 0.25;
-  
+
     } else if (level === 3) {
       this.pol_CAPEX_reduction = 0;
       this.pol_el_car_reduction_factor = 1;
@@ -369,6 +367,8 @@ class Params {
     } else if (level === 3) {
       this.supply_el_cap_next.push(0);
     }
+    console.log(this.svk_cap)
+
   }
 
 
@@ -435,8 +435,5 @@ function test() {
     p.calcCarCosts();
     console.log(p);
 
-  }
-}
 
-test();
-
+// test();

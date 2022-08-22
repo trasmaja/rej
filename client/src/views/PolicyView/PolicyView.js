@@ -10,6 +10,7 @@ import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList
 import SingleLineChart from '../../components/singleLineChart/singleLineChart';
 import EBITChart from '../../components/EBITChart/EBITChart';
 import TotalEmissionChart from '../../components/totalEmissionChart/totalEmissionChart';
+import SupplyDemandGraph from '../../components/supplyDemandGraph/supplyDemandGraph';
 
 const PolicyView = (props) => {
     const vote = (decisionIndex, qIndex) => {
@@ -59,7 +60,7 @@ const PolicyView = (props) => {
                 <TotalEmissionChart propData={gameData.data} domain={[0,1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
                 <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
                 <SingleLineChart tick={true} propData={gameData.data} domain={[0,1]} dataKey="voters_rating" title="Approval rating" />
-
+                <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80,200]}  title="Elmarknaden" />
                 <h2>Rösta på beslut</h2>
                 <p>Vad vill ni göra med CO2 priest?</p>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} />
