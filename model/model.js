@@ -5,6 +5,14 @@ import { Industri, Policy, Elco, Voter } from "./sector.js";
 const require = createRequire(import.meta.url);
 const Finance = require("tvm-financejs");
 
+function indexOfSmallest(a) {
+  let lowest = 0;
+  for (let i = 1; i < a.length; i+=1) {
+   if (a[i] < a[lowest]) lowest = i;
+  }
+  return lowest;
+ }
+
 class Model {
   constructor() {
     this.financeCalcs = new Finance(); // not used atm
@@ -19,6 +27,21 @@ class Model {
     this.state = "playing"; // "playing" or "presenting"
 
     this.decisionsMade = [];
+
+    this.playerCount = [0, 0, 0, 0];
+  }
+
+  getSectorForPlayer() {
+    console.log("added player")
+    console.log(this.playerCount)
+    const sectorIndex = indexOfSmallest(this.playerCount);
+    this.playerCount[sectorIndex] += 1;
+    return sectorIndex;
+  }
+
+  removePlayerSector(sectorIndex) {
+    console.log("removed player")
+    this.playerCount[sectorIndex] -= 1;
   }
 
   addSectors() {
@@ -41,14 +64,14 @@ class Model {
       this.params.calcVoter();
       const decisionsMade = {};
       this.sectors.forEach(sector => {
-        decisionsMade[sector.name] = sector.getDecisionsMade(this.currentTurn-1);
+        decisionsMade[sector.name] = sector.getDecisionsMade(this.currentTurn - 1);
       })
       this.decisionsMade.push(decisionsMade);
       this.state = "presenting";
       console.log(this.decisionsMade);
     } else {
       this.currentTurn += 1;
-      this.dataForEachTurn[this.currentTurn-1] = Object.assign(Object.create(this.params), this.params);
+      this.dataForEachTurn[this.currentTurn - 1] = Object.assign(Object.create(this.params), this.params);
       this.resetVotes();
       this.state = "playing";
     }
@@ -71,7 +94,7 @@ class Model {
     }
     )
   }
-  
+
   executeVotes() {
     this.sectors.forEach(sector => {
       sector.executeVote();
@@ -85,6 +108,7 @@ class Model {
     data.state = this.state;
     data.data = this.dataForEachTurn;
     data.history = this.decisionsMade;
+    data.playerCount = this.playerCount;
     return data;
   }
 

@@ -14,18 +14,18 @@ export default function Admin(props) {
     const [gameData, setGameData] = useState(null);
 
     useEffect(() => {
-        props.socket.emit("getGameData");
+        props.socket.emit("getAdminGameData");
     }, []);
 
     useEffect(() => {
-        props.socket.on("gameData", gameData => {
+        props.socket.on("adminGameData", gameData => {
             console.log(gameData)
             setGameData(gameData);
         });
         window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
 
         return () => {
-            props.socket.off("gameData");
+            props.socket.off("adminGameData");
         }
     })
 
@@ -63,7 +63,7 @@ export default function Admin(props) {
                             <h3>Beslut</h3>
                             <p><span className="boldify">Industrin</span> {data.Industri}</p>
                             <p><span className="boldify">Politikerna</span> {data.Policy}</p>
-                            <p><span className="boldify">Stamnätsoperatörerna</span> {data.Stam}</p>
+                            <p><span className="boldify">Elbolagen</span> {data.Elco}</p>
                             <p><span className="boldify">Väljarna</span> {data.Voter}</p>
                         </div>
                         <div className="admin-main-rigth">
@@ -73,6 +73,28 @@ export default function Admin(props) {
                 </div>
             )
         })
+    }
+    let playerCounter = null;
+    if (gameData && gameData.playerCount) {
+        playerCounter = (<div className="admin-player-counter">
+            <div className="player-count-text-wrapper">
+                <p className="player-count-text">Industrin</p>
+                <p className="player-count-text boldify bounceAni">{gameData.playerCount[0]}</p>
+            </div>
+            <div className="player-count-text-wrapper">
+                <p className="player-count-text">Politikerna</p>
+                <p className="player-count-text boldify bounceAni">{gameData.playerCount[1]}</p>
+            </div>
+            <div className="player-count-text-wrapper">
+                <p className="player-count-text">Elbolagen </p>
+                <p className="player-count-text boldify bounceAni">{gameData.playerCount[2]}</p>
+            </div>
+            <div className="player-count-text-wrapper">
+                <p className="player-count-text">Väljarna </p>
+                <p className="player-count-text boldify bounceAni"> {gameData.playerCount[3]}</p>
+            </div>
+        </div >
+        )
     }
     return (
         <main className="admin">
@@ -88,6 +110,7 @@ export default function Admin(props) {
                     <Button className="top-button" variant="contained" onClick={() => handleClick(2)}>Påbörja spelrunda</Button>
                 </div>
             </div>
+            {playerCounter}
             {content}
         </main>
     );

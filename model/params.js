@@ -3,7 +3,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { irr } = require('node-irr')
-const prompt = require("prompt-sync")({ sigint: true });
+// const prompt = require("prompt-sync")({ sigint: true });
 
 const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n)));
 const WACC = 0.1;
@@ -59,7 +59,8 @@ class Params {
 
     // Electric grid (SVK) variables
     this.supply_el = 100;
-    this.svk_cap = 110;
+    // this.svk_cap = 110;
+    this.svk_cap = [110, null, null, null, null, null]
     this.usable_supply_el = null;
 
     // Voter variables
@@ -87,7 +88,7 @@ class Params {
     this.turns_to_go -= 1;
 
     // electric company variables
-    this.usable_supply_el = this.supply_el > this.svk_cap ? this.svk_cap : this.supply_el;
+    this.usable_supply_el = this.supply_el > this.svk_cap[this.turn] ? this.svk_cap[this.turn] : this.supply_el;
 
     // Market variables
     if (4 * this.price_el > this.price_bio) {
@@ -290,13 +291,30 @@ class Params {
 
   // politics change svk nätet
   policy_svk_supply(level) {
-    if (level === 1) {
-      this.svk_cap += 60
-    } else if (level === 2) {
-      this.svk_cap += 20
-    } else if (level === 3) {
-      this.svk_cap += 0
+    console.log("------------")
+    console.log(this.turn)
+    if (this.turn === 1) {
+      if (level === 1) {
+        this.svk_cap[1] = this.svk_cap[0] + 30
+        this.svk_cap[2] = this.svk_cap[0] + 60
+      } else if (level === 2) {
+        this.svk_cap[1] = this.svk_cap[0] + 20
+        this.svk_cap[2] = this.svk_cap[0] + 40
+      } else if (level === 3) {
+        this.svk_cap[1] = this.svk_cap[0] + 0
+        this.svk_cap[2] = this.svk_cap[0] + 0
+      }
+    } else if (this.turn > 1 && this.turn < 5) {
+      if (level === 1) {
+        this.svk_cap[this.turn + 1] = this.svk_cap[this.turn] + 30
+      } else if (level === 2) {
+        this.svk_cap[this.turn + 1] = this.svk_cap[this.turn] + 20
+      } else if (level === 3) {
+        this.svk_cap[this.turn + 1] = this.svk_cap[this.turn] + 0
+      }
     }
+    console.log(this.svk_cap)
+
   }
 
 
@@ -306,9 +324,9 @@ class Params {
       this.supply_el += 30; // double check so their is oppertunity for supply to be less than demand
     }
     else if (level === 2) {
-      this.supply_el += 0; 
+      this.supply_el += 0;
     } else if (level === 3) {
-      this.supply_el -= 30; 
+      this.supply_el -= 30;
     }
   }
 
@@ -324,40 +342,40 @@ class Params {
 export default Params;
 
 
-function test() {
-  const p = new Params();
-  console.log(p);
-  while (p.turns_to_go > 0) {
-    const carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "))
-    p.policy_change_carbon_price(carbon)
-    const ev = parseInt(prompt("Välj ev-subventionsnivå 1-3 (från ambitiös till inget): "))
-    p.policy_ev_premium(ev)
-    const sub = parseInt(prompt("Välj nivå för investeringsstöd till industrin 1-3 (från ambitiös till inget): "))
-    p.policy_subsidies(sub)
-    const svk = parseInt(prompt("Välj investeringsnivå för elbolag 1-2: "))
-    p.elco_investing(svk)
-    const tak = parseInt(prompt("Välj investeringsnivå för stamnät 1-3: "))
-    p.policy_svk_supply(tak)
-    const ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "))
-    if (ind === 1) {
-      p.industry_electrify()
-    } else if (ind === 2) {
-      p.industry_biofy()
-    } else if (ind === 3) {
-      p.industry_RnD()
-    } else if (ind === 4) {
-      p.industry_increase_energy_efficiency()
-    }
-    // const vote = parseInt(prompt("Voters vote [0, 1]: "))
-    // p.voters_rate_policy(vote)
+// function test() {
+//   const p = new Params();
+//   console.log(p);
+//   while (p.turns_to_go > 0) {
+//     const carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "))
+//     p.policy_change_carbon_price(carbon)
+//     const ev = parseInt(prompt("Välj ev-subventionsnivå 1-3 (från ambitiös till inget): "))
+//     p.policy_ev_premium(ev)
+//     const sub = parseInt(prompt("Välj nivå för investeringsstöd till industrin 1-3 (från ambitiös till inget): "))
+//     p.policy_subsidies(sub)
+//     const svk = parseInt(prompt("Välj investeringsnivå för elbolag 1-2: "))
+//     p.elco_investing(svk)
+//     const tak = parseInt(prompt("Välj investeringsnivå för stamnät 1-3: "))
+//     p.policy_svk_supply(tak)
+//     const ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "))
+//     if (ind === 1) {
+//       p.industry_electrify()
+//     } else if (ind === 2) {
+//       p.industry_biofy()
+//     } else if (ind === 3) {
+//       p.industry_RnD()
+//     } else if (ind === 4) {
+//       p.industry_increase_energy_efficiency()
+//     }
+//     // const vote = parseInt(prompt("Voters vote [0, 1]: "))
+//     // p.voters_rate_policy(vote)
 
-    p.basicTurnCalculations();
-    p.calcIrr();
-    p.calcVoter();
-    console.log(p);
+//     p.basicTurnCalculations();
+//     p.calcIrr();
+//     p.calcVoter();
+//     console.log(p);
 
-  }
-}
+//   }
+// }
 
 // test();
 

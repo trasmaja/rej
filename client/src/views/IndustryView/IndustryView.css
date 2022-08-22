@@ -1,5 +1,7 @@
 .wrapper-currentStatus {
-    margin: 15px;
+    margin: auto;
+    max-width: 600px;
+    padding: 15px;
 }
 .wrapper-currentStatus h2{
     font-size: min(10vw, 36px);
