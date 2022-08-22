@@ -3,9 +3,9 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { irr } = require('node-irr')
-// const prompt = require("prompt-sync")({ sigint: true });
+const prompt = require("prompt-sync")({ sigint: true });
 
-const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n)));
+const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n))); // annuity function for industry money lending
 const WACC = 0.1;
 class Params {
   constructor() {
@@ -23,8 +23,8 @@ class Params {
     this.ind_ratio_bio = 0; // between 0-1
     this.ind_ratio_energieff = 0; // some emissions can be cut by using energy more effective
     this.ind_ratio_carbon = 1; // starts with 100 %
-    this.ind_CAPEX_base_el = 0.7 * 3000 / 0.9; // cost of reinvesting 100 % of capital
-    this.ind_CAPEX_base_bio = 2000 / 0.9;
+    this.ind_CAPEX_base_el = 2100 / 0.95; // cost of reinvesting 100 % of capital
+    this.ind_CAPEX_base_bio = 2000 / 0.95;
     this.ind_CAPEX_turn_el = null; // cost of investment a given turn
     this.ind_CAPEX_turn_bio = null;
     this.ind_annuity = 0; // accumulated annuity from investments
@@ -41,7 +41,7 @@ class Params {
     // this.ind_bio_demand = 55; // TWh
     // this.ind_carbon_demand = 27; // TWh
     // this.ind_emissions_2019 = 15; // miljoner ton CO2-ekvivalenter
-    // this.ind_dirty_factor = 0.5555; // = 15 miljoner ton CO2-ekvivalenter / 27 TWh. Inte helt realistisk siffra men ändå nåt som funkar
+    // this.ind_dirty_factor = 0.5555; // = 15 miljoner ton CO2-ekvivalenter / 27 TWh
     // this.ind_emissions_in_nr = this.ind_carbon_demand * this.ind_dirty_factor; // miljoner ton CO2-ekvivalenter
 
 
@@ -56,7 +56,7 @@ class Params {
     0.4675 kr/kWh for the carbon emissions alone. It's difficult to find what the industry pays for electricity but we've assumed it is 
     roughly within the same ball park. Here the CO2 cost and the cost of a underlying energysorce is combined into one variable. 
     That's why we chose two times the price as a first approximation of the cost ratios. */
-    this.pol_CAPEX_reduction = 0;
+    this.pol_CAPEX_reduction_factor = 1;
     this.pol_el_car_reduction_factor = 1; 
 
     this.demand_bio = 55;
@@ -68,7 +68,7 @@ class Params {
     // Electric company and electric grid variables
     this.supply_el_cap = 150;
     this.supply_el_cap_next = [0, 0];
-    this.supply_el_potential = 110;
+    this.supply_el_potential = 130;
     this.demand_el_ind = 50;
 
     this.demand_el_cars = 0;
@@ -78,7 +78,6 @@ class Params {
     this.supply_el_usable = null;
     this.price_el = null;
 
-    this.elco_excess_supply = 0;
     this.elco_income = null;
     this.elco_cost = null;
     this.elco_EBIT_margin = null;
@@ -131,11 +130,14 @@ class Params {
     this.supply_el_cap += this.supply_el_cap_next.shift()
     this.supply_el_usable = this.supply_el_potential > this.supply_el_cap ? this.supply_el_cap : this.supply_el_potential;
 
-    this.price_el = Math.max(0.1, 1 + 1 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total);
+    const x = 1 + 1 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total;
+    console.log(x)
+    this.price_el = x < 0.896 ? 0.05 * x + 0.5 : 6*x**2 - 7*x +2; // test på en mer realistisk prisfunktion (hockeyklubba-funktion) men den blir kanske för volatil
+    
+    // this.price_el = Math.max(0.1, 1 + 5 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total); // ursprungliga prisekvationen
 
-    this.elco_excess_supply = 2 * (Math.max(this.supply_el_potential - this.supply_el_cap, 0));
     this.elco_income = Math.log(1.1 * (this.demand_el_total * this.price_el));
-    this.elco_cost = Math.log(1 * (this.supply_el_usable + this.elco_excess_supply));
+    this.elco_cost = Math.log(1 * this.supply_el_potential);
     this.elco_EBIT_margin = 0.08 + (this.elco_income - this.elco_cost) / this.elco_income;
 
 
@@ -145,11 +147,11 @@ class Params {
     this.ind_premium = this.ind_premium_factor * (this.ind_ratio_el + this.ind_ratio_bio);
     this.ind_turn_ratio = this.ind_ratio_carbon / this.turns_to_go;
     this.ind_lateness_penalty_factor = 2 * Math.max(this.ind_turn_ratio + 0.75, 1) - 1 // applies a penalty when when turn ratio > 0.25
-    this.ind_CAPEX_base_el *= 0.9;
-    this.ind_CAPEX_base_bio *= 0.9;
+    this.ind_CAPEX_base_el *= 0.95; // technical advances outside of the model
+    this.ind_CAPEX_base_bio *= 0.95;
     this.ind_CAPEX_turn_el = this.ind_CAPEX_base_el * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
     this.ind_CAPEX_turn_bio = this.ind_CAPEX_base_bio * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
-    this.ind_cost_energy = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
+    this.ind_cost_energy = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) + // har problem då höjning i elpriset inte påverkar industrin innan de investerat nåt i el. Ej realistiskt 
       (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.price_carbon)) - this.ind_premium;
     this.ind_EBIT_margin = (this.ind_income - this.ind_cost_other - this.ind_cost_energy - this.ind_annuity) / this.ind_income;
     this.ind_emissions = this.ind_ratio_carbon * (this.ind_energy_consumtion / 100);
@@ -158,13 +160,14 @@ class Params {
     this.voters_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
     this.voters_svk_tax_penalty = this.demand_el_total + 40 < this.supply_el_cap ? 0.05 : 0; 
     this.voters_tax_burden = this.voters_income * (this.voters_tax_rate + this.voters_svk_tax_penalty); // tax burden for voters from subsedies
-    // this.voters_carbon_burden = null; // cost of emitting for consumers
+    this.voters_carbon_burden = 0.1 * this.price_carbon; // cost of emitting for consumers
     this.voters_el_burden = this.price_el * this.voters_el_consumtion;
         
     this.voters_dis_income = (this.voters_income - this.voters_tax_burden);
-    this.voters_dis_income_after_expenses = (this.voters_income - this.voters_costs_other 
+    this.voters_dis_income_after_expenses = (this.voters_income - this.voters_costs_other * (0.8 + this.voters_carbon_burden * this.ind_ratio_carbon)
       - this.voters_tax_burden - this.voters_el_burden);
-    // console.log(this.voters_dis_income - 137760/12); // melelinkomst minut swedbanks uppskattade levnadskostnader inkl el och bil   
+    console.log(0.8 + this.voters_carbon_burden * this.ind_ratio_carbon);
+    // console.log(this.voters_dis_income - 137760/12); // medelinkomst minus swedbanks uppskattade levnadskostnader inkl el och bil   
     
     // Policy variables
     this.total_emissions = (this.ind_emissions + this.transportation_emissions) / 2;
@@ -187,27 +190,27 @@ class Params {
     const ind_savings_el_mid = alt_energy_savings_el.shift();
     const ind_savings_el_high = alt_energy_savings_el.shift();
 
-    const irr_bio_list_low = [-this.ind_CAPEX_turn_bio + this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio];
+    const irr_bio_list_low = [-this.ind_CAPEX_turn_bio * this.pol_CAPEX_reduction_factor];
     for (let i = 0; i < 19; i += 1) {
       irr_bio_list_low.push(ind_savings_bio_low);
     }
-    const irr_bio_list_mid = [-this.ind_CAPEX_turn_bio + this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio];
+    const irr_bio_list_mid = [-this.ind_CAPEX_turn_bio * this.pol_CAPEX_reduction_factor];
     for (let i = 0; i < 19; i += 1) {
       irr_bio_list_mid.push(ind_savings_bio_mid);
     }
-    const irr_bio_list_high = [-this.ind_CAPEX_turn_bio + this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio];
+    const irr_bio_list_high = [-this.ind_CAPEX_turn_bio * this.pol_CAPEX_reduction_factor];
     for (let i = 0; i < 19; i += 1) {
       irr_bio_list_high.push(ind_savings_bio_high);
     }
-    const irr_el_list_low = [-this.ind_CAPEX_turn_el + this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el];
+    const irr_el_list_low = [-this.ind_CAPEX_turn_el * this.pol_CAPEX_reduction_factor];
     for (let i = 0; i < 19; i += 1) {
       irr_el_list_low.push(ind_savings_el_low);
     }
-    const irr_el_list_mid = [-this.ind_CAPEX_turn_el + this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el];
+    const irr_el_list_mid = [-this.ind_CAPEX_turn_el * this.pol_CAPEX_reduction_factor];
     for (let i = 0; i < 19; i += 1) {
       irr_el_list_mid.push(ind_savings_el_mid);
     }
-    const irr_el_list_high = [-this.ind_CAPEX_turn_el + this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el];
+    const irr_el_list_high = [-this.ind_CAPEX_turn_el * this.pol_CAPEX_reduction_factor];
     for (let i = 0; i < 19; i += 1) {
       irr_el_list_high.push(ind_savings_el_high);
     }
@@ -291,40 +294,48 @@ class Params {
     /** Electrifies a proportion of previously dirty industry */
 
     this.ind_ratio_el += procentage * this.ind_turn_ratio;
-    this.ind_annuity += annuity(this.ind_CAPEX_turn_el * procentage - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el * procentage, WACC, 20);
+    this.ind_annuity += annuity(procentage * this.ind_CAPEX_turn_el * this.pol_CAPEX_reduction_factor, WACC, 20);
     this.demand_el_ind += 1.5 * this.ind_turn_ratio * this.ind_energy_consumtion * procentage;
-    console.log(procentage * this.ind_turn_ratio, annuity(this.ind_CAPEX_turn_el * procentage - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el * procentage, WACC, 20),
+    
+    console.log(procentage * this.ind_turn_ratio, annuity(procentage * this.ind_CAPEX_turn_el * this.pol_CAPEX_reduction_factor, WACC, 20),
     1.5 * this.ind_turn_ratio * this.ind_energy_consumtion * procentage)
+  
   }
 
   industry_biofy(procentage) {
     /** Exchanges dirty industrial processes with ones that rely on bio fuel */
     this.ind_ratio_bio += procentage * this.ind_turn_ratio;
-    this.ind_annuity += annuity(this.ind_CAPEX_turn_bio * procentage - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio * procentage, WACC, 20);
+    this.ind_annuity += annuity(procentage * this.ind_CAPEX_turn_bio * this.pol_CAPEX_reduction_factor, WACC, 20);
     this.demand_bio += this.ind_turn_ratio * this.ind_energy_consumtion * procentage;
-    console.log(procentage * this.ind_turn_ratio, annuity(this.ind_CAPEX_turn_bio * procentage - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio * procentage, WACC, 20), 
+    
+    console.log(procentage * this.ind_turn_ratio, annuity(procentage * this.ind_CAPEX_turn_bio *  this.pol_CAPEX_reduction_factor, WACC, 20), 
     this.ind_turn_ratio * this.ind_energy_consumtion * procentage)
+  
   }
 
   industry_RnD(procentage) {
     /* Reduces future CAPEX requirements */
     this.ind_CAPEX_base_bio *= (1 - 1 * procentage / (5 + 1 * (procentage * this.ind_RnD) ** 2)) // just some function that makes the marginal utility of this function decrease
     this.ind_CAPEX_base_el *= (1 - 1 * procentage / (5 + 1 * (procentage * this.ind_RnD) ** 2))
+    
     console.log((1 - 1 * procentage / (5 + 1 * (procentage * this.ind_RnD) ** 2)))
     this.ind_RnD += procentage * 1;
+  
   }
 
   industry_increase_energy_efficiency(procentage) {
     /* Makes processes more effifiant and reduces industrial energy use */
-    this.ind_energy_consumtion *= ((1 - procentage)* 0.1 + 0.9);
+    this.ind_energy_consumtion *= (1 - procentage) * 0.1 + 0.9;
     this.ind_ratio_energieff += procentage * 0.075;
+
+    console.log((1 - procentage)* 0.1 + 0.9)
   }
 
 
 
   // Policy functions
   policy_change_carbon_price(level) {
-    /* Constructs a tree of possible carbon prices which the player can ascend */
+    /* Constructs a tree of possible carbon prices which the player can make her way through */
     if (level === 1) {
       this.price_carbon *= 1.3;
     } else if (level === 2) {
@@ -332,26 +343,26 @@ class Params {
     } else if (level === 3) {
       this.price_carbon *= 1;
     } else if (level === 4) {
-      this.price_carbon *= 0.85;
+      this.price_carbon /= 1.15;
     } else if (level === 5) {
-      this.price_carbon *= 0.7;
+      this.price_carbon /= 1.3;
     }
   }
 
   // Nya kombinerade sub och ev premie
   policy_green_package(level) {
     if (level === 1) {
-      this.pol_CAPEX_reduction = 0.2;
+      this.pol_CAPEX_reduction_factor = 0.8;
       this.pol_el_car_reduction_factor = 0.8;
       this.voters_tax_burden = 0.5;
       // todo nåt med elbilar
     } else if (level === 2) {
-      this.pol_CAPEX_reduction = 0.1;
+      this.pol_CAPEX_reduction_factor = 0.9;
       this.pol_el_car_reduction_factor = 0.9;
       this.voters_tax_burden = 0.25;
 
     } else if (level === 3) {
-      this.pol_CAPEX_reduction = 0;
+      this.pol_CAPEX_reduction_factor = 1;
       this.pol_el_car_reduction_factor = 1;
       this.voters_tax_burden = 0;
 
@@ -367,8 +378,6 @@ class Params {
     } else if (level === 3) {
       this.supply_el_cap_next.push(0);
     }
-    console.log(this.svk_cap)
-
   }
 
 
@@ -435,5 +444,7 @@ function test() {
     p.calcCarCosts();
     console.log(p);
 
+  }
+}
 
-// test();
+test();
