@@ -35,33 +35,46 @@ class Params {
     this.ind_RnD = 0; // # of times RnD has been used
     this.ind_premium = null; // green premium paid to companies
 
+    /** Funderar på om man ska göra en mer sofistikerad model över energianvändningen som utgår från faktiska nivåer och siktar mot 
+     * troliga scenarion 2045. Siffror från naturvårdsverket */
+    // this.ind_el_demand = 50; // TWh
+    // this.ind_bio_demand = 55; // TWh
+    // this.ind_carbon_demand = 27; // TWh
+    // this.ind_emissions_2019 = 15; // miljoner ton CO2-ekvivalenter
+    // this.ind_dirty_factor = 0.5555; // = 15 miljoner ton CO2-ekvivalenter / 27 TWh. Inte helt realistisk siffra men ändå nåt som funkar
+    // this.ind_emissions_in_nr = this.ind_carbon_demand * this.ind_dirty_factor; // miljoner ton CO2-ekvivalenter
+
+
     this.ind_IRR_bio = null; // the following parameters are shown to player
     this.ind_IRR_el = null;
     this.ind_EBIT_margin = null;
     this.ind_emissions = null;
 
     // Policy and bio variables
-    this.pol_price_carbon = 2;
+    this.price_carbon = 2;
     /* Twice the price of el: With a CO2-price of 550 kr/ton and emissions of 0.85 kr/kWh, that gives rise to a cost of 
     0.4675 kr/kWh for the carbon emissions alone. It's difficult to find what the industry pays for electricity but we've assumed it is 
     roughly within the same ball park. Here the CO2 cost and the cost of a underlying energysorce is combined into one variable. 
     That's why we chose two times the price as a first approximation of the cost ratios. */
     this.pol_CAPEX_reduction = 0;
+    this.pol_el_car_reduction_factor = 1; 
 
-    this.demand_bio = 100;
-    this.supply_bio = 100;
+    this.demand_bio = 55;
+    this.supply_bio = 55;
 
     this.price_bio = null;
     this.total_emissions = null;
 
     // Electric company and electric grid variables
-    this.supply_el = 100;
-    this.svk_cap = 140;
-    this.svk_cap_next = [0, 0];
-    this.usable_supply_el = null;
-    this.demand_el_ind = 100;
+    this.supply_el_cap = 150;
+    this.supply_el_cap_next = [0, 0];
+    this.supply_el_potential = 140;
+    this.demand_el_ind = 50;
     this.demand_el_cars = 0;
-    this.total_demand_el = null;
+    this.demand_el_society = 90; // will be roughy constant during period so here constant
+    
+    this.demand_el_total = null;
+    this.supply_el_usable = null;
     this.price_el = null;
 
     this.elco_excess_supply = 0;
@@ -74,22 +87,27 @@ class Params {
     this.transportation_emissions = 1; // emissions from transports
 
     this.voters_income = null;
-    this.voters_costs_other = (11480 - 3050 - 810) * 12; // från Swedbanks uppskattade levnadsårskostnader minus el och bil
+    this.voters_costs_other = (11480 - 3050 - 810); // Swedbanks uppskattade nödvändiga levnadsmånadskostnader minus el och bil
     this.voters_carbon_burden = null; // cost of emitting for consumers
     this.voters_tax_rate = 0.35;
-    this.svk_tax_penalty = null; // if SVK has over constructed 
+    this.voters_svk_tax_penalty = null; // if SVK has over constructed 
     this.voters_tax_burden = null; // tax burden for voters from subsedies
-    this.voters_el_consumtion = 15000; // kWh/year
+    this.voters_el_consumtion = 15000 / 12; // kWh/month
     this.voters_el_burden = null; 
-    this.voters_cost_car = null;
+    
+    this.voters_cost_car_el = null;
+    this.voters_cost_car_gas = null;
+  
     this.voters_dis_income = null; // income minus taxes
     this.voters_dis_income_after_expenses = null; // income minus taxes and other basic expenses
+    this.voters_dis_income_after_expenses_car_el = null;
+    this.voters_dis_income_after_expenses_car_gas = null;
 
     // For first turn, determines all dependent values
 
     this.basicTurnCalculations();
     this.calcIrr();
-    this.calcVoter();
+    this.calcCarCosts();
 
   }
 
@@ -102,22 +120,22 @@ class Params {
 
     // Market variables
     if (4 * this.price_el > this.price_bio) {
-      this.demand_bio += 10; // adds some market demand from things outside the model such as heavy transports
+      this.demand_bio += 5; // adds some market demand from things outside the model such as heavy transports
     }
-    this.total_demand_el = this.demand_el_cars + this.demand_el_ind;
+    this.demand_el_total = this.demand_el_society + this.demand_el_cars + this.demand_el_ind;
     this.price_bio = Math.max(0.5, 1 + 4 * (this.demand_bio - this.supply_bio) / this.demand_bio);
 
     
     // electric company variables
-    this.svk_cap += this.svk_cap_next.shift()
-    this.usable_supply_el = this.supply_el > this.svk_cap ? this.svk_cap : this.supply_el;
+    this.supply_el_cap += this.supply_el_cap_next.shift()
+    this.supply_el_usable = this.supply_el_potential > this.supply_el_cap ? this.supply_el_cap : this.supply_el_potential;
 
-    this.price_el = Math.max(0.1, 1 + 0.25 * (this.total_demand_el - this.usable_supply_el) / this.total_demand_el);
+    this.price_el = Math.max(0.1, 1 + 0.25 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total);
 
-    this.elco_excess_supply = 2 * (Math.max(this.supply_el - this.svk_cap, 0));
-    this.elco_income = Math.log(1.1 * (this.total_demand_el * this.price_el)); // gjort en ln-transformation bara för att EBIT inte skulle bli så volatil
-    this.elco_cost = Math.log(1 * (this.usable_supply_el + this.elco_excess_supply));
-    this.elco_EBIT_margin = (this.elco_income - this.elco_cost) / this.elco_income + 0.08;
+    this.elco_excess_supply = 2 * (Math.max(this.supply_el_potential - this.supply_el_cap, 0));
+    this.elco_income = Math.log(1.1 * (this.demand_el_total * this.price_el));
+    this.elco_cost = Math.log(1 * (this.supply_el_usable + this.elco_excess_supply));
+    this.elco_EBIT_margin = 0.08 + (this.elco_income - this.elco_cost) / this.elco_income;
 
 
 
@@ -131,24 +149,23 @@ class Params {
     this.ind_CAPEX_turn_el = this.ind_CAPEX_base_el * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
     this.ind_CAPEX_turn_bio = this.ind_CAPEX_base_bio * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
     this.ind_cost_energy = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
-      (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.pol_price_carbon)) - this.ind_premium;
+      (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.price_carbon)) - this.ind_premium;
     this.ind_EBIT_margin = (this.ind_income - this.ind_cost_other - this.ind_cost_energy - this.ind_annuity) / this.ind_income;
     this.ind_emissions = this.ind_ratio_carbon * (this.ind_energy_consumtion / 100);
 
     // Voters variables
-    this.voters_income = 325000 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
-    this.svk_tax_penalty = this.total_demand_el + 40 < this.svk_cap ? 0.05 : 0; // if 
-    this.voters_tax_burden = this.voters_income * (this.voters_tax_rate + this.svk_tax_penalty); // tax burden for voters from subsedies
-    this.voters_carbon_burden = null; // cost of emitting for consumers
+    this.voters_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
+    this.voters_svk_tax_penalty = this.demand_el_total + 40 < this.supply_el_cap ? 0.05 : 0; 
+    this.voters_tax_burden = this.voters_income * (this.voters_tax_rate + this.voters_svk_tax_penalty); // tax burden for voters from subsedies
+    // this.voters_carbon_burden = null; // cost of emitting for consumers
     this.voters_el_burden = this.price_el * this.voters_el_consumtion;
-    this.voters_cost_car = this.transportation_emissions * this.pol_price_carbon; // todo a lot better
-    
+        
     this.voters_dis_income = (this.voters_income - this.voters_tax_burden);
     this.voters_dis_income_after_expenses = (this.voters_income - this.voters_costs_other 
-      - this.voters_tax_burden - this.voters_el_burden - this.voters_cost_car);
-    console.log(this.voters_dis_income - 137760)
-
-
+      - this.voters_tax_burden - this.voters_el_burden);
+    console.log(this.voters_dis_income - 137760/12); // melelinkomst minut swedbanks uppskattade levnadskostnader inkl el och bil   
+    
+    
     // Policy variables
     this.total_emissions = (this.ind_emissions + this.transportation_emissions) / 2;
 
@@ -203,13 +220,40 @@ class Params {
     this.ind_IRR_el.push(irr(irr_el_list_high));
   }
 
-  calcVoter() {
-    /* An attempt to give a value of voters economic satisfaction */
+
+
+  calcCarCosts() {
+    /** Cost of having a gasoline vs an electric car */
+    const driving = 1500/12; // mil i månaden
+    const l_per_mil = 0.5; // liter/mil
+    const kWh_per_mil = 1.5; // kWh/mil
+
+    const gas_price = 15 + 3 * this.price_carbon; // kr per liter
+    const el_price = this.price_el; // kr per kWh
     
+    const cost_driving_el = el_price * kWh_per_mil * driving;
+    const cost_driving_gas = gas_price * l_per_mil * driving;
+    
+    const car_el = this.pol_el_car_reduction_factor * (2000*1.45 + 360 + 380 + 80 + 33 + 125); // cheap leasing cost + tires + taxes
+    const car_gas = 1500 + 360 + 380 + 80 + 33 + 125; // värdeminskning (lååågt räknat) + försäkring + service + skatt + besiktning + däck
+    
+    const cost_el = car_el + cost_driving_el;
+    const cost_gas = car_gas + cost_driving_gas;
+    
+    console.log('gas_price ', gas_price)
+    console.log('cost_driving_el ', cost_driving_el)
+    console.log('cost_driving_gas ', cost_driving_gas)
+    console.log('car_el ', car_el)
+    console.log('car_gas ', car_gas)
+    console.log('cost_el ', cost_el)
+    console.log('cost_gas ', cost_gas)
+    
+    this.voters_cost_car_el = cost_el;
+    this.voters_cost_car_gas = cost_gas;
+
+    this.voters_dis_income_after_expenses_car_el = this.voters_dis_income_after_expenses - this.voters_cost_car_el
+    this.voters_dis_income_after_expenses_car_gas = this.voters_dis_income_after_expenses - this.voters_cost_car_gas 
   }
-
-
-
 
   // Industry functions
   calc_alt_energy_cost_savings(el, bio) {
@@ -221,20 +265,20 @@ class Params {
 
     // alternative costs three scenarios depending on CO2-cost
     const alt_cost_low = this.ind_energy_consumtion * ((alt_ind_ratio_el * this.price_el) +
-      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.pol_price_carbon * 0.7)) - alt_ind_premium;
+      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.price_carbon * 0.7)) - alt_ind_premium;
 
     const alt_cost_mid = this.ind_energy_consumtion * ((alt_ind_ratio_el * this.price_el) +
-      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.pol_price_carbon)) - alt_ind_premium;
+      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.price_carbon)) - alt_ind_premium;
 
     const alt_cost_high = this.ind_energy_consumtion * ((alt_ind_ratio_el * this.price_el) +
-      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.pol_price_carbon * 1.3)) - alt_ind_premium;
+      (alt_ind_ratio_bio * this.price_bio) + (alt_ind_ratio_carbon * this.price_carbon * 1.3)) - alt_ind_premium;
 
     // current composition three CO2 scenarios
     const cost_low = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
-      (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.pol_price_carbon * 0.7)) - this.ind_premium;
+      (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.price_carbon * 0.7)) - this.ind_premium;
 
     const cost_high = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) +
-      (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.pol_price_carbon * 1.3)) - this.ind_premium;
+      (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.price_carbon * 1.3)) - this.ind_premium;
 
 
     const savings_low = cost_low - alt_cost_low
@@ -249,7 +293,7 @@ class Params {
     /** Electrifies a proportion of previously dirty industry */
     this.ind_ratio_el += this.ind_turn_ratio;
     this.ind_annuity += annuity(this.ind_CAPEX_turn_el - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el, WACC, 20);
-    this.demand_el_ind += 2 * this.ind_turn_ratio * this.ind_energy_consumtion;
+    this.demand_el_ind += 1.5 * this.ind_turn_ratio * this.ind_energy_consumtion;
   }
 
   industry_biofy() {
@@ -278,15 +322,15 @@ class Params {
   policy_change_carbon_price(level) {
     /* Constructs a tree of possible carbon prices which the player can ascend */
     if (level === 1) {
-      this.pol_price_carbon *= 1.3;
+      this.price_carbon *= 1.3;
     } else if (level === 2) {
-      this.pol_price_carbon *= 1.15;
+      this.price_carbon *= 1.15;
     } else if (level === 3) {
-      this.pol_price_carbon *= 1;
+      this.price_carbon *= 1;
     } else if (level === 4) {
-      this.pol_price_carbon *= 0.85;
+      this.price_carbon *= 0.85;
     } else if (level === 5) {
-      this.pol_price_carbon *= 0.7;
+      this.price_carbon *= 0.7;
     }
   }
 
@@ -294,14 +338,17 @@ class Params {
   policy_green_package(level) {
     if (level === 1) {
       this.pol_CAPEX_reduction = 0.2;
+      this.pol_el_car_reduction_factor = 0.8;
       this.voters_tax_burden = 0.5;
       // todo nåt med elbilar
     } else if (level === 2) {
       this.pol_CAPEX_reduction = 0.1;
+      this.pol_el_car_reduction_factor = 0.9;
       this.voters_tax_burden = 0.25;
   
     } else if (level === 3) {
       this.pol_CAPEX_reduction = 0;
+      this.pol_el_car_reduction_factor = 1;
       this.voters_tax_burden = 0;
 
     }
@@ -310,11 +357,11 @@ class Params {
   // politics change svk nätet
   policy_svk_supply(level) {
     if (level === 1) {
-      this.svk_cap_next.push(40);
+      this.supply_el_cap_next.push(50);
     } else if (level === 2) {
-      this.svk_cap_next.push(20);
+      this.supply_el_cap_next.push(25);
     } else if (level === 3) {
-      this.svk_cap_next.push(0);
+      this.supply_el_cap_next.push(0);
     }
   }
 
@@ -322,12 +369,12 @@ class Params {
   // SVK functions 
   elco_investing(level) {
     if (level === 1) {
-      this.supply_el += 40; // double check so their is oppertunity for supply to be less than demand
+      this.supply_el_potential += 40; // double check so their is oppertunity for supply to be less than demand
     }
     else if (level === 2) {
-      this.supply_el += 0; 
+      this.supply_el_potential += 0; 
     } else if (level === 3) {
-      this.supply_el -= 20; 
+      this.supply_el_potential -= 20; 
     }
   }
 
@@ -377,7 +424,7 @@ function test() {
 
     p.basicTurnCalculations();
     p.calcIrr();
-    p.calcVoter();
+    p.calcCarCosts();
     console.log(p);
 
   }
