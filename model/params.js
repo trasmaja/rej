@@ -23,7 +23,7 @@ class Params {
     this.ind_ratio_bio = 0; // between 0-1
     this.ind_ratio_energieff = 0; // some emissions can be cut by using energy more effective
     this.ind_ratio_carbon = 1; // starts with 100 %
-    this.ind_CAPEX_base_el = 3000 / 0.9; // cost of reinvesting 100 % of capital
+    this.ind_CAPEX_base_el = 0.7 * 3000 / 0.9; // cost of reinvesting 100 % of capital
     this.ind_CAPEX_base_bio = 2000 / 0.9;
     this.ind_CAPEX_turn_el = null; // cost of investment a given turn
     this.ind_CAPEX_turn_bio = null;
@@ -68,7 +68,7 @@ class Params {
     // Electric company and electric grid variables
     this.supply_el_cap = 150;
     this.supply_el_cap_next = [0, 0];
-    this.supply_el_potential = 140;
+    this.supply_el_potential = 110;
     this.demand_el_ind = 50;
     this.demand_el_cars = 0;
     this.demand_el_society = 90; // will be roughy constant during period so here constant
@@ -130,7 +130,7 @@ class Params {
     this.supply_el_cap += this.supply_el_cap_next.shift()
     this.supply_el_usable = this.supply_el_potential > this.supply_el_cap ? this.supply_el_cap : this.supply_el_potential;
 
-    this.price_el = Math.max(0.1, 1 + 0.25 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total);
+    this.price_el = Math.max(0.1, 1 + 1 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total);
 
     this.elco_excess_supply = 2 * (Math.max(this.supply_el_potential - this.supply_el_cap, 0));
     this.elco_income = Math.log(1.1 * (this.demand_el_total * this.price_el));
@@ -163,7 +163,7 @@ class Params {
     this.voters_dis_income = (this.voters_income - this.voters_tax_burden);
     this.voters_dis_income_after_expenses = (this.voters_income - this.voters_costs_other 
       - this.voters_tax_burden - this.voters_el_burden);
-    console.log(this.voters_dis_income - 137760/12); // melelinkomst minut swedbanks uppskattade levnadskostnader inkl el och bil   
+    // console.log(this.voters_dis_income - 137760/12); // melelinkomst minut swedbanks uppskattade levnadskostnader inkl el och bil   
     
     
     // Policy variables
@@ -240,13 +240,13 @@ class Params {
     const cost_el = car_el + cost_driving_el;
     const cost_gas = car_gas + cost_driving_gas;
     
-    console.log('gas_price ', gas_price)
-    console.log('cost_driving_el ', cost_driving_el)
-    console.log('cost_driving_gas ', cost_driving_gas)
-    console.log('car_el ', car_el)
-    console.log('car_gas ', car_gas)
-    console.log('cost_el ', cost_el)
-    console.log('cost_gas ', cost_gas)
+    // console.log('gas_price ', gas_price)
+    // console.log('cost_driving_el ', cost_driving_el)
+    // console.log('cost_driving_gas ', cost_driving_gas)
+    // console.log('car_el ', car_el)
+    // console.log('car_gas ', car_gas)
+    // console.log('cost_el ', cost_el)
+    // console.log('cost_gas ', cost_gas)
     
     this.voters_cost_car_el = cost_el;
     this.voters_cost_car_gas = cost_gas;
@@ -289,31 +289,37 @@ class Params {
     return [savings_low, savings_mid, savings_high];
   }
 
-  industry_electrify() {
+  industry_electrify(procentage) {
     /** Electrifies a proportion of previously dirty industry */
-    this.ind_ratio_el += this.ind_turn_ratio;
-    this.ind_annuity += annuity(this.ind_CAPEX_turn_el - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el, WACC, 20);
-    this.demand_el_ind += 1.5 * this.ind_turn_ratio * this.ind_energy_consumtion;
+
+    this.ind_ratio_el += procentage * this.ind_turn_ratio;
+    this.ind_annuity += annuity(this.ind_CAPEX_turn_el * procentage - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el * procentage, WACC, 20);
+    this.demand_el_ind += 1.5 * this.ind_turn_ratio * this.ind_energy_consumtion * procentage;
+    console.log(procentage * this.ind_turn_ratio, annuity(this.ind_CAPEX_turn_el * procentage - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_el * procentage, WACC, 20),
+    1.5 * this.ind_turn_ratio * this.ind_energy_consumtion * procentage)
   }
 
-  industry_biofy() {
+  industry_biofy(procentage) {
     /** Exchanges dirty industrial processes with ones that rely on bio fuel */
-    this.ind_ratio_bio += this.ind_turn_ratio;
-    this.ind_annuity += annuity(this.ind_CAPEX_turn_bio - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio, WACC, 20);
-    this.demand_bio += this.ind_turn_ratio * this.ind_energy_consumtion;
+    this.ind_ratio_bio += procentage * this.ind_turn_ratio;
+    this.ind_annuity += annuity(this.ind_CAPEX_turn_bio * procentage - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio * procentage, WACC, 20);
+    this.demand_bio += this.ind_turn_ratio * this.ind_energy_consumtion * procentage;
+    console.log(procentage * this.ind_turn_ratio, annuity(this.ind_CAPEX_turn_bio * procentage - this.pol_CAPEX_reduction * this.ind_CAPEX_turn_bio * procentage, WACC, 20), 
+    this.ind_turn_ratio * this.ind_energy_consumtion * procentage)
   }
 
-  industry_RnD() {
+  industry_RnD(procentage) {
     /* Reduces future CAPEX requirements */
-    this.ind_CAPEX_base_bio *= (1 - 1 / (7 + 7 * this.ind_RnD ** 2)) // just some function that makes the marginal utility of this function decrease
-    this.ind_CAPEX_base_el *= (1 - 1 / (7 + 7 * this.ind_RnD ** 2))
-    this.ind_RnD += 1;
+    this.ind_CAPEX_base_bio *= (1 - 1 * procentage / (5 + 1 * (procentage * this.ind_RnD) ** 2)) // just some function that makes the marginal utility of this function decrease
+    this.ind_CAPEX_base_el *= (1 - 1 * procentage / (5 + 1 * (procentage * this.ind_RnD) ** 2))
+    console.log((1 - 1 * procentage / (5 + 1 * (procentage * this.ind_RnD) ** 2)))
+    this.ind_RnD += procentage * 1;
   }
 
-  industry_increase_energy_efficiency() {
+  industry_increase_energy_efficiency(procentage) {
     /* Makes processes more effifiant and reduces industrial energy use */
-    this.ind_energy_consumtion *= 0.9;
-    this.ind_ratio_energieff += 0.05;
+    this.ind_energy_consumtion *= ((1 - procentage)* 0.1 + 0.9);
+    this.ind_ratio_energieff += procentage * 0.075;
   }
 
 
@@ -386,8 +392,10 @@ class Params {
 
   voters_electric_car(procentage) {
     /** Kanske kan modifieras så att den inte kan bli mindre än det största värde den tagit */
-    this.transportation_emissions = 1 - procentage;
-    this.demand_el_cars = 30 * (1 - this.transportation_emissions); // 30 TWh since thats roughly what it would take to electrify all cars
+    if (1 - procentage < this.transportation_emissions) {
+      this.transportation_emissions = 1 - procentage;
+      this.demand_el_cars = 30 * (1 - this.transportation_emissions); // 30 TWh since thats roughly what it would take to electrify all cars
+        }
   }
 
 }
@@ -407,20 +415,20 @@ function test() {
     p.policy_svk_supply(tak)
     const el = parseInt(prompt("Välj investeringsnivå för elbolag, höj (1), behåll (2), eller minska (3): "), 10)
     p.elco_investing(el)
-    const ind = parseInt(prompt("Industrin - 1: Elektrifiering, 2: Biofiering, 3: RnD, 4: Energieffektivisering: "), 10)
-    if (ind === 1) {
-      p.industry_electrify()
-    } else if (ind === 2) {
-      p.industry_biofy()
-    } else if (ind === 3) {
-      p.industry_RnD()
-    } else if (ind === 4) {
-      p.industry_increase_energy_efficiency()
-    }
+
+    const indel = parseFloat(prompt("Elektrifiering av industrin andel denna runda: "), 10)
+    p.industry_electrify(indel)
+    const indbio = parseFloat(prompt("Biofiering av Industrin andel denna runda: "), 10)
+    p.industry_biofy(indbio)
+    const indrnd = parseFloat(prompt("Hur mycket effort läggs på rnd: "), 10)
+    p.industry_RnD(indrnd)
+    const indee = parseFloat(prompt("Hur mycket effort läggs på energieffektivisering: "), 10)
+    p.industry_increase_energy_efficiency(indee)
     // const vote = parseFloat(prompt("Voters vote [0, 1]: "))
     // p.voters_rate_policy(vote)
-    const car = parseFloat(prompt("Hur många procent köper elbil? [0, 1]? "))
+    const car = parseFloat(prompt("Vilken andel köper elbil? "), 10)
     p.voters_electric_car(car)
+
 
     p.basicTurnCalculations();
     p.calcIrr();
