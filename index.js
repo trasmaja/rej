@@ -96,6 +96,7 @@ io.on("connection", (socket) => {
     if (model.state === "playing") {
       model.next();
       io.emit("gameData", model.getGameData());
+      io.emit("adminGameData", model.getGameData());
     }
   })
 
@@ -103,6 +104,7 @@ io.on("connection", (socket) => {
     if (model.state === "presenting") {
       model.next();
       io.emit("gameData", model.getGameData());
+      io.emit("adminGameData", model.getGameData());
     }
   })
 
