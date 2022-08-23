@@ -21,7 +21,7 @@ const SupplyDemandGraph = (props) => {
 
         }
     });
-    if (policy && data[turn]) {
+    if (policy && data[turn] && turn !== 1) {
         if (propData[turn - 1] != null) {
             data[turn].cap = propData[turn - 1].supply_el_cap + propData[turn - 1].supply_el_cap_next[0];
 

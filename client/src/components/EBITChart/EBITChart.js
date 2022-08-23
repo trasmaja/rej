@@ -10,8 +10,8 @@ const EBITChart = (props) => {
     propData.forEach((element, index) => {
         // console.log(index, element)
         if (element != null) {
-            if (element.ind_EBIT_marginal != null) {
-                data[index].ebit = Math.floor(element.ind_EBIT_marginal * 100);
+            if (element.ind_EBIT_margin != null) {
+                data[index].ebit = Math.floor(element.ind_EBIT_margin * 100);
             }
         }
     });
