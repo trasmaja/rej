@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 
 import test from "./controllers/test.controller.js";
 
-import model from "./model/model.js";
+import Model from "./model/model.js";
 
 const port = process.env.PORT || 8080;
 const app = express(); // Create express app.
@@ -65,6 +65,7 @@ app.use("/api", test.router);
 // model.init(io);
 // Handle socket.io connections.
 const players = {};
+let model = new Model();
 
 io.on("connection", (socket) => {
   const { session } = socket.handshake;
@@ -90,6 +91,13 @@ io.on("connection", (socket) => {
 
   socket.on("getGameData", () => {
     socket.emit("gameData", model.getGameData());
+  })
+
+  socket.on("resetGame", () => {
+    model = null;
+    model = new Model();
+    io.emit("gameData", model.getGameData());
+    io.emit("adminGameData", model.getGameData());
   })
 
   socket.on("endTurn", () => {
