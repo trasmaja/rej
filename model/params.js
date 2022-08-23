@@ -3,7 +3,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { irr } = require('node-irr')
-const prompt = require("prompt-sync")({ sigint: true });
+// const prompt = require("prompt-sync")({ sigint: true });
 
 const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n))); // annuity function for industry money lending
 const WACC = 0.1;
@@ -155,7 +155,11 @@ class Params {
       (this.ind_ratio_bio * this.price_bio) + (this.ind_ratio_carbon * this.price_carbon)) - this.ind_premium;
     this.ind_EBIT_margin = (this.ind_income - this.ind_cost_other - this.ind_cost_energy - this.ind_annuity) / this.ind_income;
     this.ind_emissions = this.ind_ratio_carbon * (this.ind_energy_consumtion / 100);
-
+    console.log("------")
+    console.log(this.ind_ratio_carbon)
+    console.log(this.ind_energy_consumtion)
+    console.log(this.ind_emissions)
+    
     // Voters variables
     this.voters_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
     this.voters_svk_tax_penalty = this.demand_el_total + 40 < this.supply_el_cap ? 0.05 : 0; 
@@ -412,39 +416,39 @@ class Params {
 export default Params;
 
 
-function test() {
-  const p = new Params();
-  console.log(p);
-  while (p.turns_to_go > 0) {
-    const carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "), 10)
-    p.policy_change_carbon_price(carbon)
-    const sub = parseInt(prompt("Välj nivå 1-3 (från ambitiös till inget) för en grön giv till företag och privatpersoner: "), 10)
-    p.policy_green_package(sub)
-    const tak = parseInt(prompt("Välj investeringsnivå för stamnät 1-3: "), 10)
-    p.policy_svk_supply(tak)
-    const el = parseInt(prompt("Välj investeringsnivå för elbolag, höj (1), behåll (2), eller minska (3): "), 10)
-    p.elco_investing(el)
+// function test() {
+//   const p = new Params();
+//   console.log(p);
+//   while (p.turns_to_go > 0) {
+//     const carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "), 10)
+//     p.policy_change_carbon_price(carbon)
+//     const sub = parseInt(prompt("Välj nivå 1-3 (från ambitiös till inget) för en grön giv till företag och privatpersoner: "), 10)
+//     p.policy_green_package(sub)
+//     const tak = parseInt(prompt("Välj investeringsnivå för stamnät 1-3: "), 10)
+//     p.policy_svk_supply(tak)
+//     const el = parseInt(prompt("Välj investeringsnivå för elbolag, höj (1), behåll (2), eller minska (3): "), 10)
+//     p.elco_investing(el)
 
-    const indel = parseFloat(prompt("Elektrifiering av industrin andel denna runda: "), 10)
-    p.industry_electrify(indel)
-    const indbio = parseFloat(prompt("Biofiering av Industrin andel denna runda: "), 10)
-    p.industry_biofy(indbio)
-    const indrnd = parseFloat(prompt("Hur mycket effort läggs på rnd: "), 10)
-    p.industry_RnD(indrnd)
-    const indee = parseFloat(prompt("Hur mycket effort läggs på energieffektivisering: "), 10)
-    p.industry_increase_energy_efficiency(indee)
-    // const vote = parseFloat(prompt("Voters vote [0, 1]: "))
-    // p.voters_rate_policy(vote)
-    const car = parseFloat(prompt("Vilken andel köper elbil? "), 10)
-    p.voters_electric_car(car)
+//     const indel = parseFloat(prompt("Elektrifiering av industrin andel denna runda: "), 10)
+//     p.industry_electrify(indel)
+//     const indbio = parseFloat(prompt("Biofiering av Industrin andel denna runda: "), 10)
+//     p.industry_biofy(indbio)
+//     const indrnd = parseFloat(prompt("Hur mycket effort läggs på rnd: "), 10)
+//     p.industry_RnD(indrnd)
+//     const indee = parseFloat(prompt("Hur mycket effort läggs på energieffektivisering: "), 10)
+//     p.industry_increase_energy_efficiency(indee)
+//     // const vote = parseFloat(prompt("Voters vote [0, 1]: "))
+//     // p.voters_rate_policy(vote)
+//     const car = parseFloat(prompt("Vilken andel köper elbil? "), 10)
+//     p.voters_electric_car(car)
 
 
-    p.basicTurnCalculations();
-    p.calcIrr();
-    p.calcCarCosts();
-    console.log(p);
+//     p.basicTurnCalculations();
+//     p.calcIrr();
+//     p.calcCarCosts();
+//     console.log(p);
 
-  }
-}
+//   }
+// }
 
-test();
+// test();
