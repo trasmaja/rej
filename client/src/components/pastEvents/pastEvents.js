@@ -22,9 +22,9 @@ const PastEvents = (props) => {
                 scrollButtons="auto"
                 aria-label="scrollable auto tabs example"
             >
-                <Tab label="2025" disabled={!(turn >= 0)}/>
-                <Tab label="2030" disabled={!(turn >= 1)}/>
-                <Tab label="2035" disabled={!(turn >= 2)}/>
+                <Tab label="2025" disabled={!(turn >= 0)} />
+                <Tab label="2030" disabled={!(turn >= 1)} />
+                <Tab label="2035" disabled={!(turn >= 2)} />
                 <Tab label="2040" disabled={!(turn >= 3)} />
                 <Tab label="2045" disabled={!(turn >= 4)} />
             </Tabs>
@@ -38,8 +38,7 @@ const PastEvents = (props) => {
 }
 
 PastEvents.propTypes = {
-    // title: PropTypes.string.isRequired
-    // socket: PropTypes.object.isRequired
+    turn: PropTypes.number.isRequired
 }
 
 export default PastEvents;

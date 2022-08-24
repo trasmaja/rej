@@ -4,8 +4,9 @@ import React from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend } from 'recharts';
 
 const CarCosts = (props) => {
-    const { propData, dataKey, progKey, domain } = props;
-    const data = [{ turn: '2022', carGas: null, carEl: null, }, { turn: '2025', carGas: null, carEl: null,}, { turn: '2030', carGas: null, carEl: null,}, { turn: '2035', carGas: null, carEl: null, }, { turn: '2040', carGas: null, carEl: null, }, { turn: '2045', carGas: null, carEl: null,  }];
+    const { propData, title } = props;
+    const data = [{ turn: '2022', carGas: null, carEl: null, }, { turn: '2025', carGas: null, carEl: null, }, { turn: '2030', carGas: null, carEl: null, }, { turn: '2035', carGas: null, carEl: null, }, { turn: '2040', carGas: null, carEl: null, }, { turn: '2045', carGas: null, carEl: null, }];
+
     propData.forEach((element, index) => {
         // console.log(index, element)
         if (element != null) {
@@ -17,9 +18,10 @@ const CarCosts = (props) => {
             }
         }
     });
+
     return (
         <div className="wrapper-lineChart">
-            <h3>{props.title}</h3>
+            <h3>{title}</h3>
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
@@ -29,7 +31,6 @@ const CarCosts = (props) => {
                     <Bar name="Kostnad elbil" type="linear" fill="#EC6161" dataKey={"carEl"} />
                     <Legend />
                 </BarChart>
-     
             </ResponsiveContainer>
         </div>
     );
@@ -38,7 +39,6 @@ const CarCosts = (props) => {
 CarCosts.propTypes = {
     title: PropTypes.string.isRequired,
     propData: PropTypes.array.isRequired,
-    // socket: PropTypes.object.isRequired
 }
 
 export default CarCosts;

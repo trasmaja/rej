@@ -5,6 +5,8 @@ import { ReferenceLine, Label, BarChart, Bar, XAxis, YAxis, CartesianGrid, Respo
 
 
 const DecisionBasisWithGraph = (props) => {
+    const { propData, title } = props;
+
     const data = [
         {
             name: 'låg',
@@ -20,13 +22,13 @@ const DecisionBasisWithGraph = (props) => {
         },
     ];
 
-    props.propData.forEach((element, index) => {
+    propData.forEach((element, index) => {
         data[index].irr = Math.floor(element * 100);
     });
 
     return (
         <div className="wrapper-decisionBasisWithGraph">
-            <h3>{props.title}</h3>
+            <h3>{title}</h3>
             <p>Internal rate of return (IRR) för investeringen givet ett lågt, medel eller högt CO2-pris jämfört med weighted average cost of capital (WACC).</p>
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart
@@ -57,8 +59,8 @@ const DecisionBasisWithGraph = (props) => {
 }
 
 DecisionBasisWithGraph.propTypes = {
+    propData: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired
-    // socket: PropTypes.object.isRequired
 }
 
 export default DecisionBasisWithGraph;

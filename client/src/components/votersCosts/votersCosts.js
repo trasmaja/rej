@@ -4,10 +4,10 @@ import React from 'react';
 import { Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart } from 'recharts';
 
 const VoterCosts = (props) => {
-    const { propData, dataKey, progKey, domain } = props;
-    const data = [{ turn: '2022', votersDisInc: null, votersTaxBurd: null, }, { turn: '2025', votersDisInc: null, votersTaxBurd: null,}, { turn: '2030', votersDisInc: null, votersTaxBurd: null,}, { turn: '2035', votersDisInc: null, votersTaxBurd: null, }, { turn: '2040', votersDisInc: null, votersTaxBurd: null, }, { turn: '2045', votersDisInc: null, votersTaxBurd: null,  }];
+    const { propData, title } = props;
+    const data = [{ turn: '2022', votersDisInc: null, votersTaxBurd: null, }, { turn: '2025', votersDisInc: null, votersTaxBurd: null, }, { turn: '2030', votersDisInc: null, votersTaxBurd: null, }, { turn: '2035', votersDisInc: null, votersTaxBurd: null, }, { turn: '2040', votersDisInc: null, votersTaxBurd: null, }, { turn: '2045', votersDisInc: null, votersTaxBurd: null, }];
+
     propData.forEach((element, index) => {
-        // console.log(index, element)
         if (element != null) {
             if (element.voters_tax_burden != null) {
                 data[index].votersTaxBurd = element.voters_tax_burden;
@@ -17,9 +17,10 @@ const VoterCosts = (props) => {
             }
         }
     });
+
     return (
         <div className="wrapper-lineChart">
-            <h3>{props.title}</h3>
+            <h3>{title}</h3>
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
@@ -37,7 +38,6 @@ const VoterCosts = (props) => {
 VoterCosts.propTypes = {
     title: PropTypes.string.isRequired,
     propData: PropTypes.array.isRequired,
-    // socket: PropTypes.object.isRequired
 }
 
 export default VoterCosts;

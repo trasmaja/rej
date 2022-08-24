@@ -8,14 +8,15 @@ import StepLabel from '@mui/material/StepLabel';
 
 
 const TimeLine = (props) => {
+    const { sectorName, turns, turn } = props;
     return (
         <div className="wrapper-timeline">
             <div className="wrapper-timeline-title">
-                <h2>{props.sectorName}</h2>
+                <h2>{sectorName}</h2>
             </div>
             <div className="wrapper-timeline-timeline">
-                <Stepper activeStep={props.turn} alternativeLabel>
-                    {props.turns.map((label, index) => {
+                <Stepper activeStep={turn} alternativeLabel>
+                    {turns.map((label, index) => {
                         const stepProps = {};
                         const labelProps = {};
                         return (
@@ -31,7 +32,9 @@ const TimeLine = (props) => {
 }
 
 TimeLine.propTypes = {
-    sectorName: PropTypes.string.isRequired
+    sectorName: PropTypes.string.isRequired,
+    turns: PropTypes.array.isRequired,
+    turn: PropTypes.node.isRequired,
 }
 
 export default TimeLine;
