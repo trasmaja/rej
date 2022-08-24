@@ -30,8 +30,8 @@ const Home = (props) => {
     })
 
     console.log(listOfSectors[sector])
-    switch (listOfSectors[sector]) {
-    // switch ("Elbolag") {
+    // switch (listOfSectors[sector]) {
+    switch ("Väljare") {
         case "Industrimagnat":
             return <IndustryView socket={socket} sectorName="Industrimagnat" />
         case "Politiker":
