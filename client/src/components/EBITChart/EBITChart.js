@@ -1,7 +1,7 @@
 import './EBITChart.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Legend, Label } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Label } from 'recharts';
 
 const EBITChart = (props) => {
     const { propData } = props;

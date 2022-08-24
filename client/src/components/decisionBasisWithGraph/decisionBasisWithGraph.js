@@ -1,7 +1,7 @@
 import './decisionBasisWithGraph.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ReferenceLine, Label, BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ReferenceLine, Label, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 
 const DecisionBasisWithGraph = (props) => {

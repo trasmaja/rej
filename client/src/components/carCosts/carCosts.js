@@ -1,7 +1,7 @@
 import './carCosts.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LineChart, Line, Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Legend, Label } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend } from 'recharts';
 
 const CarCosts = (props) => {
     const { propData, dataKey, progKey, domain } = props;

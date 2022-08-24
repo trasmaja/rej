@@ -1,7 +1,7 @@
 import './singleLineChart.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 const SingleLineChart = (props) => {
     const { propData, dataKey, progKey, domain } = props;

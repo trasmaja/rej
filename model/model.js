@@ -61,6 +61,7 @@ class Model {
       this.executeVotes();
       this.params.basicTurnCalculations();
       this.params.calcIrr();
+      this.params.calcCarCosts();
       // this.params.calcVoter();
       const decisionsMade = {};
       this.sectors.forEach(sector => {

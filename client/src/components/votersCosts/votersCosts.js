@@ -1,7 +1,7 @@
 import './votersCosts.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LineChart, Line, Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Legend, Label, BarChart } from 'recharts';
+import { Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart } from 'recharts';
 
 const VoterCosts = (props) => {
     const { propData, dataKey, progKey, domain } = props;

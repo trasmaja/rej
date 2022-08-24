@@ -2,11 +2,7 @@ import './ElcoView.css';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import TimeLine from '../../components/timeline/timeline';
-import LineChartComp from '../../components/lineChart/lineChart';
 import SupplyDemandGraph from '../../components/supplyDemandGraph/supplyDemandGraph';
-import PastEvents from '../../components/pastEvents/pastEvents';
-import DecisionBasisWithGraph from '../../components/decisionBasisWithGraph/decisionBasisWithGraph';
-import DecisionBasisWithText from '../../components/decisionBasisWithText/decisionBasisWithText';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
 
 const ElcoView = (props) => {

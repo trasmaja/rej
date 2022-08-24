@@ -94,8 +94,10 @@ io.on("connection", (socket) => {
   })
 
   socket.on("resetGame", () => {
+    const playerCountFromOldModel = model.playerCount;
     model = null;
     model = new Model();
+    model.playerCount = playerCountFromOldModel;
     io.emit("gameData", model.getGameData());
     io.emit("adminGameData", model.getGameData());
   })

@@ -7,9 +7,7 @@ import TotalEmissionChart from '../../components/totalEmissionChart/totalEmissio
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
-
 import rejlersLogo from './rejlers_logo.png';
-import cityLogo from './city.png';
 
 export default function Admin(props) {
     console.log(props)
@@ -76,10 +74,10 @@ export default function Admin(props) {
                     <div className="admin-main-flex">
                         <div className="admin-main-left">
                             <h3>Beslut</h3>
-                            <p><span className="boldify">Industrin</span> {data.Industri}</p>
-                            <p><span className="boldify">Politikerna</span> {data.Policy}</p>
-                            <p><span className="boldify">Elbolagen</span> {data.Elco}</p>
-                            <p><span className="boldify">Väljarna</span> {data.Voter}</p>
+                            <p><span className="boldify">Industrimagnat</span> {data.Industri}</p>
+                            <p><span className="boldify">Politiker</span> {data.Policy}</p>
+                            <p><span className="boldify">Elbolag</span> {data.Elco}</p>
+                            <p><span className="boldify">Väljare</span> {data.Voter}</p>
                         </div>
                         <div className="admin-main-rigth">
                             <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
