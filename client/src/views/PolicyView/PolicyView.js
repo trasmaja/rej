@@ -51,7 +51,7 @@ const PolicyView = (props) => {
     if (gameData && gameData.state === "presenting") {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <h2>Runda avslutad</h2>
+                <h2 className="centerText">Runda avslutad</h2>
             </div>);
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
@@ -73,10 +73,10 @@ const PolicyView = (props) => {
     }
 
     return (
-        <main>
+        <div>
             <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
             {mainBody}
-        </main>
+        </div>
     );
 }
 
