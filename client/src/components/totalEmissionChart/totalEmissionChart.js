@@ -5,15 +5,15 @@ import { Line, Area, ComposedChart, CartesianGrid, XAxis, YAxis, ResponsiveConta
 
 const TotalEmissionChart = (props) => {
     const { propData, title } = props;
-    const data = [{ turn: '2022', co2: 1, prog: 200, co2Trans: 1, }, { turn: '2025', co2: null, prog: 160, co2Trans: null, }, { turn: '2030', co2: null, prog: 120, co2Trans: null, }, { turn: '2035', co2: null, prog: 80, co2Trans: null, }, { turn: '2040', co2: null, prog: 40, co2Trans: null, }, { turn: '2045', co2: null, prog: 0, co2Trans: null }];
+    const data = [{ turn: '2022', co2: null, prog: 25, co2Trans: null, }, { turn: '2025', co2: null, prog: 20, co2Trans: null, }, { turn: '2030', co2: null, prog: 15, co2Trans: null, }, { turn: '2035', co2: null, prog: 10, co2Trans: null, }, { turn: '2040', co2: null, prog: 5, co2Trans: null, }, { turn: '2045', co2: null, prog: 0, co2Trans: null }];
 
     propData.forEach((element, index) => {
         if (element != null) {
-            if (element.ind_emissions != null) {
-                data[index].co2 = Math.floor(element.ind_emissions * 100);
+            if (element.emissions_ind != null) {
+                data[index].co2 = Math.floor(element.emissions_ind);
             }
-            if (element.transportation_emissions != null) {
-                data[index].co2Trans = Math.floor(element.transportation_emissions * 100);
+            if (element.emissions_transport != null) {
+                data[index].co2Trans = Math.floor(element.emissions_transport);
             }
         }
     });
@@ -25,7 +25,7 @@ const TotalEmissionChart = (props) => {
                 <ComposedChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
                     <XAxis tickMargin={10} dataKey="turn" />
-                    <YAxis width={5} tick={false} domain={[0, 200]} />
+                    <YAxis width={5} tick={false} domain={[0, 25]} />
                     <Line dot={false} name="Prognos" legend type="linear" dataKey={"prog"} stroke="#ccc" strokeWidth={3} strokeDasharray="3 3" />
                     <Area dot={true} name="Transportsektorn" stackId={1} strokeWidth={3} stroke="#0094A3" fill="#0094A3" dataKey={"co2Trans"} />
                     <Area dot={true} name="Industrisektorn" stackId={1} strokeWidth={3} stroke="#EC6161" fill="#EC6161" dataKey={"co2"} />

@@ -54,14 +54,14 @@ const Voters = (props) => {
     let mainBody;
 
     // Det som ska synas på skärmen när spelet är i presentatör läge
-    if (gameData && gameData.state === "presenting") {
+    if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2 className="centerText">Runda avslutad</h2>
             </div>
         );
         // Det som ska synas när man är i vanliga spel läget
-    } else if (gameData && gameData.state === "playing") {
+    } else if (gameData && (gameData.state === "playing" || gameData.turn === 6)) {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>

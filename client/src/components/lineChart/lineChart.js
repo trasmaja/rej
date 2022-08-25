@@ -5,11 +5,11 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } fro
 
 const LineChartComp = (props) => {
     const { propData, title, dataKey } = props;
-    const data = [{ turn: '2022', co2: null, prog: 100, totalCo2: null, }, { turn: '2025', co2: null, prog: 80, totalCo2: null, }, { turn: '2030', co2: null, prog: 60, totalCo2: null, }, { turn: '2035', co2: null, prog: 40, totalCo2: null, }, { turn: '2040', co2: null, prog: 20, totalCo2: null, }, { turn: '2045', co2: null, prog: 0, totalCo2: null }];
+    const data = [{ turn: '2022', co2: null, prog: 15, totalCo2: null, }, { turn: '2025', co2: null, prog: 12, totalCo2: null, }, { turn: '2030', co2: null, prog: 9, totalCo2: null, }, { turn: '2035', co2: null, prog: 6, totalCo2: null, }, { turn: '2040', co2: null, prog: 3, totalCo2: null, }, { turn: '2045', co2: null, prog: 0, totalCo2: null }];
     propData.forEach((element, index) => {
         if (element != null) {
-            if (element.ind_emissions != null) {
-                data[index].co2 = Math.floor(element.ind_emissions * 100);
+            if (element.emissions_ind != null) {
+                data[index].co2 = Math.floor(element.emissions_ind);
             }
             if (element.total_emissions != null) {
                 data[index].totalCo2 = Math.floor(element.total_emissions * 100);

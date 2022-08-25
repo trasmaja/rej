@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import TimeLine from '../../components/timeline/timeline';
 import SupplyDemandGraph from '../../components/supplyDemandGraph/supplyDemandGraph';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
+import EBITChartEl from '../../components/EBITChartEl/EBITChartEl';
 
 const ElcoView = (props) => {
     const { sectorName, socket } = props;
@@ -50,18 +51,19 @@ const ElcoView = (props) => {
     let mainBody;
 
     // Det som ska synas på skärmen när spelet är i presentatör läge
-    if (gameData && gameData.state === "presenting") {
+    if (gameData && (gameData.state === "presenting"&& gameData.turn !== 6))  {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2 className="centerText">Runda avslutad</h2>
             </div>
         );
         // Det som ska synas när man är i vanliga spel läget
-    } else if (gameData && gameData.state === "playing") {
+    } else if (gameData && (gameData.state === "playing" || gameData.turn === 6)) {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
                 <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden" />
+                <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
                 <h2>Rösta på beslut</h2>
                 <p>Vad vill ni göra med elproduktionen?</p>
                 <DecisionVoteList vote={vote} decisions={decisionList} />

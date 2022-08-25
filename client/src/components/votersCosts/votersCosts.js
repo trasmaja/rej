@@ -5,16 +5,16 @@ import { Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart
 
 const VoterCosts = (props) => {
     const { propData, title } = props;
-    const data = [{ turn: '2022', votersDisInc: null, votersTaxBurd: null, }, { turn: '2025', votersDisInc: null, votersTaxBurd: null, }, { turn: '2030', votersDisInc: null, votersTaxBurd: null, }, { turn: '2035', votersDisInc: null, votersTaxBurd: null, }, { turn: '2040', votersDisInc: null, votersTaxBurd: null, }, { turn: '2045', votersDisInc: null, votersTaxBurd: null, }];
+    const data = [{ turn: '2022', votersDisInc: null, votersTaxBurd: null, el: null }, { turn: '2025', votersDisInc: null, votersTaxBurd: null,  el: null}, { turn: '2030', votersDisInc: null, votersTaxBurd: null,  el: null}, { turn: '2035', votersDisInc: null, votersTaxBurd: null,  el: null}, { turn: '2040', votersDisInc: null, votersTaxBurd: null,  el: null}, { turn: '2045', votersDisInc: null, votersTaxBurd: null,  el: null}];
 
     propData.forEach((element, index) => {
         if (element != null) {
             if (element.voters_tax_burden != null) {
                 data[index].votersTaxBurd = element.voters_tax_burden;
             }
-            if (element.voters_dis_income != null) {
-                data[index].votersDisInc = element.voters_dis_income;
-            }
+            // if (element.voters_dis_income != null) {
+            //     data[index].votersDisInc = element.voters_dis_income;
+            // }
         }
     });
 
