@@ -66,16 +66,16 @@ const PolicyView = (props) => {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
+                <SingleLineChart tick={true} propData={gameData.data} domain={[0, 1]} dataKey="voters_rating" title="Approval rating" />
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
                 <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
-                <SingleLineChart tick={true} propData={gameData.data} domain={[0, 1]} dataKey="voters_rating" title="Approval rating" />
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />
-                <h2>Rösta på beslut</h2>
-                <p>Vad vill ni göra med CO2 priest?</p>
+                <h2>Beslut</h2>
+                <h3>Vad vill ni göra med CO2 priest?</h3>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} />
-                <p>Vad vill ni göra med det gröna paketet?</p>
+                <h3>Vad vill ni göra med det gröna paketet?</h3>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={greendec} />
-                <p>Vad vill ni göra med stamnätet?</p>
+                <h3>Vad vill ni göra med stamnätet?</h3>
                 <DecisionVoteList vote={vote} qIndex={2} decisions={svkdec} />
             </div>
         );

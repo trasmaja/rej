@@ -22,10 +22,10 @@ const LineChartComp = (props) => {
             <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
-                    <XAxis tickMargin={10} dataKey="turn" />
-                    <YAxis width={5} tickCount={2} domain={['dataMin', 'dataMax']} />
-                    <Line dot={false} type="linear" dataKey={"prog"} stroke="#ccc" strokeWidth={3} strokeDasharray="3 3" />
-                    <Line type="linear" strokeWidth={3} stroke="#2AA784" dataKey={dataKey} />
+                    <XAxis stroke="#999" strokeWidth={1} tickMargin={10} dataKey="turn" />
+                    <YAxis stroke="#999" strokeWidth={1} width={5} tickCount={5} domain={[0, datamax => datamax + 5]} />
+                    <Line dot={false} type="linear" dataKey={"prog"} stroke="#999" strokeWidth={2} strokeDasharray="4 4" />
+                    <Line type="linear" strokeWidth={2} stroke="#2B3B55" dataKey={dataKey} />
                 </LineChart>
             </ResponsiveContainer>
         </div>

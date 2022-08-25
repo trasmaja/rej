@@ -67,12 +67,12 @@ const Voters = (props) => {
                 <h2>Nulägesrapport</h2>
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
                 <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
-                <CarCosts propData={gameData.data} title="Fordonskostnad" />
                 <VoterCosts propData={gameData.data} title="Din ekonomi" />
-                <h2>Rösta på beslut</h2>
-                <p>Rating av politkernas jobb</p>
+                <CarCosts propData={gameData.data} title="Fordonskostnad" />
+                <h2>Beslut</h2>
+                <h3>Rating av politkernas jobb</h3>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} />
-                <p>Vad för bil vill du köpa?</p>
+                <h3>Vad för bil vill du köpa?</h3>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={carDec} />
             </div>
         );

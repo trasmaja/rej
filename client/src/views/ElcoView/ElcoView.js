@@ -64,8 +64,8 @@ const ElcoView = (props) => {
                 <h2>Nulägesrapport</h2>
                 <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden" />
                 <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
-                <h2>Rösta på beslut</h2>
-                <p>Vad vill ni göra med elproduktionen?</p>
+                <h2>Beslut</h2>
+                <h3>Vad vill ni göra med elproduktionen?</h3>
                 <DecisionVoteList vote={vote} decisions={decisionList} />
 
             </div>

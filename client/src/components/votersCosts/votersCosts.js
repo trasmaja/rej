@@ -5,16 +5,22 @@ import { Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart
 
 const VoterCosts = (props) => {
     const { propData, title } = props;
-    const data = [{ turn: '2022', votersDisInc: null, votersTaxBurd: null, el: null }, { turn: '2025', votersDisInc: null, votersTaxBurd: null,  el: null}, { turn: '2030', votersDisInc: null, votersTaxBurd: null,  el: null}, { turn: '2035', votersDisInc: null, votersTaxBurd: null,  el: null}, { turn: '2040', votersDisInc: null, votersTaxBurd: null,  el: null}, { turn: '2045', votersDisInc: null, votersTaxBurd: null,  el: null}];
+    const data = [{ turn: '2022', votersDisInc: null, votersTaxBurd: null, el: null, other: null, rest: null }, { turn: '2025', votersDisInc: null, votersTaxBurd: null,  el: null, other: null, rest: null}, { turn: '2030', votersDisInc: null, votersTaxBurd: null,  el: null, other: null, rest: null}, { turn: '2035', votersDisInc: null, votersTaxBurd: null,  el: null, other: null, rest: null}, { turn: '2040', votersDisInc: null, votersTaxBurd: null,  el: null, other: null, rest: null}, { turn: '2045', votersDisInc: null, votersTaxBurd: null,  el: null, other: null, rest: null}];
 
     propData.forEach((element, index) => {
         if (element != null) {
             if (element.voters_tax_burden != null) {
                 data[index].votersTaxBurd = element.voters_tax_burden;
             }
-            // if (element.voters_dis_income != null) {
-            //     data[index].votersDisInc = element.voters_dis_income;
-            // }
+            if (element.voters_cost_el != null) {
+                data[index].el = element.voters_cost_el;
+            }
+            if (element.voters_costs_other != null) {
+                data[index].other = element.voters_costs_other;
+            }
+            if (element.voters_dis_income_after_expenses != null) {
+                data[index].votersDisInc = element.voters_dis_income_after_expenses;
+            }
         }
     });
 
@@ -26,7 +32,9 @@ const VoterCosts = (props) => {
                     <CartesianGrid stroke="#ccc" />
                     <XAxis tickMargin={10} dataKey="turn" />
                     <YAxis width={5} tick={false} domain={[0, datamax => (datamax + 1000)]} />
-                    <Bar stackId="one" name="Disponibel inkomst" fill="#0094A3" dataKey={"votersDisInc"} />
+                    <Bar stackId="one" name="Resterande inkomst" fill="#5dcf3e" dataKey={"votersDisInc"} />
+                    <Bar stackId="one" name="Nödvändiga utgifter" fill="#0094A3" dataKey={"other"} />
+                    <Bar stackId="one" name="Elkostnader" fill="#fcba03" dataKey={"el"} />
                     <Bar stackId="one" name="Skatt" fill="#EC6161" dataKey={"votersTaxBurd"} />
                     <Legend />
                 </BarChart>

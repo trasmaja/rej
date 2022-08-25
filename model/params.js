@@ -3,7 +3,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { irr } = require('node-irr')
-// const prompt = require("prompt-sync")({ sigint: true });
+const prompt = require("prompt-sync")({ sigint: true });
 
 const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n))); // annuity function for industry money lending
 const WACC = 0.1;
@@ -42,9 +42,9 @@ class Params {
     this.ind_emissions_2019 = 15; // miljoner ton CO2-ekvivalenter
     this.ind_co2_reduction_factor = 1; // starts with 100 %
     
-    this.ind_ratio_carbon = null;
     this.ind_ratio_el = null;
     this.ind_ratio_bio = null;
+    this.ind_ratio_carbon = null;
 
     this.ind_IRR_bio = null; // the following parameters are shown to player
     this.ind_IRR_el = null;
@@ -89,7 +89,9 @@ class Params {
     this.transportation_emissions_red = 1; 
     
     this.voters_income = null;
-    this.voters_costs_other = (11480 - 3050 - 810); // Swedbanks uppskattade nödvändiga levnadsmånadskostnader minus el och bil
+    this.voters_costs_other_base = (11480 - 3050 - 810); // Swedbanks uppskattade nödvändiga levnadsmånadskostnader minus el och bil
+    this.voters_costs_other = null;
+
     this.voters_carbon_burden = null; // cost of emitting for consumers
     this.voters_tax_rate = 0.35;
     this.voters_svk_tax_penalty = null; // if SVK has over constructed 
@@ -180,14 +182,16 @@ class Params {
       + this.ind_premium - this.ind_annuity) / this.ind_income;
 
     // Voters variables
-    this.voters_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
+
     this.voters_svk_tax_penalty = this.demand_el_total + 45 <= this.supply_el_cap ? 0.05 : 0; 
-    this.voters_tax_burden = this.voters_income * (this.voters_tax_rate + this.voters_svk_tax_penalty); // tax burden for voters from subsedies
     this.voters_carbon_burden = 0.1 * this.price_carbon; // cost of emitting for consumers
-    this.voters_cost_el = this.price_el * this.voters_el_consumtion; 
-        
+    
+    this.voters_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
+    this.voters_tax_burden = this.voters_income * (this.voters_tax_rate + this.voters_svk_tax_penalty); // tax burden for voters from subsedies
     this.voters_dis_income = (this.voters_income - this.voters_tax_burden);
-    this.voters_dis_income_after_expenses = (this.voters_dis_income - this.voters_costs_other * (0.8 + this.voters_carbon_burden * this.ind_co2_reduction_factor)
+    this.voters_cost_el = this.price_el * this.voters_el_consumtion; 
+    this.voters_costs_other =  this.voters_costs_other_base * (0.8 + this.voters_carbon_burden * this.ind_co2_reduction_factor);
+    this.voters_dis_income_after_expenses = (this.voters_dis_income - this.voters_costs_other
       - this.voters_cost_el);
     console.log(0.8 + this.voters_carbon_burden * this.ind_co2_reduction_factor);
     
@@ -259,7 +263,8 @@ class Params {
     const cost_driving_gas = gas_price * l_per_mil * driving;
     
     const car_el = this.pol_el_car_reduction_factor * (2000*1.45 + 360 + 380 + 80 + 33 + 125); // cheap leasing cost + tires + taxes
-    const car_gas = 1500 + 360 + 380 + 80 + 33 + 125; // värdeminskning (lååågt räknat) + försäkring + service + skatt + besiktning + däck
+
+    const car_gas = 760 + 360 + 380 + 80 + 33 + 125; // värdeminskning (lååågt räknat) + försäkring + service + skatt + besiktning + däck
     
     const cost_el = car_el + cost_driving_el;
     const cost_gas = car_gas + cost_driving_gas;

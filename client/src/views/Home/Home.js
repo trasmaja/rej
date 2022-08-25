@@ -36,9 +36,9 @@ const Home = (props) => {
     const sectors = [<IndustryView socket={socket} sectorName="Industrimagnat" />, <PolicyView socket={socket} sectorName="Politiker" />, <ElcoView socket={socket} sectorName="Elbolag" />, <Voters socket={socket} sectorName="Väljare" />]
 
     // En switch som renderar olika saker baserat på index
-    switch (sectorIndex) {
+    switch (0) {
         case 0:
-            return <main>{sectors[0]}</main>
+            return <main className="industryMain">{sectors[0]}</main>
         case 1:
             return <main>{sectors[1]}</main>
         case 2:
