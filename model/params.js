@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import e from "express";
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
@@ -85,8 +86,10 @@ class Params {
 
     // Voter variables
     this.voters_rating = 0.6;
+    this.voters_priority = null;
     this.transportation_emissions_2019 = 10; // miljoner ton CO2-ekvivalenter
     this.transportation_emissions_red = 1; 
+    this.voter_unemployment = null; 
     
     this.voters_income = null;
     this.voters_costs_other_base = (11480 - 3050 - 810); // Swedbanks uppskattade nödvändiga levnadsmånadskostnader minus el och bil
@@ -185,14 +188,15 @@ class Params {
     this.voters_svk_tax_penalty = this.demand_el_total + 45 <= this.supply_el_cap ? 0.05 : 0; 
     this.voters_carbon_burden = 0.1 * this.price_carbon; // cost of emitting for consumers
     
-    this.voterss_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
+    this.voter_unemployment = Math.max(0, 0.23 - 1 / (4.3 + 4.5 / Math.E**(6 * this.ind_EBIT_margin))); 
+
+    // this.voters_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
+    this.voters_income = 343000 / 12 * (1.086 - this.voter_unemployment); // yearly income. 8.6 % is current unemployment
     this.voters_tax_burden = this.voters_income * (this.voters_tax_rate + this.voters_svk_tax_penalty); // tax burden for voters from subsedies
     this.voters_dis_income = (this.voters_income - this.voters_tax_burden);
     this.voters_cost_el = this.price_el * this.voters_el_consumtion; 
     this.voters_costs_other =  this.voters_costs_other_base * (0.8 + this.voters_carbon_burden * this.ind_co2_reduction_factor);
-    this.voters_dis_income_after_expenses = (this.voters_dis_income - this.voters_costs_other
-      - this.voters_cost_el);
-    console.log(0.8 + this.voters_carbon_burden * this.ind_co2_reduction_factor);
+    this.voters_dis_income_after_expenses = (this.voters_dis_income - this.voters_costs_other - this.voters_cost_el);
     
     // Policy variables
     this.emissions_transport = this.transportation_emissions_red * this.transportation_emissions_2019; // emissions from transports
@@ -404,12 +408,12 @@ class Params {
   policy_green_package(level) {
     if (level === 1) {
       this.pol_CAPEX_reduction_factor = 0.8;
-      this.pol_el_car_reduction_factor = 0.8;
+      this.pol_el_car_reduction_factor = 0.9;
       this.voters_tax_burden = 0.5;
       // todo nåt med elbilar
     } else if (level === 2) {
       this.pol_CAPEX_reduction_factor = 0.9;
-      this.pol_el_car_reduction_factor = 0.9;
+      this.pol_el_car_reduction_factor = 0.95;
       this.voters_tax_burden = 0.25;
 
     } else if (level === 3) {
@@ -448,6 +452,11 @@ class Params {
   // Voters functions
   voters_rate_policy(new_rating) {
     this.voters_rating = new_rating;
+  }
+
+  voters_priorities(question) {
+    /** Ska begränsa politikernas handlingsfrihet */
+    this.voters_priority = question; 
   }
 
   voters_electric_car(procentage) {
