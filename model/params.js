@@ -10,6 +10,8 @@ const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n))); // annuity functio
 const WACC = 0.1;
 const mycket = 2.5;
 const lite = (1 + mycket) / 2;
+const emissions_increase = 1.05; // increase of emissions
+
 class Params {
   constructor() {
     this.turn = 0;
@@ -38,9 +40,9 @@ class Params {
     this.ind_premium_factor = 0.5;
     this.ind_RnD = 0; // # of times RnD has been used
     
-    this.ind_carbon_demand_2019 = 27; // TWh 
+    this.ind_carbon_demand_2019 = 27 / emissions_increase; // TWh 
     this.ind_demand_carbon_ind = null; // TWh 
-    this.ind_emissions_2019 = 15; // miljoner ton CO2-ekvivalenter
+    this.ind_emissions_2019 = 15 / emissions_increase; // miljoner ton CO2-ekvivalenter
     this.ind_co2_reduction_factor = 1; // starts with 100 %
     
     this.ind_ratio_el = null;
@@ -87,7 +89,7 @@ class Params {
     // Voter variables
     this.voters_rating = 0.6;
     this.voters_priority = null;
-    this.transportation_emissions_2019 = 10; // miljoner ton CO2-ekvivalenter
+    this.transportation_emissions_2019 = 10 / emissions_increase; // miljoner ton CO2-ekvivalenter
     this.transportation_emissions_red = 1; 
     this.voter_unemployment = null; 
     
@@ -141,7 +143,6 @@ class Params {
     this.supply_el_usable = this.supply_el_potential > this.supply_el_cap ? this.supply_el_cap : this.supply_el_potential;
 
     const x = 1 + 1 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total;
-    console.log(x)
     this.price_el = x < 0.896 ? 0.05 * x + 0.5 : 6*x**2 - 7*x +2; // test på en mer realistisk prisfunktion (hockeyklubba-funktion) men den blir kanske för volatil
     
     // this.price_el = Math.max(0.1, 1 + 5 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total); // ursprungliga prisekvationen
@@ -153,6 +154,7 @@ class Params {
 
 
     // Industry variables
+    this.ind_carbon_demand_2019 *= emissions_increase; 
     this.ind_demand_carbon_ind = this.ind_carbon_demand_2019 * this.ind_co2_reduction_factor;
     this.ind_energy_consumtion = this.demand_el_ind + this.demand_bio_ind + this.ind_demand_carbon_ind;
 
@@ -168,6 +170,7 @@ class Params {
     this.ind_CAPEX_turn_el = this.ind_CAPEX_base_el * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
     this.ind_CAPEX_turn_bio = this.ind_CAPEX_base_bio * this.ind_turn_ratio * this.ind_lateness_penalty_factor;
     
+    this.ind_emissions_2019 *= emissions_increase;
     this.emissions_ind = this.ind_co2_reduction_factor * this.ind_emissions_2019;
     this.ind_cost_emissions = this.emissions_ind * this.price_carbon
     
@@ -178,18 +181,14 @@ class Params {
     
     this.ind_cost_energy = this.ind_energy_consumtion * ((this.ind_ratio_el * this.price_el) + (this.ind_ratio_bio * this.price_bio) 
     + (this.ind_ratio_carbon * this.price_carbon_energy)); 
-    // this.ind_cost_energy = (this.demand_el_ind * this.price_el + this.demand_bio_ind * this.price_bio + this.ind_carbon_demand * this.price_carbon_energy 
-    //   + this.ind_emissions * this.price_carbon - this.ind_premium);
 
     this.ind_EBIT_margin = (this.ind_income - this.ind_cost_other - this.ind_cost_energy - this.ind_cost_emissions 
       + this.ind_premium - this.ind_annuity) / this.ind_income;
 
     // Voters variables
+    this.voter_unemployment = 0.23 - 1 / (4.3 + 4.5 / Math.E**(6 * this.ind_EBIT_margin)); // just a function that behaves reasonable in my opinion
     this.voters_svk_tax_penalty = this.demand_el_total + 45 <= this.supply_el_cap ? 0.05 : 0; 
     this.voters_carbon_burden = 0.1 * this.price_carbon; // cost of emitting for consumers
-    
-    this.voter_unemployment = Math.max(0, 0.23 - 1 / (4.3 + 4.5 / Math.E**(6 * this.ind_EBIT_margin))); 
-
     // this.voters_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
     this.voters_income = 343000 / 12 * (1.086 - this.voter_unemployment); // yearly income. 8.6 % is current unemployment
     this.voters_tax_burden = this.voters_income * (this.voters_tax_rate + this.voters_svk_tax_penalty); // tax burden for voters from subsedies
@@ -199,6 +198,7 @@ class Params {
     this.voters_dis_income_after_expenses = (this.voters_dis_income - this.voters_costs_other - this.voters_cost_el);
     
     // Policy variables
+    this.transportation_emissions_2019 *= emissions_increase;
     this.emissions_transport = this.transportation_emissions_red * this.transportation_emissions_2019; // emissions from transports
     this.emissions_total = this.emissions_ind + this.emissions_transport;
 
@@ -271,14 +271,6 @@ class Params {
     const cost_el = car_el + cost_driving_el;
     const cost_gas = car_gas + cost_driving_gas;
     
-    // console.log('gas_price ', gas_price)
-    // console.log('cost_driving_el ', cost_driving_el)
-    // console.log('cost_driving_gas ', cost_driving_gas)
-    // console.log('car_el ', car_el)
-    // console.log('car_gas ', car_gas)
-    // console.log('cost_el ', cost_el)
-    // console.log('cost_gas ', cost_gas)
-    
     this.voters_cost_car_el = cost_el;
     this.voters_cost_car_gas = cost_gas;
 
@@ -323,16 +315,9 @@ class Params {
     const cost_high = alt_energy_consumtion * ((this.ind_ratio_el * this.price_el) + (this.ind_ratio_bio * this.price_bio) 
     + (this.ind_ratio_carbon * this.price_carbon_energy)) + this.emissions_ind * this.price_carbon * mycket - premium; 
 
-    console.log(1 + (alt_energy_consumtion - this.ind_energy_consumtion)/this.ind_energy_consumtion)
-
     const low = cost_low - alt_cost_low
     const mid = cost_mid - alt_cost_mid
     const high = cost_high - alt_cost_high
-    
-    console.log(cost_low, ' - ', alt_cost_low, ' = ', low)
-    console.log(cost_mid, ' - ', alt_cost_mid, ' = ', mid)
-    console.log(cost_high, ' - ', alt_cost_high, ' = ', high)
-    console.log(alt_ind_premium - premium)
 
     return [low, mid, high];
   }
