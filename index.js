@@ -7,8 +7,6 @@ import { createServer } from "http";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
-import test from "./controllers/test.controller.js";
-
 import Model from "./model/model.js";
 
 const port = process.env.PORT || 8080;
@@ -57,9 +55,6 @@ io.use(
     saveUninitialized: true,
   })
 );
-
-// Bind REST controllers to /api/*.
-app.use("/api", test.router);
 
 // Initialize model.
 // model.init(io);
