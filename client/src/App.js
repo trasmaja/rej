@@ -6,8 +6,8 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import React from "react";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Home from './views/Home/Home';
 import Admin from './views/Admin/Admin';
 

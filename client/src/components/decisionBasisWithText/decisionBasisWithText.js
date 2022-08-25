@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const DecisionBasisWithText = (props) => {
-
+    const { title, text } = props;
     return (
         <div className="wrapper-decisionBasisWithText">
-            <h3>{props.title}</h3>
+            <h3>{title}</h3>
             <p className="wrapper-decisionBasisWithText-text">
-                {props.text}
+                {text}
             </p>
         </div>
     );
@@ -17,7 +17,6 @@ const DecisionBasisWithText = (props) => {
 DecisionBasisWithText.propTypes = {
     title: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired
-    // socket: PropTypes.object.isRequired
 }
 
 export default DecisionBasisWithText;

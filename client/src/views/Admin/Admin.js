@@ -4,14 +4,27 @@ import React, { useState, useEffect } from 'react';
 import AdminTimeline from '../../components/adminTimeline/adminTimeline';
 import Button from '@mui/material/Button';
 import TotalEmissionChart from '../../components/totalEmissionChart/totalEmissionChart';
-
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 import rejlersLogo from './rejlers_logo.png';
-import cityLogo from './city.png';
 
 export default function Admin(props) {
     console.log(props)
 
     const [gameData, setGameData] = useState(null);
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (confirmVote) => {
+        if(confirmVote) {
+            props.socket.emit("resetGame");
+        }
+        setOpen(false);
+    }
 
     useEffect(() => {
         props.socket.emit("getAdminGameData");
@@ -56,15 +69,15 @@ export default function Admin(props) {
             return (
                 <div className={classNameList} key={key}>
                     <div className="admin-main-title">
-                        <h2>{indexToYear[index]}</h2>
+                        <h2>{indexToYear[index]} - {indexToYear[index+1]}</h2>
                     </div>
                     <div className="admin-main-flex">
                         <div className="admin-main-left">
                             <h3>Beslut</h3>
-                            <p><span className="boldify">Industrin</span> {data.Industri}</p>
-                            <p><span className="boldify">Politikerna</span> {data.Policy}</p>
-                            <p><span className="boldify">Elbolagen</span> {data.Elco}</p>
-                            <p><span className="boldify">Väljarna</span> {data.Voter}</p>
+                            <p><span className="boldify">Industrimagnat</span> {data.Industri}</p>
+                            <p><span className="boldify">Politiker</span> {data.Policy}</p>
+                            <p><span className="boldify">Elbolag</span> {data.Elco}</p>
+                            <p><span className="boldify">Väljare</span> {data.Voter}</p>
                         </div>
                         <div className="admin-main-rigth">
                             <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
@@ -79,27 +92,41 @@ export default function Admin(props) {
         playerCounter = (<div className="admin-player-counter">
             <div className="player-count-text-wrapper">
                 <p className="player-count-text">Industrin</p>
-                <p className="player-count-text boldify bounceAni">{gameData.playerCount[0]}</p>
+                <p className="player-count-text boldify bounceAni number">{gameData.playerCount[0]}</p>
             </div>
             <div className="player-count-text-wrapper">
                 <p className="player-count-text">Politikerna</p>
-                <p className="player-count-text boldify bounceAni">{gameData.playerCount[1]}</p>
+                <p className="player-count-text boldify bounceAni number">{gameData.playerCount[1]}</p>
             </div>
             <div className="player-count-text-wrapper">
                 <p className="player-count-text">Elbolagen </p>
-                <p className="player-count-text boldify bounceAni">{gameData.playerCount[2]}</p>
+                <p className="player-count-text boldify bounceAni number">{gameData.playerCount[2]}</p>
             </div>
             <div className="player-count-text-wrapper">
                 <p className="player-count-text">Väljarna </p>
-                <p className="player-count-text boldify bounceAni"> {gameData.playerCount[3]}</p>
+                <p className="player-count-text boldify bounceAni number"> {gameData.playerCount[3]}</p>
             </div>
         </div >
         )
     }
     return (
         <main className="admin">
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {'Vill du starta om spelet?'}
+                </DialogTitle>
+                <DialogActions>
+                    <Button variant="contained" onClick={() => handleClose(true)} autoFocus>Ja</Button>
+                    <Button variant="outlined" onClick={() => handleClose(false)}>Nej</Button>
+                </DialogActions>
+            </Dialog>
             <div className="admin-top">
-                <div className="admin-top-left">
+                <div className="admin-top-left" onClick={() => handleClickOpen()}>
                     <img className="admin-top-leftIcon" src={rejlersLogo} alt="Rejlers" />
                 </div>
                 <div className="admin-top-mid">

@@ -1,13 +1,12 @@
 import './lineChart.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Legend, Label } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 const LineChartComp = (props) => {
-    const { propData, dataKey, progKey, domain } = props;
+    const { propData, title, dataKey } = props;
     const data = [{ turn: '2022', co2: null, prog: 100, totalCo2: null, }, { turn: '2025', co2: null, prog: 80, totalCo2: null, }, { turn: '2030', co2: null, prog: 60, totalCo2: null, }, { turn: '2035', co2: null, prog: 40, totalCo2: null, }, { turn: '2040', co2: null, prog: 20, totalCo2: null, }, { turn: '2045', co2: null, prog: 0, totalCo2: null }];
     propData.forEach((element, index) => {
-        // console.log(index, element)
         if (element != null) {
             if (element.ind_emissions != null) {
                 data[index].co2 = Math.floor(element.ind_emissions * 100);
@@ -19,7 +18,7 @@ const LineChartComp = (props) => {
     });
     return (
         <div className="wrapper-lineChart">
-            <h3>{props.title}</h3>
+            <h3>{title}</h3>
             <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
@@ -34,11 +33,9 @@ const LineChartComp = (props) => {
 }
 
 LineChartComp.propTypes = {
+    propData: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
     dataKey: PropTypes.string.isRequired,
-    progKey: PropTypes.string.isRequired,
-    domain: PropTypes.array.isRequired,
-    // socket: PropTypes.object.isRequired
 }
 
 export default LineChartComp;

@@ -7,9 +7,7 @@ import { createServer } from "http";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
-import test from "./controllers/test.controller.js";
-
-import model from "./model/model.js";
+import Model from "./model/model.js";
 
 const port = process.env.PORT || 8080;
 const app = express(); // Create express app.
@@ -58,13 +56,11 @@ io.use(
   })
 );
 
-// Bind REST controllers to /api/*.
-app.use("/api", test.router);
-
 // Initialize model.
 // model.init(io);
 // Handle socket.io connections.
 const players = {};
+let model = new Model();
 
 io.on("connection", (socket) => {
   const { session } = socket.handshake;
@@ -90,6 +86,15 @@ io.on("connection", (socket) => {
 
   socket.on("getGameData", () => {
     socket.emit("gameData", model.getGameData());
+  })
+
+  socket.on("resetGame", () => {
+    const playerCountFromOldModel = model.playerCount;
+    model = null;
+    model = new Model();
+    model.playerCount = playerCountFromOldModel;
+    io.emit("gameData", model.getGameData());
+    io.emit("adminGameData", model.getGameData());
   })
 
   socket.on("endTurn", () => {

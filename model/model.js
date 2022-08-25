@@ -7,11 +7,11 @@ const Finance = require("tvm-financejs");
 
 function indexOfSmallest(a) {
   let lowest = 0;
-  for (let i = 1; i < a.length; i+=1) {
-   if (a[i] < a[lowest]) lowest = i;
+  for (let i = 1; i < a.length; i += 1) {
+    if (a[i] < a[lowest]) lowest = i;
   }
   return lowest;
- }
+}
 
 class Model {
   constructor() {
@@ -61,6 +61,7 @@ class Model {
       this.executeVotes();
       this.params.basicTurnCalculations();
       this.params.calcIrr();
+      this.params.calcCarCosts();
       // this.params.calcVoter();
       const decisionsMade = {};
       this.sectors.forEach(sector => {
@@ -69,9 +70,9 @@ class Model {
       this.decisionsMade.push(decisionsMade);
       this.state = "presenting";
       console.log(this.decisionsMade);
-    } else {
       this.currentTurn += 1;
       this.dataForEachTurn[this.currentTurn - 1] = Object.assign(Object.create(this.params), this.params);
+    } else {
       this.resetVotes();
       this.state = "playing";
     }
@@ -115,4 +116,4 @@ class Model {
 
 }
 
-export default new Model();
+export default Model;

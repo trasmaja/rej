@@ -46,27 +46,23 @@ export class Industri extends Sector {
     }
 
     executeVote() {
-        const decisionIndex = indexOfMax(this.votesOnDecisions);
-        console.log(decisionIndex);
-        switch (decisionIndex) {
-            case 0: // bio
-                this.params.industry_biofy();
-                this.decisionsMade.push("satsade på biodrivmedel");
-                break;
-            case 1: // elektrifiering
-                this.params.industry_electrify();
-                this.decisionsMade.push("satsade på elektrifiering");
-                break;
-            case 2: // R&D
-                this.params.industry_RnD();
-                this.decisionsMade.push("investerade i R&D");
-                break;
-            case 3: // energieffektivisering
-                this.params.industry_increase_energy_efficiency();
-                this.decisionsMade.push("investerade i energieffektivisering");
-                break;
-            default:
-                break;
+        // Sum ints in array https://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
+        const totalVotes = this.votesOnDecisions.reduce((partialSum, a) => partialSum + a, 0);
+        if (totalVotes === 0) {
+            this.params.industry_biofy(0.25);
+            this.params.industry_electrify(0.25);
+            this.params.industry_RnD(0.25);
+            this.params.industry_increase_energy_efficiency(0.25);
+        } else {
+            const percentageBio = this.votesOnDecisions[0] / totalVotes;
+            const percentageEl = this.votesOnDecisions[1] / totalVotes;
+            const percentageRnD = this.votesOnDecisions[2] / totalVotes;
+            const percentageEnergyEfficency = this.votesOnDecisions[3] / totalVotes;
+
+            this.params.industry_biofy(percentageBio);
+            this.params.industry_electrify(percentageEl);
+            this.params.industry_RnD(percentageRnD);
+            this.params.industry_increase_energy_efficiency(percentageEnergyEfficency);
         }
     }
 
@@ -83,7 +79,7 @@ export class Policy extends Sector {
 
     vote(decisionIndex, question) {
         console.log(question, decisionIndex)
-        if(question === 0) {
+        if (question === 0) {
             this.co2Vote[decisionIndex] += 1;
         } else if (question === 1) {
             this.greenPackage[decisionIndex] += 1;
@@ -110,7 +106,7 @@ export class Policy extends Sector {
 
         let decisionString = "";
 
-        if(decisionIndexCo2 === 1) {
+        if (decisionIndexCo2 === 1) {
             decisionString += "ökade CO2-priset mycket, ";
         } else if (decisionIndexCo2 === 2) {
             decisionString += "ökade CO2-priset lite, ";
@@ -122,7 +118,7 @@ export class Policy extends Sector {
             decisionString += "minskade CO2-priset mycket, ";
         }
 
-        if(decisionIndexGreen === 1) {
+        if (decisionIndexGreen === 1) {
             decisionString += "stort grön paket och";
         }
         else if (decisionIndexGreen === 2) {
@@ -132,7 +128,7 @@ export class Policy extends Sector {
             decisionString += "litet grön paket och ";
         }
 
-        if(decisionIndexSVK === 1) {
+        if (decisionIndexSVK === 1) {
             decisionString += "byggde ut stamnätet mycket.";
         }
         else if (decisionIndexSVK === 2) {
@@ -172,15 +168,15 @@ export class Elco extends Sector {
     executeVote() {
         const decisionIndex = 1 + indexOfMax(this.votesOnDecisions);
         this.params.elco_investing(decisionIndex);
-        
-        if(decisionIndex === 1) {
+
+        if (decisionIndex === 1) {
             this.decisionsMade.push("valde att öka elproduktionen")
         } else if (decisionIndex === 2) {
             this.decisionsMade.push("valde att bibehålla nuvarande elproduktion")
         } else if (decisionIndex === 3) {
             this.decisionsMade.push("valde att minska elproduktionen")
         }
-        
+
     }
 }
 
@@ -189,34 +185,61 @@ export class Voter extends Sector {
         super("Voter", index, params);
         this.hello = 10;
         this.ratingDec = [0, 0, 0, 0];
+        this.carChoice = [0, 0];
     }
 
     vote(decisionIndex, question) {
-        if(question === 0) {
+        if (question === 0) {
             this.ratingDec[decisionIndex] += 1;
+        } else if (question === 1) {
+            this.carChoice[decisionIndex] += 1;
         }
-        console.log(this.ratingDec);
+
     }
 
     resetVotes() {
         this.ratingDec = [0, 0, 0, 0];
+        this.carChoice = [0, 0];
     }
 
     executeVote() {
-        const decisionIndex = indexOfMax(this.ratingDec);
+        // const decisionIndex = indexOfMax(this.ratingDec);
+        // Sum ints in array https://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
+        const totalVotesRating = this.ratingDec.reduce((partialSum, a) => partialSum + a, 0);
+        const totalVotesCar = this.carChoice.reduce((partialSum, a) => partialSum + a, 0);
 
-        if(decisionIndex === 0) {
-            this.params.voters_rate_policy(0.9);
-            this.decisionsMade.push("gav Politikerna en mycket bra rating")
-        } else if (decisionIndex === 1) {
-            this.params.voters_rate_policy(0.7);
-            this.decisionsMade.push("gav Politikerna en bra rating")
-        } else if (decisionIndex === 2) {
-            this.params.voters_rate_policy(0.4);
-            this.decisionsMade.push("gav Politikerna en dålig rating")
-        } else if (decisionIndex === 3) {
-            this.params.voters_rate_policy(0.2);
-            this.decisionsMade.push("gav Politikerna en mycket dålig rating")
+        if (totalVotesRating === 0) {
+            this.params.voters_rate_policy(0.5);
+        } else {
+            const rating = (1 * this.ratingDec[0] + 0.7 * this.ratingDec[1] + 0.4 * this.ratingDec[2] + 0 * this.ratingDec[3]) / totalVotesRating;
+            const roundedRating = Math.round(rating * 100) / 100;
+            this.params.voters_rate_policy(roundedRating);
         }
+
+        if(totalVotesCar === 0) {
+            // Gör inget
+            // this.params.voters_electric_car(0)
+        } else {
+            const electrifyPercentage = this.carChoice[0] / totalVotesCar;
+            const roundedPercentage = Math.round(electrifyPercentage * 100) / 100;
+            this.params.voters_electric_car(roundedPercentage)
+        }
+
+
+
+
+        // if (decisionIndex === 0) {
+        //     this.params.voters_rate_policy(0.9);
+        //     this.decisionsMade.push("gav Politikerna en mycket bra rating")
+        // } else if (decisionIndex === 1) {
+        //     this.params.voters_rate_policy(0.7);
+        //     this.decisionsMade.push("gav Politikerna en bra rating")
+        // } else if (decisionIndex === 2) {
+        //     this.params.voters_rate_policy(0.4);
+        //     this.decisionsMade.push("gav Politikerna en dålig rating")
+        // } else if (decisionIndex === 3) {
+        //     this.params.voters_rate_policy(0.2);
+        //     this.decisionsMade.push("gav Politikerna en mycket dålig rating")
+        // }
     }
 }
