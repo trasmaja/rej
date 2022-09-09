@@ -147,7 +147,7 @@ class Params {
     
     // this.price_el = Math.max(0.1, 1 + 5 * (this.demand_el_total - this.supply_el_usable) / this.demand_el_total); // ursprungliga prisekvationen
 
-    this.elco_income = Math.log(2 * (this.demand_el_total * this.price_el));
+    this.elco_income = Math.log(2 * (Math.min(this.supply_el_usable, this.demand_el_total) * this.price_el));
     this.elco_cost = Math.log(1 * this.supply_el_potential);
     this.elco_EBIT_margin = 0.08 + (this.elco_income - this.elco_cost) / this.elco_income;
 
@@ -189,7 +189,6 @@ class Params {
     this.voter_unemployment = 0.23 - 1 / (4.3 + 4.5 / Math.E**(6 * this.ind_EBIT_margin)); // just a function that behaves reasonable in my opinion
     this.voters_svk_tax_penalty = this.demand_el_total + 45 <= this.supply_el_cap ? 0.05 : 0; 
     this.voters_carbon_burden = 0.1 * this.price_carbon; // cost of emitting for consumers
-    // this.voters_income = 325000 / 12 * (0.95 + this.ind_EBIT_margin); // yearly income. 0.95 because we imagine industry fires people at 5 % EBIT-margin
     this.voters_income = 343000 / 12 * (1.086 - this.voter_unemployment); // yearly income. 8.6 % is current unemployment
     this.voters_tax_burden = this.voters_income * (this.voters_tax_rate + this.voters_svk_tax_penalty); // tax burden for voters from subsedies
     this.voters_dis_income = (this.voters_income - this.voters_tax_burden);
