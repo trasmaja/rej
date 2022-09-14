@@ -42,9 +42,9 @@ const SupplyDemandGraph = (props) => {
                     <YAxis width={5} stroke="#484D52" domain={[80, datamax => (datamax > 200 ? datamax + 20 : 200)]} tickCount={5} />
                     <CartesianGrid stroke="#ccc" />
                     {plannedStam}
-                    <Line name="Stamnätskapacitet" type="linear" dataKey={"cap"} stroke="#fcba03" strokeWidth={3} />
-                    <Line name="Elkonsumtion" type="linear" strokeWidth={3} stroke="#0094A3" dataKey={"demand"} />
-                    <Line name="Elproduktion" type="linear" dataKey={"supply"} stroke="#EC6161" strokeWidth={3} />
+                    <Line name="Stamnätskapacitet" type="linear" dataKey={"cap"} stroke="#fcba03" strokeWidth={2} />
+                    <Line name="Elkonsumtion" type="linear" strokeWidth={2} stroke="#0094A3" dataKey={"demand"} />
+                    <Line name="Elproduktion" type="linear" dataKey={"supply"} stroke="#EC6161" strokeWidth={2} />
                     <Legend />
                 </LineChart>
             </ResponsiveContainer>

@@ -86,7 +86,7 @@ const PolicyView = (props) => {
                 <h2>Nulägesrapport</h2>
                 <SingleLineChart tick={true} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
-                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB"/>
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />
                 <h2>Beslut</h2>
                 <h3>Vad vill ni göra med CO2 priest?</h3>

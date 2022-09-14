@@ -84,7 +84,7 @@ const Voters = (props) => {
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
-                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
                 <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
                 <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
                 <h2>Beslut</h2>

@@ -7,7 +7,7 @@ let max = null;
 let min = null;
 
 const EBITChart = (props) => {
-    const { propData, title } = props;
+    const { propData, title, lineColor } = props;
     const data = [{ turn: '2022', ebit: null }, { turn: '2025', ebit: null }, { turn: '2030', ebit: null }, { turn: '2035', ebit: null }, { turn: '2040', ebit: null }, { turn: '2045', ebit: null }];
 
     propData.forEach((element, index) => {
@@ -48,7 +48,7 @@ const EBITChart = (props) => {
                     <ReferenceLine y={10} strokeWidth={2} stroke="#58B998" strokeDasharray="5 5" >
                         <Label fill='#58B998' value="10" position="left" />
                     </ReferenceLine>
-                    <Line type="lienar" strokeWidth={2} stroke="#2B3B55" dataKey={"ebit"} />
+                    <Line type="lienar" strokeWidth={2} stroke={lineColor} dataKey={"ebit"} />
                 </LineChart>
             </ResponsiveContainer>
         </div>
@@ -58,6 +58,7 @@ const EBITChart = (props) => {
 EBITChart.propTypes = {
     title: PropTypes.string.isRequired,
     propData: PropTypes.array.isRequired,
+    lineColor: PropTypes.string.isRequired,
 }
 
 export default EBITChart;

@@ -49,7 +49,7 @@ const EBITChartEl = (props) => {
                     <ReferenceLine y={10} strokeWidth={2} stroke="#484D52" strokeDasharray="5 5" >
                         <Label fill='#484D52' value="10" position="left" />
                     </ReferenceLine>
-                    <Line type="lienar" strokeWidth={3} stroke="#2AA784" dataKey={"ebit"} />
+                    <Line type="lienar" strokeWidth={2} stroke="#2AA784" dataKey={"ebit"} />
                 </LineChart>
             </ResponsiveContainer>
         </div>

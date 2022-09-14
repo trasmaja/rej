@@ -80,7 +80,7 @@ const ElcoView = (props) => {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
-                <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden" />
+                <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden (TWh)" />
                 <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
                 <h2>Beslut</h2>
                 <h3>Vad vill ni göra med elproduktionen?</h3>
