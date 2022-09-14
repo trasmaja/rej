@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.620e87bb.css",
-    "main.js": "/static/js/main.fbb04501.js",
+    "main.css": "/static/css/main.85d2e83a.css",
+    "main.js": "/static/js/main.147c5099.js",
     "static/js/787.c4e7f8f9.chunk.js": "/static/js/787.c4e7f8f9.chunk.js",
     "static/media/rejlers_logo.png": "/static/media/rejlers_logo.d5c5d067d6bf65b7bbc5.png",
     "index.html": "/index.html",
-    "main.620e87bb.css.map": "/static/css/main.620e87bb.css.map",
-    "main.fbb04501.js.map": "/static/js/main.fbb04501.js.map",
+    "main.85d2e83a.css.map": "/static/css/main.85d2e83a.css.map",
+    "main.147c5099.js.map": "/static/js/main.147c5099.js.map",
     "787.c4e7f8f9.chunk.js.map": "/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.620e87bb.css",
-    "static/js/main.fbb04501.js"
+    "static/css/main.85d2e83a.css",
+    "static/js/main.147c5099.js"
   ]
 }

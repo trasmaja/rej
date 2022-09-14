@@ -84,7 +84,6 @@ const IndustryView = (props) => {
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <h3>Rollbeskrivning</h3>
                 <p style={{color: "#484d52"}}>Industrimagnaten styr sin verksamhet efter rörelsemarginalen (rörelseresultat/omsättning) och fattar sina investeringsbeslut utifrån en internräntekalkyl. <br /><br />
                     Rörelsemarginalen kan variera beroende på kostnaden för el, kostnaden för utsläpp, kostnaden för investerat kapital och kostnaden för biodrivmedel. Internräntekalkylen bestäms utifrån marknadspriser på el och biodrivmedel, priset för att släppa ut CO2 och den initiala investeringskostnaden. I de tre scenarierna är alla variabler låsta med undantag för priset på att släppa ut som sätts till tre nivåer – att det sänks, att det ligger kvar eller att det höjs.
                 </p>
@@ -106,7 +105,6 @@ const IndustryView = (props) => {
     } else if (gameData && gameData.turn === 6) {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <h3>Rollbeskrivning</h3>
                 <p style={{color: "#484d52"}}>Industrimagnaten styr sin verksamhet efter rörelsemarginalen (rörelseresultat/omsättning) och fattar sina investeringsbeslut utifrån en internräntekalkyl. <br /><br />
                     Rörelsemarginalen kan variera beroende på kostnaden för el, kostnaden för utsläpp, kostnaden för investerat kapital och kostnaden för biodrivmedel. Internräntekalkylen bestäms utifrån marknadspriser på el och biodrivmedel, priset för att släppa ut CO2 och den initiala investeringskostnaden. I de tre scenarierna är alla variabler låsta med undantag för priset på att släppa ut som sätts till tre nivåer – att det sänks, att det ligger kvar eller att det höjs.
                 </p>
