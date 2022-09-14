@@ -1,7 +1,7 @@
 import './votersCosts.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart } from 'recharts';
+import { Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart, ReferenceLine, Label } from 'recharts';
 
 const VoterCosts = (props) => {
     const { propData, title } = props;
@@ -10,16 +10,22 @@ const VoterCosts = (props) => {
     propData.forEach((element, index) => {
         if (element != null) {
             if (element.voters_tax_burden != null) {
-                data[index].votersTaxBurd = Math.floor(element.voters_tax_burden / 1000);
+                data[index].votersTaxBurd = Math.ceil(element.voters_tax_burden / 1000);
             }
             if (element.voters_cost_el != null) {
-                data[index].el = Math.floor(element.voters_cost_el / 1000);
+                data[index].el = Math.ceil(element.voters_cost_el / 1000);
             }
             if (element.voters_costs_other != null) {
-                data[index].other = Math.floor(element.voters_costs_other / 1000);
+                data[index].other = Math.ceil(element.voters_costs_other / 1000);
             }
             if (element.voters_dis_income_after_expenses != null) {
-                data[index].votersDisInc = Math.floor(element.voters_dis_income_after_expenses / 1000);
+                const disInc = Math.ceil(element.voters_dis_income_after_expenses / 1000);
+                if(disInc >= 0) {
+                    data[index].votersDisInc = disInc;
+                } else {
+                    data[index].votersDisInc = 0;
+                }
+
             }
         }
     });
@@ -28,13 +34,16 @@ const VoterCosts = (props) => {
         <div className="wrapper-lineChart">
             <h3>{title}</h3>
             <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
+                <BarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 50 }}>
                     <XAxis stroke="#F6B2BB" strokeWidth={1} tickMargin={10} dataKey="turn" />
-                    <YAxis stroke="#F6B2BB" strokeWidth={1} width={5} tickCount={4} domain={[0, 'datamax']} />
-                    <Bar stackId="one" name="Resterande inkomst" fill="#5dcf3e" dataKey={"votersDisInc"} />
+                    <YAxis stroke="#F6B2BB" strokeWidth={1} width={5} tickCount={4} domain={[datamin => datamin > 0 ? 0 : datamin, 'datamax']} />
+                    <Bar stackId="one" name="Skatt" fill="#EC6161" dataKey={"votersTaxBurd"} />
                     <Bar stackId="one" name="Nödvändiga utgifter" fill="#0094A3" dataKey={"other"} />
                     <Bar stackId="one" name="Elkostnader" fill="#fcba03" dataKey={"el"} />
-                    <Bar stackId="one" name="Skatt" fill="#EC6161" dataKey={"votersTaxBurd"} />
+                    <Bar stackId="one" name="Resterande inkomst" fill="#5dcf3e" dataKey={"votersDisInc"} />
+                    <ReferenceLine y={32} strokeWidth={2} stroke="#EC6161" strokeDasharray="5 5">
+                        <Label fill='#EC6161' value="Inkomst" position="left" />
+                    </ReferenceLine>
                     <Legend />
                 </BarChart>
             </ResponsiveContainer>

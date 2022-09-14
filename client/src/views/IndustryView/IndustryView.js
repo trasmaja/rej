@@ -86,7 +86,7 @@ const IndustryView = (props) => {
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
                 <LineChartComp propData={gameData.data} domain={[0, 1]} dataKey="co2" progKey="co2prog" title="Industrins utsläpp (miljoner ton C02-ekvivalenter)" />
-                <EBITChart propData={gameData.data} title="Rörelsemarginal (%)" />
+                <EBITChart propData={gameData.data} title="Rörelsemarginal (%)" lineColor="#2B3B55" />
                 <LineChartElPrice propData={gameData.data} title="Elpriset (kr/kWh)" />
                 {/* <PastEvents turn={turn}/> */}
                 <h2>Beslutsunderlag</h2>
