@@ -82,21 +82,27 @@ const Voters = (props) => {
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
+                <h3>Rollbeskrivning</h3>
+                <p style={{color: "#c1c2c3"}}>Väljaren har som uppgift att ge politikern input om hur väl denne gör sitt jobb. Väljaren får en överblick över utsläppen och arbetslösheten. Den får även en bild av sin egen ekonomi. Denna bestäms av hur det går för industrin/arbetslösheten och hur dyrt det är att leva för närvarande. Detta senare bestäms av två faktorer: Priset för att släppa ut samt hur mycket ekonomin släpper ut. Väljaren får också en kalkyl över vad det i dagsläget kostar att ha en elbil eller en bensinbil. Utifrån detta ska den fatta ett beslut om vilket av alternativen den hade valt. Detta kommer i sin tur påverka hur stora utsläppen blir från transportsektorn.
+                </p>
                 <h2>Nulägesrapport</h2>
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
                 <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
                 <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
                 <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
                 <h2>Beslut</h2>
-                <h3>Rating av politkernas jobb</h3>
+                <h4>Hur bra sköter politkerna sitt jobb?</h4>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} />
-                <h3>Vad för bil vill du köpa?</h3>
+                <h4>Vad för bil vill du köpa?</h4>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={carDec} />
             </div>
         );
-    }  else if (gameData && gameData.turn === 6) {
+    } else if (gameData && gameData.turn === 6) {
         mainBody = (
             <div className="wrapper-currentStatus">
+                <h3>Rollbeskrivning</h3>
+                <p style={{color: "#c1c2c3"}}>Väljaren har som uppgift att ge politikern input om hur väl denne gör sitt jobb. Väljaren får en överblick över utsläppen och arbetslösheten. Den får även en bild av sin egen ekonomi. Denna bestäms av hur det går för industrin/arbetslösheten och hur dyrt det är att leva för närvarande. Detta senare bestäms av två faktorer: Priset för att släppa ut samt hur mycket ekonomin släpper ut. Väljaren får också en kalkyl över vad det i dagsläget kostar att ha en elbil eller en bensinbil. Utifrån detta ska den fatta ett beslut om vilket av alternativen den hade valt. Detta kommer i sin tur påverka hur stora utsläppen blir från transportsektorn.
+                </p>
                 <h2>Utvärdering</h2>
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
                 <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
@@ -108,10 +114,10 @@ const Voters = (props) => {
 
     return (
         <ThemeProvider theme={theme}>
-        <div>
-            <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
-            {mainBody}
-        </div>
+            <div>
+                <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
+                {mainBody}
+            </div>
         </ThemeProvider>
     );
 }

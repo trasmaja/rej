@@ -34,7 +34,7 @@ const VoterCosts = (props) => {
         <div className="wrapper-lineChart">
             <h3>{title}</h3>
             <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 50 }}>
+                <BarChart data={data} margin={{ top: 10, right: 60, bottom: 10, left: 30 }}>
                     <XAxis stroke="#F6B2BB" strokeWidth={1} tickMargin={10} dataKey="turn" />
                     <YAxis stroke="#F6B2BB" strokeWidth={1} width={5} tickCount={4} domain={[datamin => datamin > 0 ? 0 : datamin, 'datamax']} />
                     <Bar stackId="one" name="Skatt" fill="#EC6161" dataKey={"votersTaxBurd"} />
@@ -42,7 +42,7 @@ const VoterCosts = (props) => {
                     <Bar stackId="one" name="Elkostnader" fill="#fcba03" dataKey={"el"} />
                     <Bar stackId="one" name="Resterande inkomst" fill="#5dcf3e" dataKey={"votersDisInc"} />
                     <ReferenceLine y={32} strokeWidth={2} stroke="#EC6161" strokeDasharray="5 5">
-                        <Label fill='#EC6161' value="Inkomst" position="left" />
+                        <Label fill='#EC6161' value="Inkomst" position="right" />
                     </ReferenceLine>
                     <Legend />
                 </BarChart>

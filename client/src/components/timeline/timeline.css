@@ -10,6 +10,12 @@
     font-size: min(10vw, 36px);
     padding: 15px;
     margin: 0;
+    text-align: center;
+}
+.wrapper-timeline-title p{
+    font-size: 16px;
+    padding: 15px;
+    margin: 0;
 }
 .wrapper-timeline-timeline {
     width: 100%;

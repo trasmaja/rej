@@ -4,5 +4,20 @@
     padding: 15px;
 }
 .wrapper-currentStatus h2{
+    text-align: center;
     font-size: min(10vw, 36px);
+} 
+.wrapper-currentStatus h3{
+    font-size: min(8vw, 26px);
+    padding: 0;
+    margin: 0;
+} 
+.wrapper-currentStatus h4{
+    font-size: 16px;
+    padding: 0;
+    margin: 10px 10px 10px 0;
+} 
+.wrapper-currentStatus p{
+    font-size: 16px;
+    margin-top: 0;
 } 

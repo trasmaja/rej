@@ -38,7 +38,7 @@ const PolicyView = (props) => {
 
     // Besluten som Policy kan göra
     const co2dec = ["1) Höj mycket", "2) Höj lite", "3) Behåll nuvarande", "4) Sänk lite", "5) Sänk mycket"];
-    const greendec = ["1) Hög nivå", "2) Mellan nivå", "3) Låg nivå"];
+    const greendec = ["1) Stor", "2) Mellan", "3) Liten"];
     const svkdec = ["1) Bygg ut mycket", "2) Bygg ut lite", "3) Behåll nuvarande"];
 
     // staten som håller all speldata
@@ -83,27 +83,37 @@ const PolicyView = (props) => {
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
+                <h3>Rollbeskrivning</h3>
+                <p style={{color: "#484d52"}}>Politikern ansvarar för att sätta ramarna för industrins investeringsbeslut och för det potentiella utbudet på elmarknaden. Därutöver kan politikern ge subventioner till väljaren för att göra det billigare att köpa elbil. Som input får politikern ett betyg av väljarna och om detta blir för lågt begränsas politikerns handlingsfrihet. <br /><br />
+                    Ramarna för industrin påverkas genom att politikern kan höja eller sänka priset att släppa ut CO2 och genom investeringsstöd genom en Grön Giv. Samma gröna giv innefattar även ett stöd till konsumenter för att köpa elbil. <br /><br />
+                    Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
+                </p>
                 <h2>Nulägesrapport</h2>
                 <SingleLineChart tick={true} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
-                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB"/>
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />
                 <h2>Beslut</h2>
-                <h3>Vad vill ni göra med CO2 priest?</h3>
+                <h4>Vad vill du göra med CO2 priest?</h4>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} />
-                <h3>Vad vill ni göra med det gröna paketet?</h3>
+                <h4>Hur stort ska den gröna given vara?</h4>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={greendec} />
-                <h3>Vad vill ni göra med stamnätet?</h3>
+                <h4>Vad vill du göra med stamnätet?</h4>
                 <DecisionVoteList vote={vote} qIndex={2} decisions={svkdec} />
             </div>
         );
     } else if (gameData && gameData.turn === 6) {
         mainBody = (
             <div className="wrapper-currentStatus">
+                <h3>Rollbeskrivning</h3>
+                <p style={{color: "#484d52"}}>Politikern ansvarar för att sätta ramarna för industrins investeringsbeslut och för det potentiella utbudet på elmarknaden. Därutöver kan politikern ge subventioner till väljaren för att göra det billigare att köpa elbil. Som input får politikern ett betyg av väljarna och om detta blir för lågt begränsas politikerns handlingsfrihet. <br /><br />
+                    Ramarna för industrin påverkas genom att politikern kan höja eller sänka priset att släppa ut CO2 och genom investeringsstöd genom en Grön Giv. Samma gröna giv innefattar även ett stöd till konsumenter för att köpa elbil. <br /><br />
+                    Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
+                </p>
                 <h2>Utvärdering</h2>
                 <SingleLineChart tick={true} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
-                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB"/>
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />
             </div>
         );
