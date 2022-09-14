@@ -24,11 +24,12 @@ const TotalEmissionChart = (props) => {
             <ResponsiveContainer width="100%" height={300}>
                 <ComposedChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
-                    <XAxis tickMargin={10} dataKey="turn" />
-                    <YAxis width={5} tick={false} domain={[0, 25]} />
-                    <Line dot={false} name="Prognos" legend type="linear" dataKey={"prog"} stroke="#ccc" strokeWidth={3} strokeDasharray="3 3" />
-                    <Area dot={true} name="Transportsektorn" stackId={1} strokeWidth={3} stroke="#0094A3" fill="#0094A3" dataKey={"co2Trans"} />
-                    <Area dot={true} name="Industrisektorn" stackId={1} strokeWidth={3} stroke="#EC6161" fill="#EC6161" dataKey={"co2"} />
+                    <XAxis strokeWidth={1} stroke="#666" tickMargin={10} dataKey="turn" />
+                    <YAxis strokeWidth={1} stroke="#666" width={5} tickCount={7} domain={[0, datamax => datamax + 5]} />
+                    <Line dot={false} name="Prognos" legendType="none"
+                        tooltipType="none" type="linear" dataKey={"prog"} stroke="#ccc" strokeWidth={2} strokeDasharray="4 4" />
+                    <Area dot={true} name="Transportsektorn" stackId={1} strokeWidth={2} stroke="#0094A3" fill="#0094A3" dataKey={"co2Trans"} />
+                    <Area dot={true} name="Industrisektorn" stackId={1} strokeWidth={2} stroke="#EC6161" fill="#EC6161" dataKey={"co2"} />
                     <Legend />
                 </ComposedChart>
             </ResponsiveContainer>

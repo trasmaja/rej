@@ -5,6 +5,24 @@ import TimeLine from '../../components/timeline/timeline';
 import SupplyDemandGraph from '../../components/supplyDemandGraph/supplyDemandGraph';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
 import EBITChartEl from '../../components/EBITChartEl/EBITChartEl';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: '#BFE5DA',
+            main: '#57B998',
+            dark: '#3d8f73',
+            contrastText: '#FFF',
+        },
+        // secondary: {
+        //     light: '#ff7961',
+        //     main: '#f44336',
+        //     dark: '#ba000d',
+        //     contrastText: '#000',
+        // },
+    },
+});
 
 const ElcoView = (props) => {
     const { sectorName, socket } = props;
@@ -51,7 +69,7 @@ const ElcoView = (props) => {
     let mainBody;
 
     // Det som ska synas på skärmen när spelet är i presentatör läge
-    if (gameData && (gameData.state === "presenting"&& gameData.turn !== 6))  {
+    if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2 className="centerText">Runda avslutad</h2>
@@ -73,10 +91,12 @@ const ElcoView = (props) => {
     }
 
     return (
-        <div>
-            <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={sectorName} />
-            {mainBody}
-        </div>
+        <ThemeProvider theme={theme}>
+            <div>
+                <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={sectorName} />
+                {mainBody}
+            </div>ß
+        </ThemeProvider>
     );
 }
 

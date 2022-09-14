@@ -36,15 +36,15 @@ const Home = (props) => {
     const sectors = [<IndustryView socket={socket} sectorName="Industrimagnat" />, <PolicyView socket={socket} sectorName="Politiker" />, <ElcoView socket={socket} sectorName="Elbolag" />, <Voters socket={socket} sectorName="Väljare" />]
 
     // En switch som renderar olika saker baserat på index
-    switch (0) {
+    switch (sectorIndex) {
         case 0:
             return <main className="industryMain">{sectors[0]}</main>
         case 1:
-            return <main>{sectors[1]}</main>
+            return <main className="policyMain">{sectors[1]}</main>
         case 2:
-            return <main>{sectors[2]}</main>
+            return <main className="elcoMain">{sectors[2]}</main>
         case 3:
-            return <main>{sectors[3]}</main>
+            return <main className="voterMain">{sectors[3]}</main>
         default:
             // Fallback om sectorIndex är något annat än 0,1,2,3
             const random = Math.floor(Math.random() * sectors.length);

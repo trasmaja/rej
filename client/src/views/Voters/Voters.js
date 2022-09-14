@@ -7,6 +7,24 @@ import EBITChart from '../../components/EBITChart/EBITChart';
 import TotalEmissionChart from '../../components/totalEmissionChart/totalEmissionChart';
 import CarCosts from '../../components/carCosts/carCosts';
 import VoterCosts from '../../components/votersCosts/votersCosts';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: '#f7c6cc',
+            main: '#F6B2BB',
+            dark: '#d99ca4',
+            contrastText: '#2C3955',
+        },
+        // secondary: {
+        //     light: '#ff7961',
+        //     main: '#f44336',
+        //     dark: '#ba000d',
+        //     contrastText: '#000',
+        // },
+    },
+});
 
 const Voters = (props) => {
     // funktionen som skickar en vote till servern
@@ -67,8 +85,8 @@ const Voters = (props) => {
                 <h2>Nulägesrapport</h2>
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
                 <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
-                <VoterCosts propData={gameData.data} title="Din ekonomi" />
-                <CarCosts propData={gameData.data} title="Fordonskostnad" />
+                <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
+                <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
                 <h2>Beslut</h2>
                 <h3>Rating av politkernas jobb</h3>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} />
@@ -79,10 +97,12 @@ const Voters = (props) => {
     }
 
     return (
+        <ThemeProvider theme={theme}>
         <div>
             <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
             {mainBody}
         </div>
+        </ThemeProvider>
     );
 }
 
