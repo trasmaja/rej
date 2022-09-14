@@ -76,7 +76,7 @@ const ElcoView = (props) => {
             </div>
         );
         // Det som ska synas när man är i vanliga spel läget
-    } else if (gameData && (gameData.state === "playing" || gameData.turn === 6)) {
+    } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
@@ -86,6 +86,14 @@ const ElcoView = (props) => {
                 <h3>Vad vill ni göra med elproduktionen?</h3>
                 <DecisionVoteList vote={vote} decisions={decisionList} />
 
+            </div>
+        );
+    }   else if (gameData && gameData.turn === 6) {
+        mainBody = (
+            <div className="wrapper-currentStatus">
+                <h2>Utvärdering</h2>
+                <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden (TWh)" />
+                <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
             </div>
         );
     }

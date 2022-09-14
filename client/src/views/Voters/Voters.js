@@ -79,7 +79,7 @@ const Voters = (props) => {
             </div>
         );
         // Det som ska synas när man är i vanliga spel läget
-    } else if (gameData && (gameData.state === "playing" || gameData.turn === 6)) {
+    } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2>Nulägesrapport</h2>
@@ -92,6 +92,16 @@ const Voters = (props) => {
                 <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} />
                 <h3>Vad för bil vill du köpa?</h3>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={carDec} />
+            </div>
+        );
+    }  else if (gameData && gameData.turn === 6) {
+        mainBody = (
+            <div className="wrapper-currentStatus">
+                <h2>Utvärdering</h2>
+                <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
+                <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
+                <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
             </div>
         );
     }
