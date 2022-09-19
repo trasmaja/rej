@@ -13,3 +13,9 @@ pinik #F6B2BB
 green #2AA784
 light green #BFE5DA
 deep blue #2B3A55
+
+
+
+ta bort confirm röstning
+ebit --> arbetslöshet
+ändra textn
