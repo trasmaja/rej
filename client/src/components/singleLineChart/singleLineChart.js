@@ -4,7 +4,7 @@ import React from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 const SingleLineChart = (props) => {
-    const { propData, dataKey, domain, tick, title } = props;
+    const { propData, dataKey, domain, tick, title, tickCount } = props;
     const data = [{ turn: '2022', value: null }, { turn: '2025', value: null }, { turn: '2030', value: null }, { turn: '2035', value: null }, { turn: '2040', value: null }, { turn: '2045', value: null }];
 
     propData.forEach((element, index) => {
@@ -22,7 +22,7 @@ const SingleLineChart = (props) => {
                 <LineChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
                     <XAxis strokeWidth={1} tickMargin={10} stroke="#666" dataKey="turn" />
-                    <YAxis strokeWidth={1} stroke="#666" width={5} domain={domain} tick={tick} tickCount={2} />
+                    <YAxis strokeWidth={1} stroke="#666" width={5} domain={domain} tick={tick} tickCount={tickCount} />
                     <Line type="linear" strokeWidth={2} stroke="#F6B2BB" dataKey={"value"} />
                 </LineChart>
             </ResponsiveContainer>

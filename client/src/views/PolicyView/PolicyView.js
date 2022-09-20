@@ -88,7 +88,7 @@ const PolicyView = (props) => {
                     Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
                 </p>
                 <h2>Nulägesrapport</h2>
-                <SingleLineChart tick={true} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
+                <SingleLineChart tick={true} tickCount={2} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
                 <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />
@@ -109,7 +109,7 @@ const PolicyView = (props) => {
                     Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
                 </p>
                 <h2>Utvärdering</h2>
-                <SingleLineChart tick={true} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
+                <SingleLineChart tick={true} tickCount={2} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
                 <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import TimeLine from '../../components/timeline/timeline';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
 import EBITChart from '../../components/EBITChart/EBITChart';
+import SingleLineChart from '../../components/singleLineChart/singleLineChart';
 import TotalEmissionChart from '../../components/totalEmissionChart/totalEmissionChart';
 import CarCosts from '../../components/carCosts/carCosts';
 import VoterCosts from '../../components/votersCosts/votersCosts';
@@ -86,7 +87,8 @@ const Voters = (props) => {
                 </p>
                 <h2>Nulägesrapport</h2>
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
-                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
+                {/* <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" /> */}
+                <SingleLineChart tick={true} tickCount={6} propData={gameData.data} domain={[0, 25]} dataKey="voter_unemployment" title="Arbetslöshet (%)" />
                 <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
                 <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
                 <h2>Beslut</h2>
@@ -103,7 +105,8 @@ const Voters = (props) => {
                 </p>
                 <h2>Utvärdering</h2>
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
-                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
+                {/* <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" /> */}
+                <SingleLineChart tick={true} tickCount={6} propData={gameData.data} domain={[0, 25]} dataKey="voter_unemployment" title="Arbetslöshet" />
                 <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
                 <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
             </div>
