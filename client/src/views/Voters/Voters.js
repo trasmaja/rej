@@ -7,6 +7,24 @@ import EBITChart from '../../components/EBITChart/EBITChart';
 import TotalEmissionChart from '../../components/totalEmissionChart/totalEmissionChart';
 import CarCosts from '../../components/carCosts/carCosts';
 import VoterCosts from '../../components/votersCosts/votersCosts';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: '#f7c6cc',
+            main: '#F6B2BB',
+            dark: '#d99ca4',
+            contrastText: '#2C3955',
+        },
+        // secondary: {
+        //     light: '#ff7961',
+        //     main: '#f44336',
+        //     dark: '#ba000d',
+        //     contrastText: '#000',
+        // },
+    },
+});
 
 const Voters = (props) => {
     // funktionen som skickar en vote till servern
@@ -54,7 +72,7 @@ const Voters = (props) => {
     let mainBody;
 
     // Det som ska synas på skärmen när spelet är i presentatör läge
-    if (gameData && gameData.state === "presenting") {
+    if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2 className="centerText">Runda avslutad</h2>
@@ -64,25 +82,41 @@ const Voters = (props) => {
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
+                <p style={{color: "#c1c2c3"}}>Väljaren har som uppgift att ge politikern input om hur väl denne gör sitt jobb. Väljaren får en överblick över utsläppen och arbetslösheten. Den får även en bild av sin egen ekonomi. Denna bestäms av hur det går för industrin/arbetslösheten och hur dyrt det är att leva för närvarande. Detta senare bestäms av två faktorer: Priset för att släppa ut samt hur mycket ekonomin släpper ut. Väljaren får också en kalkyl över vad det i dagsläget kostar att ha en elbil eller en bensinbil. Utifrån detta ska den fatta ett beslut om vilket av alternativen den hade valt. Detta kommer i sin tur påverka hur stora utsläppen blir från transportsektorn.
+                </p>
                 <h2>Nulägesrapport</h2>
-                <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
-                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
-                <CarCosts propData={gameData.data} title="Fordonskostnad" />
-                <VoterCosts propData={gameData.data} title="Din ekonomi" />
-                <h2>Rösta på beslut</h2>
-                <p>Rating av politkernas jobb</p>
+                <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
+                <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
+                <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
+                <h2>Beslut</h2>
+                <h4>Hur bra sköter politkerna sitt jobb?</h4>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} />
-                <p>Vad för bil vill du köpa?</p>
+                <h4>Vad för bil vill du köpa?</h4>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={carDec} />
+            </div>
+        );
+    } else if (gameData && gameData.turn === 6) {
+        mainBody = (
+            <div className="wrapper-currentStatus">
+                <p style={{color: "#c1c2c3"}}>Väljaren har som uppgift att ge politikern input om hur väl denne gör sitt jobb. Väljaren får en överblick över utsläppen och arbetslösheten. Den får även en bild av sin egen ekonomi. Denna bestäms av hur det går för industrin/arbetslösheten och hur dyrt det är att leva för närvarande. Detta senare bestäms av två faktorer: Priset för att släppa ut samt hur mycket ekonomin släpper ut. Väljaren får också en kalkyl över vad det i dagsläget kostar att ha en elbil eller en bensinbil. Utifrån detta ska den fatta ett beslut om vilket av alternativen den hade valt. Detta kommer i sin tur påverka hur stora utsläppen blir från transportsektorn.
+                </p>
+                <h2>Utvärdering</h2>
+                <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
+                <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
+                <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
             </div>
         );
     }
 
     return (
-        <div>
-            <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
-            {mainBody}
-        </div>
+        <ThemeProvider theme={theme}>
+            <div>
+                <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={props.sectorName} />
+                {mainBody}
+            </div>
+        </ThemeProvider>
     );
 }
 

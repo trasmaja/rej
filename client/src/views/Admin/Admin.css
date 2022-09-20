@@ -103,7 +103,7 @@
 .admin-main-left {
     flex: 50%;
     height: 100%;
-    padding: 0;
+    padding: 0 15px 0 15px;
     margin: 0;
     display: inline-block;
 }
@@ -116,7 +116,7 @@
 .admin-main-rigth {
     flex: 50%;
     height: 100%;
-    padding: 0;
+    padding: 0 15px 0 15px;
     margin: 0;
     display: inline-block;
 }
@@ -146,6 +146,7 @@
     padding-top: 80px;
     text-align: center;
 }
+
 .player-count-text-wrapper {
     width: 400px;
     height: 200px;
@@ -158,11 +159,13 @@
     font-size: 60px;
     color: #2AA784;
 }
+
 .number {
     font-size: 100px;
     padding: 0;
     margin: 0;
 }
+
 .bounceAni {
     padding-top: 0px;
     animation-duration: 3.0s;
@@ -173,23 +176,31 @@
     animation-name: pulse;
     animation-delay: inherit;
 }
+
 .player-count-text-wrapper:nth-child(1) {
     animation-delay: 0s !important;
 }
+
 .player-count-text-wrapper:nth-child(2) {
     animation-delay: 0.5s !important;
 }
+
 .player-count-text-wrapper:nth-child(3) {
     animation-delay: 1s !important;
 }
+
 .player-count-text-wrapper:nth-child(4) {
     animation-delay: 1.5s !important;
 }
+
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0);
-      }
-      50% {
+    }
+
+    50% {
         transform: translateY(-20px);
-      }
+    }
 }

@@ -7,6 +7,24 @@ import SingleLineChart from '../../components/singleLineChart/singleLineChart';
 import EBITChart from '../../components/EBITChart/EBITChart';
 import TotalEmissionChart from '../../components/totalEmissionChart/totalEmissionChart';
 import SupplyDemandGraph from '../../components/supplyDemandGraph/supplyDemandGraph';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: '#f7c6cc',
+            main: '#F6B2BB',
+            dark: '#d99ca4',
+            contrastText: '#F4F4F4',
+        },
+        // secondary: {
+        //     light: '#ff7961',
+        //     main: '#f44336',
+        //     dark: '#ba000d',
+        //     contrastText: '#000',
+        // },
+    },
+});
 
 const PolicyView = (props) => {
     const { sectorName, socket } = props;
@@ -20,7 +38,7 @@ const PolicyView = (props) => {
 
     // Besluten som Policy kan göra
     const co2dec = ["1) Höj mycket", "2) Höj lite", "3) Behåll nuvarande", "4) Sänk lite", "5) Sänk mycket"];
-    const greendec = ["1) Hög nivå", "2) Mellan nivå", "3) Låg nivå"];
+    const greendec = ["1) Stor", "2) Mellan", "3) Liten"];
     const svkdec = ["1) Bygg ut mycket", "2) Bygg ut lite", "3) Behåll nuvarande"];
 
     // staten som håller all speldata
@@ -55,37 +73,57 @@ const PolicyView = (props) => {
     let mainBody;
 
     // Det som ska synas på skärmen när spelet är i presentatör läge
-    if (gameData && gameData.state === "presenting") {
+    if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2 className="centerText">Runda avslutad</h2>
             </div>
         );
-    // Det som ska synas när man är i vanliga spel läget
+        // Det som ska synas när man är i vanliga spel läget
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
+                <p style={{color: "#484d52"}}>Politikern ansvarar för att sätta ramarna för industrins investeringsbeslut och för det potentiella utbudet på elmarknaden. Därutöver kan politikern ge subventioner till väljaren för att göra det billigare att köpa elbil. Som input får politikern ett betyg av väljarna och om detta blir för lågt begränsas politikerns handlingsfrihet. <br /><br />
+                    Ramarna för industrin påverkas genom att politikern kan höja eller sänka priset att släppa ut CO2 och genom investeringsstöd genom en Grön Giv. Samma gröna giv innefattar även ett stöd till konsumenter för att köpa elbil. <br /><br />
+                    Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
+                </p>
                 <h2>Nulägesrapport</h2>
-                <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges CO2-utsläpp" />
-                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" />
-                <SingleLineChart tick={true} propData={gameData.data} domain={[0, 1]} dataKey="voters_rating" title="Approval rating" />
+                <SingleLineChart tick={true} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
+                <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />
-                <h2>Rösta på beslut</h2>
-                <p>Vad vill ni göra med CO2 priest?</p>
+                <h2>Beslut</h2>
+                <h4>Vad vill du göra med CO2 priest?</h4>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} />
-                <p>Vad vill ni göra med det gröna paketet?</p>
+                <h4>Hur stort ska den gröna given vara?</h4>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={greendec} />
-                <p>Vad vill ni göra med stamnätet?</p>
+                <h4>Vad vill du göra med stamnätet?</h4>
                 <DecisionVoteList vote={vote} qIndex={2} decisions={svkdec} />
+            </div>
+        );
+    } else if (gameData && gameData.turn === 6) {
+        mainBody = (
+            <div className="wrapper-currentStatus">
+                <p style={{color: "#484d52"}}>Politikern ansvarar för att sätta ramarna för industrins investeringsbeslut och för det potentiella utbudet på elmarknaden. Därutöver kan politikern ge subventioner till väljaren för att göra det billigare att köpa elbil. Som input får politikern ett betyg av väljarna och om detta blir för lågt begränsas politikerns handlingsfrihet. <br /><br />
+                    Ramarna för industrin påverkas genom att politikern kan höja eller sänka priset att släppa ut CO2 och genom investeringsstöd genom en Grön Giv. Samma gröna giv innefattar även ett stöd till konsumenter för att köpa elbil. <br /><br />
+                    Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
+                </p>
+                <h2>Utvärdering</h2>
+                <SingleLineChart tick={true} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
+                <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
+                <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" />
+                <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />
             </div>
         );
     }
 
     return (
-        <div>
-            <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={sectorName} />
-            {mainBody}
-        </div>
+        <ThemeProvider theme={theme}>
+            <div>
+                <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={sectorName} />
+                {mainBody}
+            </div>
+        </ThemeProvider>
     );
 }
 

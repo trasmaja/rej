@@ -1,3 +1,20 @@
-.Home {
-    background-color: #f5f5f5;
+.industryMain {
+    background-color: #DFDBD9;
+    color: #2B3B55;
+    min-height: 100vh;
+}
+.policyMain {
+    background-color: #FBE1E5;
+    color: #F6B2BB;
+    min-height: 100vh;
+}
+.elcoMain {
+    background-color: #BFE5DA;
+    color: #57B998;
+    min-height: 100vh;
+}
+.voterMain {
+    background-color: #2C3955;
+    color: #F6B2BB;
+    min-height: 100vh;
 }

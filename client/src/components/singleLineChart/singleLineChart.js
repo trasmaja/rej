@@ -10,7 +10,7 @@ const SingleLineChart = (props) => {
     propData.forEach((element, index) => {
         if (element != null) {
             if (element[dataKey] != null) {
-                data[index].value = element[dataKey];
+                data[index].value = Math.floor(element[dataKey] * 100 );
             }
         }
     });
@@ -21,9 +21,9 @@ const SingleLineChart = (props) => {
             <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <CartesianGrid stroke="#ccc" />
-                    <XAxis tickMargin={10} stroke="#484D52" dataKey="turn" />
-                    <YAxis stroke="#484D52" width={5} domain={domain} tick={tick} tickCount={2} />
-                    <Line type="linear" strokeWidth={3} stroke="#2AA784" dataKey={"value"} />
+                    <XAxis strokeWidth={1} tickMargin={10} stroke="#666" dataKey="turn" />
+                    <YAxis strokeWidth={1} stroke="#666" width={5} domain={domain} tick={tick} tickCount={2} />
+                    <Line type="linear" strokeWidth={2} stroke="#F6B2BB" dataKey={"value"} />
                 </LineChart>
             </ResponsiveContainer>
         </div>

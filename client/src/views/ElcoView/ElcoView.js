@@ -4,6 +4,25 @@ import React, { useState, useEffect } from 'react';
 import TimeLine from '../../components/timeline/timeline';
 import SupplyDemandGraph from '../../components/supplyDemandGraph/supplyDemandGraph';
 import DecisionVoteList from '../../components/decisionVoteList/decisionVoteList';
+import EBITChartEl from '../../components/EBITChartEl/EBITChartEl';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: '#BFE5DA',
+            main: '#57B998',
+            dark: '#3d8f73',
+            contrastText: '#FFF',
+        },
+        // secondary: {
+        //     light: '#ff7961',
+        //     main: '#f44336',
+        //     dark: '#ba000d',
+        //     contrastText: '#000',
+        // },
+    },
+});
 
 const ElcoView = (props) => {
     const { sectorName, socket } = props;
@@ -50,7 +69,7 @@ const ElcoView = (props) => {
     let mainBody;
 
     // Det som ska synas på skärmen när spelet är i presentatör läge
-    if (gameData && gameData.state === "presenting") {
+    if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
         mainBody = (
             <div className="wrapper-currentStatus">
                 <h2 className="centerText">Runda avslutad</h2>
@@ -60,21 +79,34 @@ const ElcoView = (props) => {
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
+                <p style={{color: "#484d52"}}>Elbolagsoperatören reglerar utbudet av el på marknaden och har därmed en stor inverkan på elpriset som bestäms som en funktion av utbud och efterfrågan. Elnätsoperatören har också en rörelsemarginal som bestäms av dess kostnader (som bestäms av storleken på produktionen) och dess intäkter (som bestäms av elpriset och efterfrågan). Elpriset sätts genom utbud och efterfrågan.</p>
                 <h2>Nulägesrapport</h2>
-                <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden" />
-                <h2>Rösta på beslut</h2>
-                <p>Vad vill ni göra med elproduktionen?</p>
+                <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden (TWh)" />
+                <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
+                <h2>Beslut</h2>
+                <h4>Vad vill du göra med elproduktionen?</h4>
                 <DecisionVoteList vote={vote} decisions={decisionList} />
 
+            </div>
+        );
+    } else if (gameData && gameData.turn === 6) {
+        mainBody = (
+            <div className="wrapper-currentStatus">
+                <p style={{color: "#484d52"}}>Elbolagsoperatören reglerar utbudet av el på marknaden och har därmed en stor inverkan på elpriset som bestäms som en funktion av utbud och efterfrågan. Elnätsoperatören har också en rörelsemarginal som bestäms av dess kostnader (som bestäms av storleken på produktionen) och dess intäkter (som bestäms av elpriset och efterfrågan). Elpriset sätts genom utbud och efterfrågan.</p>
+                <h2>Utvärdering</h2>
+                <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden (TWh)" />
+                <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
             </div>
         );
     }
 
     return (
-        <div>
-            <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={sectorName} />
-            {mainBody}
-        </div>
+        <ThemeProvider theme={theme}>
+            <div>
+                <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={sectorName} />
+                {mainBody}
+            </div>ß
+        </ThemeProvider>
     );
 }
 

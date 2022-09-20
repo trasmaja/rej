@@ -1,19 +1,25 @@
 import './votersCosts.css';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart } from 'recharts';
+import { Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, BarChart, ReferenceLine, Label } from 'recharts';
 
 const VoterCosts = (props) => {
     const { propData, title } = props;
-    const data = [{ turn: '2022', votersDisInc: null, votersTaxBurd: null, }, { turn: '2025', votersDisInc: null, votersTaxBurd: null, }, { turn: '2030', votersDisInc: null, votersTaxBurd: null, }, { turn: '2035', votersDisInc: null, votersTaxBurd: null, }, { turn: '2040', votersDisInc: null, votersTaxBurd: null, }, { turn: '2045', votersDisInc: null, votersTaxBurd: null, }];
+    const data = [{ turn: '2022', votersDisInc: null, votersTaxBurd: null, el: null, other: null, rest: null }, { turn: '2025', votersDisInc: null, votersTaxBurd: null, el: null, other: null, rest: null }, { turn: '2030', votersDisInc: null, votersTaxBurd: null, el: null, other: null, rest: null }, { turn: '2035', votersDisInc: null, votersTaxBurd: null, el: null, other: null, rest: null }, { turn: '2040', votersDisInc: null, votersTaxBurd: null, el: null, other: null, rest: null }, { turn: '2045', votersDisInc: null, votersTaxBurd: null, el: null, other: null, rest: null }];
 
     propData.forEach((element, index) => {
         if (element != null) {
             if (element.voters_tax_burden != null) {
-                data[index].votersTaxBurd = element.voters_tax_burden;
+                data[index].votersTaxBurd = Math.ceil(element.voters_tax_burden / 1000);
             }
-            if (element.voters_dis_income != null) {
-                data[index].votersDisInc = element.voters_dis_income;
+            if (element.voters_cost_el != null) {
+                data[index].el = Math.ceil(element.voters_cost_el / 1000);
+            }
+            if (element.voters_costs_other != null) {
+                data[index].other = Math.ceil(element.voters_costs_other / 1000);
+            }
+            if (element.voters_income != null) {
+                data[index].votersDisInc = Math.ceil(element.voters_income / 1000);          
             }
         }
     });
@@ -22,12 +28,16 @@ const VoterCosts = (props) => {
         <div className="wrapper-lineChart">
             <h3>{title}</h3>
             <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
-                    <CartesianGrid stroke="#ccc" />
-                    <XAxis tickMargin={10} dataKey="turn" />
-                    <YAxis width={5} tick={false} domain={[0, datamax => (datamax + 1000)]} />
-                    <Bar stackId="one" name="Disponibel inkomst" fill="#0094A3" dataKey={"votersDisInc"} />
+                <BarChart data={data} margin={{ top: 10, right: 60, bottom: 10, left: 30 }}>
+                    <XAxis stroke="#F6B2BB" strokeWidth={1} tickMargin={10} dataKey="turn" />
+                    <YAxis stroke="#F6B2BB" strokeWidth={1} width={5} tickCount={4} domain={[datamin => datamin > 0 ? 0 : datamin, 'datamax']} />
+                    <Bar stackId="two" name="Inkomst" fill="#5dcf3e" dataKey={"votersDisInc"} />
                     <Bar stackId="one" name="Skatt" fill="#EC6161" dataKey={"votersTaxBurd"} />
+                    <Bar stackId="one" name="Nödvändiga utgifter" fill="#0094A3" dataKey={"other"} />
+                    <Bar stackId="one" name="Elkostnader" fill="#fcba03" dataKey={"el"} />
+                    {/* <ReferenceLine y={32} strokeWidth={2} stroke="#EC6161" strokeDasharray="5 5">
+                        <Label fill='#EC6161' value="Inkomst" position="right" />
+                    </ReferenceLine> */}
                     <Legend />
                 </BarChart>
             </ResponsiveContainer>

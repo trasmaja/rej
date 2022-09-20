@@ -8,6 +8,24 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import rejlersLogo from './rejlers_logo.png';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: '#BFE5DA',
+            main: '#57B998',
+            dark: '#3d8f73',
+            contrastText: '#FFF',
+        },
+        // secondary: {
+        //     light: '#ff7961',
+        //     main: '#f44336',
+        //     dark: '#ba000d',
+        //     contrastText: '#000',
+        // },
+    },
+});
 
 export default function Admin(props) {
     console.log(props)
@@ -20,7 +38,7 @@ export default function Admin(props) {
     };
 
     const handleClose = (confirmVote) => {
-        if(confirmVote) {
+        if (confirmVote) {
             props.socket.emit("resetGame");
         }
         setOpen(false);
@@ -69,7 +87,7 @@ export default function Admin(props) {
             return (
                 <div className={classNameList} key={key}>
                     <div className="admin-main-title">
-                        <h2>{indexToYear[index]} - {indexToYear[index+1]}</h2>
+                        <h2>{indexToYear[index]} - {indexToYear[index + 1]}</h2>
                     </div>
                     <div className="admin-main-flex">
                         <div className="admin-main-left">
@@ -110,36 +128,38 @@ export default function Admin(props) {
         )
     }
     return (
-        <main className="admin">
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {'Vill du starta om spelet?'}
-                </DialogTitle>
-                <DialogActions>
-                    <Button variant="contained" onClick={() => handleClose(true)} autoFocus>Ja</Button>
-                    <Button variant="outlined" onClick={() => handleClose(false)}>Nej</Button>
-                </DialogActions>
-            </Dialog>
-            <div className="admin-top">
-                <div className="admin-top-left" onClick={() => handleClickOpen()}>
-                    <img className="admin-top-leftIcon" src={rejlersLogo} alt="Rejlers" />
+        <ThemeProvider theme={theme}>
+            <main className="admin">
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {'Vill du starta om spelet?'}
+                    </DialogTitle>
+                    <DialogActions>
+                        <Button variant="contained" onClick={() => handleClose(true)} autoFocus>Ja</Button>
+                        <Button variant="outlined" onClick={() => handleClose(false)}>Nej</Button>
+                    </DialogActions>
+                </Dialog>
+                <div className="admin-top">
+                    <div className="admin-top-left" onClick={() => handleClickOpen()}>
+                        <img className="admin-top-leftIcon" src={rejlersLogo} alt="Rejlers" />
+                    </div>
+                    <div className="admin-top-mid">
+                        <AdminTimeline turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={"Tidslinje"} />
+                    </div>
+                    <div className="admin-top-right">
+                        <Button className="top-button" variant="contained" onClick={() => handleClick(1)}>Avsluta spelrunda</Button>
+                        <Button className="top-button" variant="contained" onClick={() => handleClick(2)}>Påbörja spelrunda</Button>
+                    </div>
                 </div>
-                <div className="admin-top-mid">
-                    <AdminTimeline turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={"Tidslinje"} />
-                </div>
-                <div className="admin-top-right">
-                    <Button className="top-button" variant="contained" onClick={() => handleClick(1)}>Avsluta spelrunda</Button>
-                    <Button className="top-button" variant="contained" onClick={() => handleClick(2)}>Påbörja spelrunda</Button>
-                </div>
-            </div>
-            {playerCounter}
-            {content}
-        </main>
+                {playerCounter}
+                {content}
+            </main>
+        </ThemeProvider>
     );
 }
 

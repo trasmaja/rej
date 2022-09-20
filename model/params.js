@@ -1,10 +1,8 @@
 /* eslint-disable camelcase */
-import e from "express";
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const { irr } = require('node-irr')
-const prompt = require("prompt-sync")({ sigint: true });
 
 const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n))); // annuity function for industry money lending
 const WACC = 0.1;
@@ -264,6 +262,7 @@ class Params {
     const cost_driving_gas = gas_price * l_per_mil * driving;
     
     const car_el = this.pol_el_car_reduction_factor * (2000*1.45 + 360 + 380 + 80 + 33 + 125); // cheap leasing cost + tires + taxes
+
     const car_gas = 760 + 360 + 380 + 80 + 33 + 125; // värdeminskning (lååågt räknat) + försäkring + service + skatt + besiktning + däck
     
     const cost_el = car_el + cost_driving_el;
@@ -446,39 +445,39 @@ class Params {
 export default Params;
 
 
-function test() {
-  const p = new Params();
-  console.log(p);
-  while (p.turns_to_go > 0) {
-    const carbon = parseFloat(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "), 10)
-    p.policy_change_carbon_price(carbon)
-    const sub = parseInt(prompt("Välj nivå 1-3 (från ambitiös till inget) för en grön giv till företag och privatpersoner: "), 10)
-    p.policy_green_package(sub)
-    const tak = parseInt(prompt("Välj investeringsnivå för stamnät 1-3: "), 10)
-    p.policy_svk_supply(tak)
-    const el = parseFloat(prompt("Välj investeringsnivå för elbolag, höj (1), behåll (2), eller minska (3): "), 10)
-    p.elco_investing(el)
+// function test() {
+//   const p = new Params();
+//   console.log(p);
+//   while (p.turns_to_go > 0) {
+//     const carbon = parseFloat(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "), 10)
+//     p.policy_change_carbon_price(carbon)
+//     const sub = parseInt(prompt("Välj nivå 1-3 (från ambitiös till inget) för en grön giv till företag och privatpersoner: "), 10)
+//     p.policy_green_package(sub)
+//     const tak = parseInt(prompt("Välj investeringsnivå för stamnät 1-3: "), 10)
+//     p.policy_svk_supply(tak)
+//     const el = parseFloat(prompt("Välj investeringsnivå för elbolag, höj (1), behåll (2), eller minska (3): "), 10)
+//     p.elco_investing(el)
 
-    const indel = parseFloat(prompt("Elektrifiering av industrin andel denna runda: "), 10)
-    p.industry_electrify(indel)
-    const indbio = parseFloat(prompt("Biofiering av Industrin andel denna runda: "), 10)
-    p.industry_biofy(indbio)
-    const indrnd = parseFloat(prompt("Hur mycket effort läggs på rnd: "), 10)
-    p.industry_RnD(indrnd)
-    const indee = parseFloat(prompt("Hur mycket effort läggs på energieffektivisering: "), 10)
-    p.industry_increase_energy_efficiency(indee)
-    // const vote = parseFloat(prompt("Voters vote [0, 1]: "))
-    // p.voters_rate_policy(vote)
-    const car = parseFloat(prompt("Vilken andel köper elbil? "), 10)
-    p.voters_electric_car(car)
+//     const indel = parseFloat(prompt("Elektrifiering av industrin andel denna runda: "), 10)
+//     p.industry_electrify(indel)
+//     const indbio = parseFloat(prompt("Biofiering av Industrin andel denna runda: "), 10)
+//     p.industry_biofy(indbio)
+//     const indrnd = parseFloat(prompt("Hur mycket effort läggs på rnd: "), 10)
+//     p.industry_RnD(indrnd)
+//     const indee = parseFloat(prompt("Hur mycket effort läggs på energieffektivisering: "), 10)
+//     p.industry_increase_energy_efficiency(indee)
+//     // const vote = parseFloat(prompt("Voters vote [0, 1]: "))
+//     // p.voters_rate_policy(vote)
+//     const car = parseFloat(prompt("Vilken andel köper elbil? "), 10)
+//     p.voters_electric_car(car)
 
 
-    p.basicTurnCalculations();
-    p.calcIrr();
-    p.calcCarCosts();
-    console.log(p);
+//     p.basicTurnCalculations();
+//     p.calcIrr();
+//     p.calcCarCosts();
+//     console.log(p);
 
-  }
-}
+//   }
+// }
 
-test();
+// test();
