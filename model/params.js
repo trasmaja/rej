@@ -7,7 +7,6 @@ const { irr } = require('node-irr')
 const annuity = (C, i, n) => C * (i / (1 - (1 + i) ** (-n))); // annuity function for industry money lending
 const WACC = 0.1;
 const mycket = 2.5;
-const lite = (1 + mycket) / 2;
 const emissions_increase = 1.05; // increase of emissions
 
 class Params {
@@ -374,17 +373,13 @@ class Params {
   // Policy functions
   policy_change_carbon_price(level) {
     /* Constructs a tree of possible carbon prices which the player can make her way through */
-    if (level === 1) {
-      this.price_carbon *= mycket;
-    } else if (level === 2) {
-      this.price_carbon *= lite;
-    } else if (level === 3) {
-      this.price_carbon *= 1;
-    } else if (level === 4) {
-      this.price_carbon /= lite;
-    } else if (level === 5) {
-      this.price_carbon /= mycket;
+    if (level < 3) {
+      this.price_carbon *= 3.25 - 0.75*level; 
+    } else if (level >= 3) {
+      this.price_carbon /= -1.25 + 0.75*level;
     }
+    console.log(this.price_carbon)
+
   }
 
   // Nya kombinerade sub och ev premie
@@ -393,7 +388,7 @@ class Params {
       this.pol_CAPEX_reduction_factor = 0.8;
       this.pol_el_car_reduction_factor = 0.9;
       this.voters_tax_burden = 0.5;
-      // todo nåt med elbilar
+
     } else if (level === 2) {
       this.pol_CAPEX_reduction_factor = 0.9;
       this.pol_el_car_reduction_factor = 0.95;
@@ -409,26 +404,21 @@ class Params {
 
   // politics change svk nätet
   policy_svk_supply(level) {
-    if (level === 1) {
-      this.supply_el_cap_next.push(40);
-    } else if (level === 2) {
-      this.supply_el_cap_next.push(20);
-    } else if (level === 3) {
-      this.supply_el_cap_next.push(0);
-    }
+    const tmp = 60 - 20*level;
+    this.supply_el_cap_next.push(tmp);
   }
 
 
-  // SVK functions 
+  // electric companies function 
   elco_investing(level) {
-    if (level === 1) {
-      this.supply_el_potential += 40; // double check so their is oppertunity for supply to be less than demand
+    /** Tar in ett snitt av svar mellan 1-3 */
+    if (level <= 2) {
+      this.supply_el_potential += 80 - 40*level;
+    } else if (level > 2) {
+      this.supply_el_potential += 40 - 20*level;
     }
-    else if (level === 2) {
-      this.supply_el_potential += 0; 
-    } else if (level === 3) {
-      this.supply_el_potential -= 20; 
-    }
+    console.log(this.supply_el_potential)
+
   }
 
 
@@ -459,13 +449,13 @@ export default Params;
 //   const p = new Params();
 //   console.log(p);
 //   while (p.turns_to_go > 0) {
-//     const carbon = parseInt(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "), 10)
+//     const carbon = parseFloat(prompt("Välj CO2-pris 1-5 där 3 är oförändrat och 1 höjer det mycket: "), 10)
 //     p.policy_change_carbon_price(carbon)
 //     const sub = parseInt(prompt("Välj nivå 1-3 (från ambitiös till inget) för en grön giv till företag och privatpersoner: "), 10)
 //     p.policy_green_package(sub)
 //     const tak = parseInt(prompt("Välj investeringsnivå för stamnät 1-3: "), 10)
 //     p.policy_svk_supply(tak)
-//     const el = parseInt(prompt("Välj investeringsnivå för elbolag, höj (1), behåll (2), eller minska (3): "), 10)
+//     const el = parseFloat(prompt("Välj investeringsnivå för elbolag, höj (1), behåll (2), eller minska (3): "), 10)
 //     p.elco_investing(el)
 
 //     const indel = parseFloat(prompt("Elektrifiering av industrin andel denna runda: "), 10)
