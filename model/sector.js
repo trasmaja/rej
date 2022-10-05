@@ -100,9 +100,14 @@ export class Policy extends Sector {
     }
 
     executeVote() {
-        const decisionIndexCo2 = 1 + indexOfMax(this.co2Vote);
-        const decisionIndexGreen = 1 + indexOfMax(this.greenPackage);
-        const decisionIndexSVK = 1 + indexOfMax(this.svk);
+        // Kan bli delat med noll todo fix later
+        // const decisionIndexCo2 = 1 + indexOfMax(this.co2Vote);
+        const decisionIndexCo2 = (1 * this.co2Vote[0] + 2 * this.co2Vote[1] + 3 * this.co2Vote[2] + 4 * this.co2Vote[3] + 5 * this.co2Vote[4]) / (this.co2Vote[0] + this.co2Vote[1] + this.co2Vote[2] + this.co2Vote[3] + this.co2Vote[4]);
+        // const decisionIndexGreen = 1 + indexOfMax(this.greenPackage);
+        const decisionIndexGreen = Math.round((1 * this.greenPackage[0] + 2 * this.greenPackage[1] + 3 * this.greenPackage[2]) / (this.greenPackage[0] + this.greenPackage[1] + this.greenPackage[2]));
+        // const decisionIndexSVK = 1 + indexOfMax(this.svk);
+        const decisionIndexSVK = (1 * this.svk[0] + 2 * this.svk[1] + 3 * this.svk[2]) / (this.svk[0] + this.svk[1] + this.svk[2])
+
 
         this.params.policy_change_carbon_price(decisionIndexCo2);
         this.params.policy_green_package(decisionIndexGreen);
@@ -110,15 +115,16 @@ export class Policy extends Sector {
 
         let decisionString = "";
 
-        if (decisionIndexCo2 === 1) {
+        const decisionIndexCo2Rounded = Math.round(decisionIndexCo2)
+        if (decisionIndexCo2Rounded === 1) {
             decisionString += "ökade CO2-priset mycket, ";
-        } else if (decisionIndexCo2 === 2) {
+        } else if (decisionIndexCo2Rounded === 2) {
             decisionString += "ökade CO2-priset lite, ";
-        } else if (decisionIndexCo2 === 3) {
+        } else if (decisionIndexCo2Rounded === 3) {
             decisionString += "behöll samma CO2-priset, ";
-        } else if (decisionIndexCo2 === 4) {
+        } else if (decisionIndexCo2Rounded === 4) {
             decisionString += "minskade CO2-priset lite, ";
-        } else if (decisionIndexCo2 === 5) {
+        } else if (decisionIndexCo2Rounded === 5) {
             decisionString += "minskade CO2-priset mycket, ";
         }
 
@@ -132,13 +138,14 @@ export class Policy extends Sector {
             decisionString += "gav litet grönt giv, ";
         }
 
-        if (decisionIndexSVK === 1) {
+        const decisionIndexSVKRounded = Math.round(decisionIndexSVK)
+        if (decisionIndexSVKRounded === 1) {
             decisionString += "byggde ut stamnätet mycket.";
         }
-        else if (decisionIndexSVK === 2) {
+        else if (decisionIndexSVKRounded === 2) {
             decisionString += "byggde ut stamnätet lite.";
         }
-        else if (decisionIndexSVK === 3) {
+        else if (decisionIndexSVKRounded === 3) {
             decisionString += "behöll samma nivå i stamnätet";
         }
 
@@ -170,14 +177,14 @@ export class Elco extends Sector {
     }
 
     executeVote() {
-        const decisionIndex = 1 + indexOfMax(this.votesOnDecisions);
+        // const decisionIndex = 1 + indexOfMax(this.votesOnDecisions);
+        const decisionIndex = (1 * this.votesOnDecisions[0] + 2 * this.votesOnDecisions[1] + 3 * this.votesOnDecisions[2]) / (this.votesOnDecisions[0] + this.votesOnDecisions[1] + this.votesOnDecisions[2])
         this.params.elco_investing(decisionIndex);
 
-        if (decisionIndex === 1) {
+
+        if (decisionIndex < 2) {
             this.decisionsMade.push("valde att öka elproduktionen.")
-        } else if (decisionIndex === 2) {
-            this.decisionsMade.push("valde att bibehålla nuvarande elproduktion.")
-        } else if (decisionIndex === 3) {
+        } else if (decisionIndex >= 2) {
             this.decisionsMade.push("valde att minska elproduktionen.")
         }
 
