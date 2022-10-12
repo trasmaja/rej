@@ -89,7 +89,7 @@ const ElcoView = (props) => {
                 <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
                 <h2>Beslut</h2>
                 <h4>Vad vill du göra med elproduktionen?</h4>
-                <DecisionVoteList vote={vote} decisions={decisionList} />
+                <DecisionVoteList vote={vote} decisions={decisionList} disabledOptions={[]} />
 
             </div>
         );

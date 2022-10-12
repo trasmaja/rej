@@ -197,6 +197,7 @@ export class Voter extends Sector {
         this.hello = 10;
         this.ratingDec = [0, 0, 0, 0];
         this.carChoice = [0, 0];
+        this.votersPriority = [0, 0 ,0];
         this.highestElCar = 0;
     }
 
@@ -205,13 +206,15 @@ export class Voter extends Sector {
             this.ratingDec[decisionIndex] += 1;
         } else if (question === 1) {
             this.carChoice[decisionIndex] += 1;
+        } else if (question === 2) {
+            this.votersPriority[decisionIndex] += 1;
         }
-
     }
 
     resetVotes() {
         this.ratingDec = [0, 0, 0, 0];
         this.carChoice = [0, 0];
+        this.votersPriority = [0, 0 ,0];
     }
 
     executeVote() {
@@ -219,6 +222,8 @@ export class Voter extends Sector {
         // Sum ints in array https://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
         const totalVotesRating = this.ratingDec.reduce((partialSum, a) => partialSum + a, 0);
         const totalVotesCar = this.carChoice.reduce((partialSum, a) => partialSum + a, 0);
+        const votersPriorityChoice = indexOfMax(this.votersPriority);
+
         let decisionString = "";
 
         if (totalVotesRating === 0) {
@@ -241,11 +246,17 @@ export class Voter extends Sector {
                 this.highestElCar = roundedPercentage;
             }
             this.params.voters_electric_car(roundedPercentage)
-            decisionString += `${Math.floor(this.highestElCar * 100)} % kör elbil.`
+            decisionString += `${Math.floor(this.highestElCar * 100)} % kör elbil, `
         }
 
-
-
+        this.params.voters_set_priority(votersPriorityChoice)
+        if(votersPriorityChoice === 0) {
+            decisionString += "prioriterade sysselsättning."
+        } else if (votersPriorityChoice === 1) {
+            decisionString += "prioriterade disponibel inkomst."
+        } else if (votersPriorityChoice === 2) {
+            decisionString += "prioriterade CO2-utsläpp."
+        }
 
         this.decisionsMade.push(decisionString);
     }

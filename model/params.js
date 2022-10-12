@@ -109,6 +109,8 @@ class Params {
     this.voters_dis_income_after_expenses_car_el = null;
     this.voters_dis_income_after_expenses_car_gas = null;
 
+    this.voters_priority_for_policy = 0; // 0, 1, or 2 (index of topics sysselsättning, disponibel inkomst, co2-utsläpp)
+
     // For first turn, determines all dependent values
 
     this.basicTurnCalculations();
@@ -438,6 +440,10 @@ class Params {
       this.transportation_emissions_red = 1 - procentage;
       this.demand_el_cars = 30 * (1 - this.transportation_emissions_red); // 30 TWh since thats roughly what it would take to electrify all cars
         }
+  }
+
+  voters_set_priority(prioIndex) {
+    this.voters_priority_for_policy = prioIndex;
   }
 
 }

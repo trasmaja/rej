@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 
 const DecisionVoteList = (props) => {
-    const { decisions, vote, qIndex } = props;
+    const { decisions, vote, qIndex, disabledOptions } = props;
 
     // Används för modal pop up:en
     const [open, setOpen] = React.useState(false);
@@ -67,6 +67,14 @@ const DecisionVoteList = (props) => {
 
             <ButtonGroup className="wrapper-decisionVoteList-buttonGroup" orientation="vertical" variant="contained" aria-label="outlined primary button group">
                 {decisions.map((decision, index) => {
+                    if (disabledOptions && disabledOptions.includes(index)) {
+                        console.log("adadadadadada")
+                        return (
+                            <Button disabled onClick={() => handleClickOpen(index)} style={{ justifyContent: "flex-start" }} className="wrapper-decisionVoteList-button voterDisabled" key={decision}>
+                                {decision} - Förhindrat av väljare
+                            </Button>
+                        );
+                    }
                     return (
                         <Button disabled={votedOn !== null && index !== votedOn} onClick={() => handleClickOpen(index)} style={{ justifyContent: "flex-start" }} className="wrapper-decisionVoteList-button" key={decision}>
                             {decision}
@@ -82,7 +90,7 @@ const DecisionVoteList = (props) => {
 DecisionVoteList.propTypes = {
     decisions: PropTypes.array.isRequired,
     vote: PropTypes.func.isRequired,
-    qIndex: PropTypes.number.isRequired
+    qIndex: PropTypes.number.isRequired,
+    disabledOptions: PropTypes.array,
 }
-
 export default DecisionVoteList;

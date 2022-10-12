@@ -102,7 +102,7 @@ const IndustryView = (props) => {
                 <DecisionBasisWithText title={decisions[3]} text="Satsa på att minska din totala energiföbrukning. Detta kan leda till att dina framtida kostnader och eventuella utsläpp minskar något." />
                 <h2>Beslut</h2>
                 <h4>Vad vill du göra för investering?</h4>
-                <DecisionVoteList vote={vote} decisions={decisions} />
+                <DecisionVoteList vote={vote} decisions={decisions}  disabledOptions={[]}/>
             </div>
         );
     } else if (gameData && gameData.turn === 6) {

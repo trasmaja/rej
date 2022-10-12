@@ -40,6 +40,7 @@ const Voters = (props) => {
     // Beslut som Väljare kan göra
     const ratingDec = ["1) Mycket bra", "2) Bra", "3) Dåligt", "4) Mycket dåligt"];
     const carDec = ["1) Elbil", "2) Bränslebil"];
+    const mostImpQuest = ["1) Sysselsättningen", "2) Disponibla inkomsten", "3) CO2-utsläppen"];
 
     // staten som håller all speldata
     const [gameData, setGameData] = useState(null);
@@ -96,9 +97,11 @@ const Voters = (props) => {
                 <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
                 <h2>Beslut</h2>
                 <h4>Hur bra sköter politkerna sitt jobb?</h4>
-                <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} />
+                <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} disabledOptions={[]} />
                 <h4>Vad för bil vill du köpa?</h4>
-                <DecisionVoteList vote={vote} qIndex={1} decisions={carDec} />
+                <DecisionVoteList vote={vote} qIndex={1} decisions={carDec} disabledOptions={[]} />
+                <h4>Vad ska politikerna prioritera?</h4>
+                <DecisionVoteList vote={vote} qIndex={2} decisions={mostImpQuest} disabledOptions={[]} />
             </div>
         );
     } else if (gameData && gameData.turn === 6) {

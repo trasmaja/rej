@@ -87,6 +87,32 @@ const PolicyView = (props) => {
         );
         // Det som ska synas när man är i vanliga spel läget
     } else if (gameData && gameData.state === "playing") {
+        const disabledOptionsQ1 = [];
+        const disabledOptionsQ2 = [];
+        const disabledOptionsQ3 = [];
+
+        if(gameData.data[turn]["voters_rating"] < 0.5) {
+            if(gameData.data[turn].voters_priority_for_policy === 0) {
+                disabledOptionsQ1.push(0)
+                disabledOptionsQ1.push(1)
+                disabledOptionsQ1.push(2)
+                disabledOptionsQ2.push(2)
+            } else if (gameData.data[turn].voters_priority_for_policy === 1) {
+                disabledOptionsQ1.push(0)
+                disabledOptionsQ1.push(1)
+                disabledOptionsQ1.push(2) 
+                disabledOptionsQ2.push(0)
+                disabledOptionsQ3.push(0)
+            } else if (gameData.data[turn].voters_priority_for_policy === 2) {
+                disabledOptionsQ1.push(2)
+                disabledOptionsQ1.push(3)
+                disabledOptionsQ1.push(4) 
+                disabledOptionsQ2.push(2)
+                disabledOptionsQ3.push(1)
+                disabledOptionsQ3.push(2)
+                
+            }
+        }
         mainBody = (
             <div className="wrapper-currentStatus">
                 {introText}
@@ -97,11 +123,11 @@ const PolicyView = (props) => {
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden" />
                 <h2>Beslut</h2>
                 <h4>Vad vill du göra med CO2 priest?</h4>
-                <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} />
+                <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} disabledOptions={disabledOptionsQ1}/>
                 <h4>Hur stort ska den gröna given vara?</h4>
-                <DecisionVoteList vote={vote} qIndex={1} decisions={greendec} />
+                <DecisionVoteList vote={vote} qIndex={1} decisions={greendec} disabledOptions={disabledOptionsQ2}/>
                 <h4>Vad vill du göra med stamnätet?</h4>
-                <DecisionVoteList vote={vote} qIndex={2} decisions={svkdec} />
+                <DecisionVoteList vote={vote} qIndex={2} decisions={svkdec} disabledOptions={disabledOptionsQ3}/>
             </div>
         );
     } else if (gameData && gameData.turn === 6) {
