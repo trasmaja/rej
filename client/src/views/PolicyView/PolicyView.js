@@ -71,7 +71,13 @@ const PolicyView = (props) => {
     }
 
     let mainBody;
-
+    let introText = null;
+    if (gameData && gameData.turn === 1) {
+        introText = (<p style={{ color: "#484d52" }}>Politikern ansvarar för att sätta ramarna för industrins investeringsbeslut och för det potentiella utbudet på elmarknaden. Därutöver kan politikern ge subventioner till väljaren för att göra det billigare att köpa elbil. Som input får politikern ett betyg av väljarna och om detta blir för lågt begränsas politikerns handlingsfrihet. <br /><br />
+            Ramarna för industrin påverkas genom att politikern kan höja eller sänka priset att släppa ut CO2 och genom investeringsstöd genom en Grön Giv. Samma gröna giv innefattar även ett stöd till konsumenter för att köpa elbil. <br /><br />
+            Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
+        </p>);
+    }
     // Det som ska synas på skärmen när spelet är i presentatör läge
     if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
         mainBody = (
@@ -83,10 +89,7 @@ const PolicyView = (props) => {
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <p style={{color: "#484d52"}}>Politikern ansvarar för att sätta ramarna för industrins investeringsbeslut och för det potentiella utbudet på elmarknaden. Därutöver kan politikern ge subventioner till väljaren för att göra det billigare att köpa elbil. Som input får politikern ett betyg av väljarna och om detta blir för lågt begränsas politikerns handlingsfrihet. <br /><br />
-                    Ramarna för industrin påverkas genom att politikern kan höja eller sänka priset att släppa ut CO2 och genom investeringsstöd genom en Grön Giv. Samma gröna giv innefattar även ett stöd till konsumenter för att köpa elbil. <br /><br />
-                    Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
-                </p>
+                {introText}
                 <h2>Nulägesrapport</h2>
                 <SingleLineChart tick={true} tickCount={2} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
@@ -104,10 +107,6 @@ const PolicyView = (props) => {
     } else if (gameData && gameData.turn === 6) {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <p style={{color: "#484d52"}}>Politikern ansvarar för att sätta ramarna för industrins investeringsbeslut och för det potentiella utbudet på elmarknaden. Därutöver kan politikern ge subventioner till väljaren för att göra det billigare att köpa elbil. Som input får politikern ett betyg av väljarna och om detta blir för lågt begränsas politikerns handlingsfrihet. <br /><br />
-                    Ramarna för industrin påverkas genom att politikern kan höja eller sänka priset att släppa ut CO2 och genom investeringsstöd genom en Grön Giv. Samma gröna giv innefattar även ett stöd till konsumenter för att köpa elbil. <br /><br />
-                    Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
-                </p>
                 <h2>Utvärdering</h2>
                 <SingleLineChart tick={true} tickCount={2} propData={gameData.data} domain={[0, 100]} dataKey="voters_rating" title="Förtreoende hos väljare (%)" />
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />

@@ -72,7 +72,12 @@ const IndustryView = (props) => {
     }
 
     let mainBody;
-
+    let introText = null;
+    if (gameData && gameData.turn === 1) {
+        introText = (<p style={{ color: "#484d52" }}>Industrimagnaten styr sin verksamhet efter rörelsemarginalen (rörelseresultat/omsättning) och fattar sina investeringsbeslut utifrån en internräntekalkyl. <br /><br />
+            Rörelsemarginalen kan variera beroende på kostnaden för el, kostnaden för utsläpp, kostnaden för investerat kapital och kostnaden för biodrivmedel. Internräntekalkylen bestäms utifrån marknadspriser på el och biodrivmedel, priset för att släppa ut CO2 och den initiala investeringskostnaden. I de tre scenarierna är alla variabler låsta med undantag för priset på att släppa ut som sätts till tre nivåer – att det sänks, att det ligger kvar eller att det höjs.
+        </p>);
+    }
     // Det som ska synas på skärmen när spelet är i presentatör läge
     if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
         mainBody = (
@@ -84,9 +89,7 @@ const IndustryView = (props) => {
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <p style={{color: "#484d52"}}>Industrimagnaten styr sin verksamhet efter rörelsemarginalen (rörelseresultat/omsättning) och fattar sina investeringsbeslut utifrån en internräntekalkyl. <br /><br />
-                    Rörelsemarginalen kan variera beroende på kostnaden för el, kostnaden för utsläpp, kostnaden för investerat kapital och kostnaden för biodrivmedel. Internräntekalkylen bestäms utifrån marknadspriser på el och biodrivmedel, priset för att släppa ut CO2 och den initiala investeringskostnaden. I de tre scenarierna är alla variabler låsta med undantag för priset på att släppa ut som sätts till tre nivåer – att det sänks, att det ligger kvar eller att det höjs.
-                </p>
+                {introText}
                 <h2>Nulägesrapport</h2>
                 <LineChartComp propData={gameData.data} domain={[0, 1]} dataKey="co2" progKey="co2prog" title="Industrins utsläpp (miljoner ton C02-ekvivalenter)" />
                 <EBITChart propData={gameData.data} title="Rörelsemarginal (%)" lineColor="#2B3B55" />
@@ -105,9 +108,6 @@ const IndustryView = (props) => {
     } else if (gameData && gameData.turn === 6) {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <p style={{color: "#484d52"}}>Industrimagnaten styr sin verksamhet efter rörelsemarginalen (rörelseresultat/omsättning) och fattar sina investeringsbeslut utifrån en internräntekalkyl. <br /><br />
-                    Rörelsemarginalen kan variera beroende på kostnaden för el, kostnaden för utsläpp, kostnaden för investerat kapital och kostnaden för biodrivmedel. Internräntekalkylen bestäms utifrån marknadspriser på el och biodrivmedel, priset för att släppa ut CO2 och den initiala investeringskostnaden. I de tre scenarierna är alla variabler låsta med undantag för priset på att släppa ut som sätts till tre nivåer – att det sänks, att det ligger kvar eller att det höjs.
-                </p>
                 <h2>Utvärdering</h2>
                 <LineChartComp propData={gameData.data} domain={[0, 1]} dataKey="co2" progKey="co2prog" title="Industrins utsläpp (miljoner ton C02-ekvivalenter)" />
                 <EBITChart propData={gameData.data} title="Rörelsemarginal (%)" lineColor="#2B3B55" />

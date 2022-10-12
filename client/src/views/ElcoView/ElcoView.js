@@ -67,7 +67,11 @@ const ElcoView = (props) => {
     }
 
     let mainBody;
-
+    let introText = null;
+    if (gameData && gameData.turn === 1) {
+        introText = (<p style={{ color: "#484d52" }}>Elbolagsoperatören reglerar utbudet av el på marknaden och har därmed en stor inverkan på elpriset som bestäms som en funktion av utbud och efterfrågan. Elnätsoperatören har också en rörelsemarginal som bestäms av dess kostnader (som bestäms av storleken på produktionen) och dess intäkter (som bestäms av elpriset och efterfrågan). Elpriset sätts genom utbud och efterfrågan.</p>
+        );
+    }
     // Det som ska synas på skärmen när spelet är i presentatör läge
     if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
         mainBody = (
@@ -79,7 +83,7 @@ const ElcoView = (props) => {
     } else if (gameData && gameData.state === "playing") {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <p style={{color: "#484d52"}}>Elbolagsoperatören reglerar utbudet av el på marknaden och har därmed en stor inverkan på elpriset som bestäms som en funktion av utbud och efterfrågan. Elnätsoperatören har också en rörelsemarginal som bestäms av dess kostnader (som bestäms av storleken på produktionen) och dess intäkter (som bestäms av elpriset och efterfrågan). Elpriset sätts genom utbud och efterfrågan.</p>
+                {introText}
                 <h2>Nulägesrapport</h2>
                 <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden (TWh)" />
                 <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
@@ -92,7 +96,6 @@ const ElcoView = (props) => {
     } else if (gameData && gameData.turn === 6) {
         mainBody = (
             <div className="wrapper-currentStatus">
-                <p style={{color: "#484d52"}}>Elbolagsoperatören reglerar utbudet av el på marknaden och har därmed en stor inverkan på elpriset som bestäms som en funktion av utbud och efterfrågan. Elnätsoperatören har också en rörelsemarginal som bestäms av dess kostnader (som bestäms av storleken på produktionen) och dess intäkter (som bestäms av elpriset och efterfrågan). Elpriset sätts genom utbud och efterfrågan.</p>
                 <h2>Utvärdering</h2>
                 <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden (TWh)" />
                 <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
