@@ -10,3 +10,8 @@
 }
 .wrapper-decisionVoteList-button p{
 }
+.voterDisabled {
+    /* background-color: rgba(209, 17, 17, 0.2) !important; */
+    background-color: rgba(209, 17, 17, 0.1) !important;
+    /* color: #FFF !important; */
+}

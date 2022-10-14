@@ -91,7 +91,7 @@ const PolicyView = (props) => {
         const disabledOptionsQ2 = [];
         const disabledOptionsQ3 = [];
 
-        if(gameData.data[turn]["voters_rating"] < 0.5) {
+        if(gameData.data[turn]["voters_rating"] <= 0.3) {
             if(gameData.data[turn].voters_priority_for_policy === 0) {
                 disabledOptionsQ1.push(0)
                 disabledOptionsQ1.push(1)

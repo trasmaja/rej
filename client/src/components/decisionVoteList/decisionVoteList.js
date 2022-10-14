@@ -11,45 +11,52 @@ const DecisionVoteList = (props) => {
     const { decisions, vote, qIndex, disabledOptions } = props;
 
     // Används för modal pop up:en
-    const [open, setOpen] = React.useState(false);
-    // Används för att spara temporärt vilket alternativt man tryck när modal pop up:en dyker upp
-    const [selectedIndex, setSelectedIndex] = React.useState(null);
+    // const [open, setOpen] = React.useState(false);
+    // // Används för att spara temporärt vilket alternativt man tryck när modal pop up:en dyker upp
+    // const [selectedIndex, setSelectedIndex] = React.useState(null);
     // Används för att spara vad man röstat på
     const [votedOn, setVotedOn] = React.useState(null);
 
     // Öppnar modal pop up:en
-    const handleClickOpen = (index) => {
-        // avbryt om man redan röstat
-        if (votedOn !== null) {
-            return;
-        }
-        // Spara vilket index man klicka på och öppna modalen
-        setSelectedIndex(index);
-        setOpen(true);
-    };
+    // const handleClickOpen = (index) => {
+    //     // avbryt om man redan röstat
+    //     if (votedOn !== null) {
+    //         return;
+    //     }
+    //     // Spara vilket index man klicka på och öppna modalen
+    //     setSelectedIndex(index);
+    //     setOpen(true);
+    // }
 
     // Hanterar när man stänger modalen
-    const handleClose = (confirmVote) => {
-        // Om man redan röstat avryt direkt (ska egentligen inte komma hit då)
-        if (votedOn !== null) {
-            setOpen(false);
-            setSelectedIndex(null);
-            return;
-        }
-        // Om man tryckte ja på pop up:en
-        if (confirmVote === true) {
-            vote(selectedIndex, qIndex);
-            setVotedOn(selectedIndex);
-        }
+    // const handleClose = (confirmVote) => {
+    //     // Om man redan röstat avryt direkt (ska egentligen inte komma hit då)
+    //     if (votedOn !== null) {
+    //         setOpen(false);
+    //         setSelectedIndex(null);
+    //         return;
+    //     }
+    //     // Om man tryckte ja på pop up:en
+    //     if (confirmVote === true) {
+    //         vote(selectedIndex, qIndex);
+    //         setVotedOn(selectedIndex);
+    //     }
 
-        setOpen(false);
-        setSelectedIndex(null);
+    //     setOpen(false);
+    //     setSelectedIndex(null);
 
+    // }
+
+    const handleVote = (optionIndex) => {
+        if(votedOn === null) {
+            vote(optionIndex, qIndex);
+            setVotedOn(optionIndex);
+        }
     }
 
     return (
         <div className="wrapper-decisionVoteList">
-            <Dialog
+            {/* <Dialog
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
@@ -63,20 +70,20 @@ const DecisionVoteList = (props) => {
                     <Button variant="contained" onClick={() => handleClose(true)}>Ja</Button>
                     <Button variant="outlined" onClick={() => handleClose(false)}>Nej</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog> */}
 
             <ButtonGroup className="wrapper-decisionVoteList-buttonGroup" orientation="vertical" variant="contained" aria-label="outlined primary button group">
                 {decisions.map((decision, index) => {
                     if (disabledOptions && disabledOptions.includes(index)) {
                         console.log("adadadadadada")
                         return (
-                            <Button disabled onClick={() => handleClickOpen(index)} style={{ justifyContent: "flex-start" }} className="wrapper-decisionVoteList-button voterDisabled" key={decision}>
+                            <Button disabled onClick={() => handleVote(index) /*handleClickOpen(index)*/} style={{ justifyContent: "flex-start" }} className="wrapper-decisionVoteList-button voterDisabled" key={decision}>
                                 {decision} - Förhindrat av väljare
                             </Button>
                         );
                     }
                     return (
-                        <Button disabled={votedOn !== null && index !== votedOn} onClick={() => handleClickOpen(index)} style={{ justifyContent: "flex-start" }} className="wrapper-decisionVoteList-button" key={decision}>
+                        <Button disabled={votedOn !== null && index !== votedOn} onClick={() => handleVote(index) /*handleClickOpen(index)*/} style={{ justifyContent: "flex-start" }} className="wrapper-decisionVoteList-button" key={decision}>
                             {decision}
                         </Button>
                     );
