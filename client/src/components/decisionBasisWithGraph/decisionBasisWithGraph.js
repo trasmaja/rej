@@ -4,19 +4,19 @@ import React from 'react';
 import { ReferenceLine, Label, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 const DecisionBasisWithGraph = (props) => {
-    const { propData, title } = props;
+    const { propData, title, desc } = props;
 
     const data = [
         {
-            name: 'låg',
+            name: 'Lägre CO2-pris',
             irr: 0,
         },
         {
-            name: 'medel',
+            name: 'Nuvarande CO2-pris',
             irr: 0,
         },
         {
-            name: 'hög',
+            name: 'Högre CO2-pris',
             irr: 0,
         },
     ];
@@ -47,7 +47,7 @@ const DecisionBasisWithGraph = (props) => {
     return (
         <div className="wrapper-decisionBasisWithGraph">
             <h3>{title}</h3>
-            <p>Internal rate of return (IRR) för investeringen givet ett lågt, medel eller högt CO2-pris jämfört med weighted average cost of capital (WACC).</p>
+            <p>{desc}</p>
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                     width={500}
@@ -64,7 +64,7 @@ const DecisionBasisWithGraph = (props) => {
                     <YAxis ticks={test} strokeWidth={1} stroke="#999" width={20} domain={[datamin => datamin > 0 ? 0 : datamin , datamax => datamax < 10 ? 10 : datamax ]} />
                     <Bar dataKey="irr" fill="#2B3B55" />
                     <ReferenceLine strokeWidth={2} y={10} stroke="#EC6161"  strokeDasharray="4 4" >
-                        <Label fill='#EC6161' value="wacc" position="left" />
+                        <Label fill='#EC6161' value="10" position="left" />
                     </ReferenceLine>
                     <ReferenceLine strokeWidth={1} y={0} stroke="#999" >
                         {/* <Label fill='#999' value="0" position="right" /> */}
@@ -77,7 +77,8 @@ const DecisionBasisWithGraph = (props) => {
 
 DecisionBasisWithGraph.propTypes = {
     propData: PropTypes.array.isRequired,
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    desc: PropTypes.string.isRequired,
 }
 
 export default DecisionBasisWithGraph;

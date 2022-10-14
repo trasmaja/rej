@@ -31,7 +31,7 @@ const VoterCosts = (props) => {
                 <BarChart data={data} margin={{ top: 10, right: 60, bottom: 10, left: 30 }}>
                     <XAxis stroke="#F6B2BB" strokeWidth={1} tickMargin={10} dataKey="turn" />
                     <YAxis stroke="#F6B2BB" strokeWidth={1} width={5} tickCount={4} domain={[datamin => datamin > 0 ? 0 : datamin, 'datamax']} />
-                    <Bar stackId="two" name="Inkomst" fill="#5dcf3e" dataKey={"votersDisInc"} />
+                    <Bar stackId="two" name="Inkomst" fill="#3db242" dataKey={"votersDisInc"} />
                     <Bar stackId="one" name="Skatt" fill="#EC6161" dataKey={"votersTaxBurd"} />
                     <Bar stackId="one" name="Nödvändiga utgifter" fill="#0094A3" dataKey={"other"} />
                     <Bar stackId="one" name="Elkostnader" fill="#fcba03" dataKey={"el"} />

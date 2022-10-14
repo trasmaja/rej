@@ -48,13 +48,13 @@ export class Industri extends Sector {
     executeVote() {
         // Sum ints in array https://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
         const totalVotes = this.votesOnDecisions.reduce((partialSum, a) => partialSum + a, 0);
-        let decisionString = "";
+        let decisionString = "beslutsfördelning: ";
         if (totalVotes === 0) {
             this.params.industry_biofy(0.25);
             this.params.industry_electrify(0.25);
             this.params.industry_RnD(0.25);
             this.params.industry_increase_energy_efficiency(0.25);
-            decisionString += "25 % biofiering, 25 % elektrifiering, 25 % R&D, 25 % energieffektiviserings."
+            decisionString += "25 % biodrivmedel, 25 % elektrifiering, 25 % R&D, 25 % energieffektivisering."
         } else {
             const percentageBio = this.votesOnDecisions[0] / totalVotes;
             const percentageEl = this.votesOnDecisions[1] / totalVotes;
@@ -65,7 +65,7 @@ export class Industri extends Sector {
             this.params.industry_electrify(percentageEl);
             this.params.industry_RnD(percentageRnD);
             this.params.industry_increase_energy_efficiency(percentageEnergyEfficency);
-            decisionString += `${Math.floor(percentageBio * 100)} % biofiering, ${Math.floor(percentageEl * 100)} % elektrifiering, ${Math.floor(percentageRnD * 100)} % R&D, ${Math.floor(percentageEnergyEfficency * 100)} % energieffektiviserings.`
+            decisionString += `${Math.floor(percentageBio * 100)} % biodrivmedel, ${Math.floor(percentageEl * 100)} % elektrifiering, ${Math.floor(percentageRnD * 100)} % R&D, ${Math.floor(percentageEnergyEfficency * 100)} % energieffektivisering.`
         }
         this.decisionsMade.push(decisionString);
     }
@@ -121,7 +121,7 @@ export class Policy extends Sector {
         } else if (decisionIndexCo2Rounded === 2) {
             decisionString += "ökade CO2-priset lite, ";
         } else if (decisionIndexCo2Rounded === 3) {
-            decisionString += "behöll samma CO2-priset, ";
+            decisionString += "behöll samma CO2-pris, ";
         } else if (decisionIndexCo2Rounded === 4) {
             decisionString += "minskade CO2-priset lite, ";
         } else if (decisionIndexCo2Rounded === 5) {
@@ -129,24 +129,24 @@ export class Policy extends Sector {
         }
 
         if (decisionIndexGreen === 1) {
-            decisionString += "gav stort grönt giv, ";
+            decisionString += "gjorde en stor satsning på gröna subventioner ";
         }
         else if (decisionIndexGreen === 2) {
-            decisionString += "gav mellan grönt giv, ";
+            decisionString += "gjorde en måttlig satsning på gröna subventioner ";
         }
         else if (decisionIndexGreen === 3) {
-            decisionString += "gav litet grönt giv, ";
+            decisionString += "gjorde ingen satsning på gröna subventioner ";
         }
 
         const decisionIndexSVKRounded = Math.round(decisionIndexSVK)
         if (decisionIndexSVKRounded === 1) {
-            decisionString += "byggde ut stamnätet mycket.";
+            decisionString += "och byggde ut stamnätet mycket.";
         }
         else if (decisionIndexSVKRounded === 2) {
-            decisionString += "byggde ut stamnätet lite.";
+            decisionString += "och byggde ut stamnätet lite.";
         }
         else if (decisionIndexSVKRounded === 3) {
-            decisionString += "behöll samma nivå i stamnätet";
+            decisionString += "och behöll samma nivå i stamnätet";
         }
 
         this.decisionsMade.push(decisionString);
@@ -181,13 +181,17 @@ export class Elco extends Sector {
         const decisionIndex = (1 * this.votesOnDecisions[0] + 2 * this.votesOnDecisions[1] + 3 * this.votesOnDecisions[2]) / (this.votesOnDecisions[0] + this.votesOnDecisions[1] + this.votesOnDecisions[2])
         this.params.elco_investing(decisionIndex);
 
-
-        if (decisionIndex < 2) {
-            this.decisionsMade.push("valde att öka elproduktionen.")
-        } else if (decisionIndex >= 2) {
-            this.decisionsMade.push("valde att minska elproduktionen.")
+        if(decisionIndex < 1.5) {
+            this.decisionsMade.push("valde att öka elproduktionen mycket.")
+        } else if (decisionIndex >= 1.5 && decisionIndex < 2) {
+            this.decisionsMade.push("valde att öka elproduktionen lite.")
+        } else if (decisionIndex === 2) {
+            this.decisionsMade.push("valde att behålla nuvarande elproduktion.")
+        } else if (decisionIndex > 2 && decisionIndex < 2.5) {
+            this.decisionsMade.push("valde att minska elproduktionen lite.")
+        } else if (decisionIndex >= 2.5) {
+            this.decisionsMade.push("valde att minska elproduktionen mycket.")
         }
-
     }
 }
 
@@ -228,12 +232,12 @@ export class Voter extends Sector {
 
         if (totalVotesRating === 0) {
             this.params.voters_rate_policy(0.5);
-            decisionString += "gav politkerna ett betyg på 50 %, "
+            decisionString += "förtroende för politikerna är 50 %, "
         } else {
             const rating = (1 * this.ratingDec[0] + 0.7 * this.ratingDec[1] + 0.4 * this.ratingDec[2] + 0 * this.ratingDec[3]) / totalVotesRating;
             const roundedRating = Math.round(rating * 100) / 100;
             this.params.voters_rate_policy(roundedRating);
-            decisionString += `gav politkerna ett betyg på ${Math.floor(rating * 100)} %, `
+            decisionString += `förtroende för politikerna är ${Math.floor(rating * 100)} %, `
         }
 
         if (totalVotesCar === 0) {
@@ -246,16 +250,16 @@ export class Voter extends Sector {
                 this.highestElCar = roundedPercentage;
             }
             this.params.voters_electric_car(roundedPercentage)
-            decisionString += `${Math.floor(this.highestElCar * 100)} % kör elbil, `
+            decisionString += `${Math.floor(this.highestElCar * 100)} % kör elbil `
         }
 
         this.params.voters_set_priority(votersPriorityChoice)
         if(votersPriorityChoice === 0) {
-            decisionString += "prioriterade sysselsättning."
+            decisionString += "och deras viktigaste fråga är arbetslösheten."
         } else if (votersPriorityChoice === 1) {
-            decisionString += "prioriterade disponibel inkomst."
+            decisionString += "och deras viktigaste fråga är deras disponibla inkomst."
         } else if (votersPriorityChoice === 2) {
-            decisionString += "prioriterade CO2-utsläpp."
+            decisionString += "och deras viktigaste fråga är CO2-utsläppen."
         }
 
         this.decisionsMade.push(decisionString);

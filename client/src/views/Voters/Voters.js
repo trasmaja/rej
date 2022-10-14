@@ -40,7 +40,7 @@ const Voters = (props) => {
     // Beslut som Väljare kan göra
     const ratingDec = ["1) Mycket bra", "2) Bra", "3) Dåligt", "4) Mycket dåligt"];
     const carDec = ["1) Elbil", "2) Bränslebil"];
-    const mostImpQuest = ["1) Sysselsättningen", "2) Disponibla inkomsten", "3) CO2-utsläppen"];
+    const mostImpQuest = ["1) Arbetslösheten", "2) Din disponibla inkomst", "3) CO2-utsläppen"];
 
     // staten som håller all speldata
     const [gameData, setGameData] = useState(null);
@@ -98,9 +98,9 @@ const Voters = (props) => {
                 <h2>Beslut</h2>
                 <h4>Hur bra sköter politkerna sitt jobb?</h4>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} disabledOptions={[]} />
-                <h4>Vad för bil vill du köpa?</h4>
+                <h4>Vad för bil hade du köpt i nuläget?</h4>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={carDec} disabledOptions={[]} />
-                <h4>Vad ska politikerna prioritera?</h4>
+                <h4>Vilken är din viktigaste fråga?</h4>
                 <DecisionVoteList vote={vote} qIndex={2} decisions={mostImpQuest} disabledOptions={[]} />
             </div>
         );
@@ -110,7 +110,7 @@ const Voters = (props) => {
                 <h2>Utvärdering</h2>
                 <TotalEmissionChart propData={gameData.data} domain={[0, 1]} dataKey="totalCo2" progKey="totalCo2prog" title="Sveriges utsläpp (miljoner ton C02-ekvivalenter)" />
                 {/* <EBITChart propData={gameData.data} title="Industrins EBIT-margin (%)" lineColor="#F6B2BB" /> */}
-                <SingleLineChart tick={true} tickCount={6} propData={gameData.data} domain={[0, 25]} dataKey="voter_unemployment" title="Arbetslöshet" />
+                <SingleLineChart tick={true} tickCount={6} propData={gameData.data} domain={[0, 25]} dataKey="voter_unemployment" title="Arbetslöshet (%)" />
                 <VoterCosts propData={gameData.data} title="Din ekonomi (tKr)" />
                 <CarCosts propData={gameData.data} title="Fordonskostnad (tKr)" />
             </div>

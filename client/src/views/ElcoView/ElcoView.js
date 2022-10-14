@@ -35,7 +35,7 @@ const ElcoView = (props) => {
     }
 
     // Beslut som Elbolag kan göra
-    const decisionList = ["1) Bygg ut", "2) Behåll", "3) Skär ner"];
+    const decisionList = ["1) Öka produktionen", "2) Behåll nuvarande produktion", "3) Minska produktionen"];
 
     // staten som håller all speldata
     const [gameData, setGameData] = useState(null);
@@ -86,7 +86,7 @@ const ElcoView = (props) => {
                 {introText}
                 <h2>Nulägesrapport</h2>
                 <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden (TWh)" />
-                <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
+                <EBITChartEl propData={gameData.data} title="Rörelsemarginal (%)" />
                 <h2>Beslut</h2>
                 <h4>Vad vill du göra med elproduktionen?</h4>
                 <DecisionVoteList vote={vote} decisions={decisionList} disabledOptions={[]} />
@@ -98,7 +98,7 @@ const ElcoView = (props) => {
             <div className="wrapper-currentStatus">
                 <h2>Utvärdering</h2>
                 <SupplyDemandGraph policy={false} propData={gameData.data} domain={[80, 200]} turn={gameData.turn} title="Elmarknaden (TWh)" />
-                <EBITChartEl propData={gameData.data} title="EBIT-margin (%)" />
+                <EBITChartEl propData={gameData.data} title="Rörelsemarginal (%)" />
             </div>
         );
     }
@@ -108,7 +108,7 @@ const ElcoView = (props) => {
             <div>
                 <TimeLine turns={['2022', '2025', '2030', '2035', '2040', '2045']} turn={turn} sectorName={sectorName} />
                 {mainBody}
-            </div>ß
+            </div>
         </ThemeProvider>
     );
 }

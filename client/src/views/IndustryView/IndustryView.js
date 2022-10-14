@@ -96,8 +96,8 @@ const IndustryView = (props) => {
                 <LineChartElPrice propData={gameData.data} title="Elpriset (kr/kWh)" />
                 {/* <PastEvents turn={turn}/> */}
                 <h2>Beslutsunderlag</h2>
-                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_bio} title={decisions[0]} />
-                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_el} title={decisions[1]} />
+                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_bio} title={decisions[0]} desc={"Ersätt smutsig industri med tekniker baserat på biodrivmedel. Prognostiserad avkastning för tre olika scenarier beroende på CO2-pris."} />
+                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_el} title={decisions[1]} desc={"Elektrifiera smutsig industri. Prognostiserad avkastning för tre olika scenarier beroende på CO2-pris."} />
                 <DecisionBasisWithText title={decisions[2]} text="Satsa på att framtidens teknik är bättre än dagens. Detta kan leda till att framtidens investeringar kommer vara mer lönsamma." />
                 <DecisionBasisWithText title={decisions[3]} text="Satsa på att minska din totala energiföbrukning. Detta kan leda till att dina framtida kostnader och eventuella utsläpp minskar något." />
                 <h2>Beslut</h2>
