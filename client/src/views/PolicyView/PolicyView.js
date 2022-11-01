@@ -73,9 +73,13 @@ const PolicyView = (props) => {
     let mainBody;
     let introText = null;
     if (gameData && gameData.turn === 1) {
-        introText = (<p style={{ color: "#484d52" }}>Politikern ansvarar för att sätta ramarna för industrins investeringsbeslut och för det potentiella utbudet på elmarknaden. Därutöver kan politikern ge subventioner till väljaren för att göra det billigare att köpa elbil. Som input får politikern ett betyg av väljarna och om detta blir för lågt begränsas politikerns handlingsfrihet. <br /><br />
-            Ramarna för industrin påverkas genom att politikern kan höja eller sänka priset att släppa ut CO2 och genom investeringsstöd genom en Grön Giv. Samma gröna giv innefattar även ett stöd till konsumenter för att köpa elbil. <br /><br />
-            Elmarknaden kan Politikern påverka genom att bygga ut stamnätet. Stamnätet fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.
+        introText = (<p style={{ color: "#484d52" }}>Politikern ansvarar för:
+            <ul>
+                <li>att sätta ramarna för industrins investeringsbeslut genom straffskatter på utsläpp och investeringsstöd genom ”gröna givar”.</li>
+                <li>att påverka konsumtionsmönster, samma gröna giv innefattar även stöd till konsumenter för att köpa elbil.</li>
+                <li>överföringsförmågan i stamnätet, vilket fungerar som ett tak för hur mycket elproduktion som kan komma ut på marknaden.</li>
+            </ul>
+            Som återkoppling får politikern ett betyg av väljarna samt en indikation på vilka frågor de prioritierar. Om opinionen blir för låg begränsas politikerns handlingsfrihet.
         </p>);
     }
     // Det som ska synas på skärmen när spelet är i presentatör läge
@@ -91,8 +95,8 @@ const PolicyView = (props) => {
         const disabledOptionsQ2 = [];
         const disabledOptionsQ3 = [];
 
-        if(gameData.data[turn]["voters_rating"] <= 0.3) {
-            if(gameData.data[turn].voters_priority_for_policy === 0) {
+        if (gameData.data[turn]["voters_rating"] <= 0.3) {
+            if (gameData.data[turn].voters_priority_for_policy === 0) {
                 disabledOptionsQ1.push(0)
                 disabledOptionsQ1.push(1)
                 disabledOptionsQ1.push(2)
@@ -100,17 +104,17 @@ const PolicyView = (props) => {
             } else if (gameData.data[turn].voters_priority_for_policy === 1) {
                 disabledOptionsQ1.push(0)
                 disabledOptionsQ1.push(1)
-                disabledOptionsQ1.push(2) 
+                disabledOptionsQ1.push(2)
                 disabledOptionsQ2.push(0)
                 disabledOptionsQ3.push(0)
             } else if (gameData.data[turn].voters_priority_for_policy === 2) {
                 disabledOptionsQ1.push(2)
                 disabledOptionsQ1.push(3)
-                disabledOptionsQ1.push(4) 
+                disabledOptionsQ1.push(4)
                 disabledOptionsQ2.push(2)
                 disabledOptionsQ3.push(1)
                 disabledOptionsQ3.push(2)
-                
+
             }
         }
         mainBody = (
@@ -122,12 +126,12 @@ const PolicyView = (props) => {
                 <EBITChart propData={gameData.data} title="Industrins rörelsemarginal (%)" lineColor="#F6B2BB" />
                 <SupplyDemandGraph policy={true} propData={gameData.data} turn={gameData.turn} domain={[80, 200]} title="Elmarknaden (TWh)" />
                 <h2>Beslut</h2>
-                <h4>Vad vill du göra med CO2 priest?</h4>
-                <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} disabledOptions={disabledOptionsQ1}/>
+                <h4>Vad vill du göra med CO2 priset?</h4>
+                <DecisionVoteList vote={vote} qIndex={0} decisions={co2dec} disabledOptions={disabledOptionsQ1} />
                 <h4>Välj en nivå för gröna subventioner till industrin och konsumenter</h4>
-                <DecisionVoteList vote={vote} qIndex={1} decisions={greendec} disabledOptions={disabledOptionsQ2}/>
+                <DecisionVoteList vote={vote} qIndex={1} decisions={greendec} disabledOptions={disabledOptionsQ2} />
                 <h4>Vad vill du göra med stamnätet?</h4>
-                <DecisionVoteList vote={vote} qIndex={2} decisions={svkdec} disabledOptions={disabledOptionsQ3}/>
+                <DecisionVoteList vote={vote} qIndex={2} decisions={svkdec} disabledOptions={disabledOptionsQ3} />
             </div>
         );
     } else if (gameData && gameData.turn === 6) {

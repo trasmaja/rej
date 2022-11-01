@@ -69,7 +69,9 @@ const ElcoView = (props) => {
     let mainBody;
     let introText = null;
     if (gameData && gameData.turn === 1) {
-        introText = (<p style={{ color: "#484d52" }}>Elbolagsoperatören reglerar utbudet av el på marknaden och har därmed en stor inverkan på elpriset som bestäms som en funktion av utbud och efterfrågan. Elnätsoperatören har också en rörelsemarginal som bestäms av dess kostnader (som bestäms av storleken på produktionen) och dess intäkter (som bestäms av elpriset och efterfrågan). Elpriset sätts genom utbud och efterfrågan.</p>
+        introText = (<p style={{ color: "#484d52" }}>Elbolaget reglerar utbudet av el på marknaden och har därmed
+        en stor inverkan på elpriset som bestäms som en funktion av utbud och efterfrågan.
+        Elpris och marknadsbalans påverkar även verksamhetens lönsamhet.</p>
         );
     }
     // Det som ska synas på skärmen när spelet är i presentatör läge

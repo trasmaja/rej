@@ -76,6 +76,17 @@ const Voters = (props) => {
     if (gameData && gameData.turn === 1) {
         introText = (<p style={{ color: "#c1c2c3" }}>Väljaren har som uppgift att ge politikern input om hur väl denne gör sitt jobb. Väljaren får en överblick över utsläppen och arbetslösheten. Den får även en bild av sin egen ekonomi. Denna bestäms av hur det går för industrin/arbetslösheten och hur dyrt det är att leva för närvarande. Detta senare bestäms av två faktorer: Priset för att släppa ut samt hur mycket ekonomin släpper ut. Väljaren får också en kalkyl över vad det i dagsläget kostar att ha en elbil eller en bensinbil. Utifrån detta ska den fatta ett beslut om vilket av alternativen den hade valt. Detta kommer i sin tur påverka hur stora utsläppen blir från transportsektorn.
         </p>);
+        introText = (<p style={{ color: "#c1c2c3" }}>Väljaren har som uppgift att ge politikerna återkoppling. De viktigaste frågorna vi valt att belysa är:
+            <ul>
+                <li>Sveriges totala CO2 utsläpp och hur väl vi uppnår satta mål</li>
+                <li>arbetslösheten i samhället i stort</li>
+                <li>den egna ekonomin</li>
+            </ul>
+            Väljaren har möjlighet att ”rösta” på hur bra jobb politikerna gör och även indikera
+            vilka frågor som de anser kritiska. Som beslutsunderlag för eventuell uppgradering till
+            elbil, vilket påverkar både privata utsläpp och privatekonomin, presenteras en kalkyl över vad
+            de olika fordonsalternativen kostar ur ett livscykelperspektiv.
+        </p>);
     }
     // Det som ska synas på skärmen när spelet är i presentatör läge
     if (gameData && (gameData.state === "presenting" && gameData.turn !== 6)) {
@@ -98,7 +109,7 @@ const Voters = (props) => {
                 <h2>Beslut</h2>
                 <h4>Hur bra sköter politkerna sitt jobb?</h4>
                 <DecisionVoteList vote={vote} qIndex={0} decisions={ratingDec} disabledOptions={[]} />
-                <h4>Vad för bil hade du köpt i nuläget?</h4>
+                <h4>Vilken typ av bil hade du köpt i nuläget?</h4>
                 <DecisionVoteList vote={vote} qIndex={1} decisions={carDec} disabledOptions={[]} />
                 <h4>Vilken är din viktigaste fråga?</h4>
                 <DecisionVoteList vote={vote} qIndex={2} decisions={mostImpQuest} disabledOptions={[]} />

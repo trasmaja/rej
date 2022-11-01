@@ -33,7 +33,7 @@ const Home = (props) => {
     })
 
     // Alla spelbara sektorer
-    const sectors = [<IndustryView socket={socket} sectorName="Industrimagnat" />, <PolicyView socket={socket} sectorName="Politiker" />, <ElcoView socket={socket} sectorName="Elbolag" />, <Voters socket={socket} sectorName="Väljare" />]
+    const sectors = [<IndustryView socket={socket} sectorName="Industrin" />, <PolicyView socket={socket} sectorName="Politiker" />, <ElcoView socket={socket} sectorName="Elbolag" />, <Voters socket={socket} sectorName="Väljare" />]
 
     // En switch som renderar olika saker baserat på index
     switch (sectorIndex) {

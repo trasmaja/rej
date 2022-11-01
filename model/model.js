@@ -80,7 +80,7 @@ class Model {
 
   incomingVote(sector, decisionIndex, question) {
     const nameToIndex = {
-      "Industrimagnat": 0,
+      "Industrin": 0,
       "Politiker": 1,
       "Elbolag": 2,
       "Väljare": 3,

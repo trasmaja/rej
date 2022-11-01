@@ -74,8 +74,15 @@ const IndustryView = (props) => {
     let mainBody;
     let introText = null;
     if (gameData && gameData.turn === 1) {
-        introText = (<p style={{ color: "#484d52" }}>Industrimagnaten styr sin verksamhet efter rörelsemarginalen (rörelseresultat/omsättning) och fattar sina investeringsbeslut utifrån en internräntekalkyl. <br /><br />
-            Rörelsemarginalen kan variera beroende på kostnaden för el, kostnaden för utsläpp, kostnaden för investerat kapital och kostnaden för biodrivmedel. Internräntekalkylen bestäms utifrån marknadspriser på el och biodrivmedel, priset för att släppa ut CO2 och den initiala investeringskostnaden. I de tre scenarierna är alla variabler låsta med undantag för priset på att släppa ut som sätts till tre nivåer – att det sänks, att det ligger kvar eller att det höjs.
+        introText = (<p style={{ color: "#484d52" }}>Industrins verksamhet styrs av rörelsemarginalen (rörelseresultat/omsättning) och investeringsbeslut fattas utifrån en internräntekalkyl.
+            Rörelsemarginalen kan variera beroende på kostnaden för:<br />
+            <ul>
+                <li>el</li>
+                <li>utsläpp</li>
+                <li>investerat kapital</li>
+                <li>biodrivmedel</li>
+            </ul>
+            Internräntekalkylen bestäms utifrån marknadspriser på el och biodrivmedel, priset för att släppa ut CO2 och den initiala investeringskostnaden. I beslutsunerlaget har tre scenarier för CO2-pris analyserats – att det sänks, att det ligger kvar eller att det höjs.
         </p>);
     }
     // Det som ska synas på skärmen när spelet är i presentatör läge
@@ -96,13 +103,13 @@ const IndustryView = (props) => {
                 <LineChartElPrice propData={gameData.data} title="Elpriset (kr/kWh)" />
                 {/* <PastEvents turn={turn}/> */}
                 <h2>Beslutsunderlag</h2>
-                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_bio} title={decisions[0]} desc={"Ersätt smutsig industri med tekniker baserat på biodrivmedel. Prognostiserad avkastning för tre olika scenarier beroende på CO2-pris."} />
-                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_el} title={decisions[1]} desc={"Elektrifiera smutsig industri. Prognostiserad avkastning för tre olika scenarier beroende på CO2-pris."} />
-                <DecisionBasisWithText title={decisions[2]} text="Satsa på att framtidens teknik är bättre än dagens. Detta kan leda till att framtidens investeringar kommer vara mer lönsamma." />
-                <DecisionBasisWithText title={decisions[3]} text="Satsa på att minska din totala energiföbrukning. Detta kan leda till att dina framtida kostnader och eventuella utsläpp minskar något." />
+                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_bio} title={decisions[0]} desc={"Ersätt fossilbränselbaserad industri med tekniker baserat på biodrivmedel. Prognostiserad avkastning för tre olika scenarier beror på CO2-pris."} />
+                <DecisionBasisWithGraph propData={gameData.data[turn].ind_IRR_el} title={decisions[1]} desc={"Elektrifiera fossilbränselbaserad industri. Prognostiserad avkastning för tre olika scenarier beror på CO2-pris."} />
+                <DecisionBasisWithText title={decisions[2]} text="Satsa på att framtidens teknik är bättre än dagens. Detta alternativ sänker investeringsbehoven för ny teknik kommande simuleringsrundor." />
+                <DecisionBasisWithText title={decisions[3]} text="Satsa på att minska din totala energiförbrukning så att dina kostnader och utsläpp minskar." />
                 <h2>Beslut</h2>
                 <h4>Vad vill du göra för investering?</h4>
-                <DecisionVoteList vote={vote} decisions={decisions}  disabledOptions={[]}/>
+                <DecisionVoteList vote={vote} decisions={decisions} disabledOptions={[]} />
             </div>
         );
     } else if (gameData && gameData.turn === 6) {
