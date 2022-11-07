@@ -45,21 +45,45 @@ export class Industri extends Sector {
         this.votesOnDecisions = [0, 0, 0, 0];
     }
 
-    executeVote() {
+    executeVote(turn) {
+        console.log("##########")
+        console.log(turn)
         // Sum ints in array https://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
         const totalVotes = this.votesOnDecisions.reduce((partialSum, a) => partialSum + a, 0);
         let decisionString = "beslutsfördelning: ";
+
+        // Write over first turn voting to preprogrammed choice
+
         if (totalVotes === 0) {
-            this.params.industry_biofy(0.25);
-            this.params.industry_electrify(0.25);
-            this.params.industry_RnD(0.25);
-            this.params.industry_increase_energy_efficiency(0.25);
-            decisionString += "25 % biodrivmedel, 25 % elektrifiering, 25 % R&D, 25 % energieffektivisering."
+            let percentageBio = 0.25;
+            let percentageEl = 0.25;
+            let percentageRnD = 0.25;
+            let percentageEnergyEfficency = 0.25;
+            // Write over first turn voting to preprogrammed choice
+            if (turn === 1) {
+                percentageBio = 0
+                percentageEl = 0.1
+                percentageRnD = 0.5
+                percentageEnergyEfficency = 0.4 
+            }
+            this.params.industry_biofy(percentageBio);
+            this.params.industry_electrify(percentageEl);
+            this.params.industry_RnD(percentageRnD);
+            this.params.industry_increase_energy_efficiency(percentageEnergyEfficency);
+            decisionString += `${Math.floor(percentageBio * 100)} % biodrivmedel, ${Math.floor(percentageEl * 100)} % elektrifiering, ${Math.floor(percentageRnD * 100)} % R&D, ${Math.floor(percentageEnergyEfficency * 100)} % energieffektivisering.`
         } else {
-            const percentageBio = this.votesOnDecisions[0] / totalVotes;
-            const percentageEl = this.votesOnDecisions[1] / totalVotes;
-            const percentageRnD = this.votesOnDecisions[2] / totalVotes;
-            const percentageEnergyEfficency = this.votesOnDecisions[3] / totalVotes;
+            let percentageBio = this.votesOnDecisions[0] / totalVotes;
+            let percentageEl = this.votesOnDecisions[1] / totalVotes;
+            let percentageRnD = this.votesOnDecisions[2] / totalVotes;
+            let percentageEnergyEfficency = this.votesOnDecisions[3] / totalVotes;
+
+            // Write over first turn voting to preprogrammed choice
+            if (turn === 1) {
+                percentageBio = 0
+                percentageEl = 0.1
+                percentageRnD = 0.5
+                percentageEnergyEfficency = 0.4 
+            }
 
             this.params.industry_biofy(percentageBio);
             this.params.industry_electrify(percentageEl);
@@ -99,15 +123,20 @@ export class Policy extends Sector {
         this.svk = [0, 0, 0];
     }
 
-    executeVote() {
+    executeVote(turn) {
         // Kan bli delat med noll todo fix later
         // const decisionIndexCo2 = 1 + indexOfMax(this.co2Vote);
-        const decisionIndexCo2 = (1 * this.co2Vote[0] + 2 * this.co2Vote[1] + 3 * this.co2Vote[2] + 4 * this.co2Vote[3] + 5 * this.co2Vote[4]) / (this.co2Vote[0] + this.co2Vote[1] + this.co2Vote[2] + this.co2Vote[3] + this.co2Vote[4]);
+        let decisionIndexCo2 = (1 * this.co2Vote[0] + 2 * this.co2Vote[1] + 3 * this.co2Vote[2] + 4 * this.co2Vote[3] + 5 * this.co2Vote[4]) / (this.co2Vote[0] + this.co2Vote[1] + this.co2Vote[2] + this.co2Vote[3] + this.co2Vote[4]);
         // const decisionIndexGreen = 1 + indexOfMax(this.greenPackage);
-        const decisionIndexGreen = Math.round((1 * this.greenPackage[0] + 2 * this.greenPackage[1] + 3 * this.greenPackage[2]) / (this.greenPackage[0] + this.greenPackage[1] + this.greenPackage[2]));
+        let decisionIndexGreen = Math.round((1 * this.greenPackage[0] + 2 * this.greenPackage[1] + 3 * this.greenPackage[2]) / (this.greenPackage[0] + this.greenPackage[1] + this.greenPackage[2]));
         // const decisionIndexSVK = 1 + indexOfMax(this.svk);
-        const decisionIndexSVK = (1 * this.svk[0] + 2 * this.svk[1] + 3 * this.svk[2]) / (this.svk[0] + this.svk[1] + this.svk[2])
+        let decisionIndexSVK = (1 * this.svk[0] + 2 * this.svk[1] + 3 * this.svk[2]) / (this.svk[0] + this.svk[1] + this.svk[2])
 
+        if(turn === 1) {
+            decisionIndexCo2 = 2;
+            decisionIndexGreen = 2;
+            decisionIndexSVK = 2;
+        }
 
         this.params.policy_change_carbon_price(decisionIndexCo2);
         this.params.policy_green_package(decisionIndexGreen);
@@ -176,12 +205,15 @@ export class Elco extends Sector {
         this.votesOnDecisions = [0, 0, 0];
     }
 
-    executeVote() {
+    executeVote(turn) {
         // const decisionIndex = 1 + indexOfMax(this.votesOnDecisions);
-        const decisionIndex = (1 * this.votesOnDecisions[0] + 2 * this.votesOnDecisions[1] + 3 * this.votesOnDecisions[2]) / (this.votesOnDecisions[0] + this.votesOnDecisions[1] + this.votesOnDecisions[2])
+        let decisionIndex = (1 * this.votesOnDecisions[0] + 2 * this.votesOnDecisions[1] + 3 * this.votesOnDecisions[2]) / (this.votesOnDecisions[0] + this.votesOnDecisions[1] + this.votesOnDecisions[2])
+        if(turn === 1) {
+            decisionIndex = 1.4;
+        }
         this.params.elco_investing(decisionIndex);
 
-        if(decisionIndex < 1.5) {
+        if (decisionIndex < 1.5) {
             this.decisionsMade.push("valde att öka elproduktionen mycket.")
         } else if (decisionIndex >= 1.5 && decisionIndex < 2) {
             this.decisionsMade.push("valde att öka elproduktionen lite.")
@@ -201,7 +233,7 @@ export class Voter extends Sector {
         this.hello = 10;
         this.ratingDec = [0, 0, 0, 0];
         this.carChoice = [0, 0];
-        this.votersPriority = [0, 0 ,0];
+        this.votersPriority = [0, 0, 0];
         this.highestElCar = 0;
     }
 
@@ -218,34 +250,55 @@ export class Voter extends Sector {
     resetVotes() {
         this.ratingDec = [0, 0, 0, 0];
         this.carChoice = [0, 0];
-        this.votersPriority = [0, 0 ,0];
+        this.votersPriority = [0, 0, 0];
     }
 
-    executeVote() {
+    executeVote(turn) {
         // const decisionIndex = indexOfMax(this.ratingDec);
         // Sum ints in array https://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
         const totalVotesRating = this.ratingDec.reduce((partialSum, a) => partialSum + a, 0);
         const totalVotesCar = this.carChoice.reduce((partialSum, a) => partialSum + a, 0);
-        const votersPriorityChoice = indexOfMax(this.votersPriority);
+        let votersPriorityChoice = indexOfMax(this.votersPriority);
+
 
         let decisionString = "";
 
         if (totalVotesRating === 0) {
-            this.params.voters_rate_policy(0.5);
-            decisionString += "förtroende för politikerna är 50 %, "
+            if(turn === 1) {
+                this.params.voters_rate_policy(0.6); // Ska matcha ovanstående if sats
+                decisionString += "förtroende för politikerna är 60 %, "
+            } else {
+                this.params.voters_rate_policy(0.5);
+                decisionString += "förtroende för politikerna är 50 %, "
+            }
+
         } else {
             const rating = (1 * this.ratingDec[0] + 0.7 * this.ratingDec[1] + 0.4 * this.ratingDec[2] + 0 * this.ratingDec[3]) / totalVotesRating;
-            const roundedRating = Math.round(rating * 100) / 100;
+            let roundedRating = Math.round(rating * 100) / 100;
+            if(turn === 1) {
+                roundedRating = 0.6
+            }
             this.params.voters_rate_policy(roundedRating);
-            decisionString += `förtroende för politikerna är ${Math.floor(rating * 100)} %, `
+            decisionString += `förtroende för politikerna är ${Math.floor(roundedRating * 100)} %, `
         }
 
         if (totalVotesCar === 0) {
-            // Gör inget
-            // this.params.voters_electric_car(0)
+            if(turn === 1) {
+                const roundedPercentage = 0.15
+                if (roundedPercentage > this.highestElCar) {
+                    this.highestElCar = roundedPercentage;
+                }
+                this.params.voters_electric_car(roundedPercentage)
+                decisionString += `${Math.floor(this.highestElCar * 100)} % kör elbil `
+            }
+
+
         } else {
             const electrifyPercentage = this.carChoice[0] / totalVotesCar;
-            const roundedPercentage = Math.round(electrifyPercentage * 100) / 100;
+            let roundedPercentage = Math.round(electrifyPercentage * 100) / 100;
+            if(turn === 1) {
+                roundedPercentage = 0.15
+            }
             if (roundedPercentage > this.highestElCar) {
                 this.highestElCar = roundedPercentage;
             }
@@ -253,8 +306,11 @@ export class Voter extends Sector {
             decisionString += `${Math.floor(this.highestElCar * 100)} % kör elbil `
         }
 
+        if(turn === 1) {
+            votersPriorityChoice = 0;
+        }
         this.params.voters_set_priority(votersPriorityChoice)
-        if(votersPriorityChoice === 0) {
+        if (votersPriorityChoice === 0) {
             decisionString += "och deras viktigaste fråga är arbetslösheten."
         } else if (votersPriorityChoice === 1) {
             decisionString += "och deras viktigaste fråga är deras disponibla inkomst."

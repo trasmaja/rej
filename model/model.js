@@ -98,7 +98,7 @@ class Model {
 
   executeVotes() {
     this.sectors.forEach(sector => {
-      sector.executeVote();
+      sector.executeVote(this.currentTurn);
     }
     )
   }
