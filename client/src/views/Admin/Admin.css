@@ -149,7 +149,7 @@
 }
 
 .player-count-text-wrapper {
-    min-width: 250px;
+    /* min-width: 250px; */
     width: 25vw;
     max-width: 400px;
     height: 200px;
@@ -235,5 +235,14 @@
         margin: 20px 8% 20px 8% !important;
         font-size: 10px !important;
         line-height: 10px !important;
+    }
+    .player-count-text {
+        font-size: 40px;
+    }
+    
+    .number {
+        font-size: 80px;
+        padding: 0;
+        margin: 0;
     }
 }
