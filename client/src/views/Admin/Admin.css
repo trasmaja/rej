@@ -53,7 +53,7 @@
 
 .admin-main {
     width: 100vw;
-    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
     margin: 0;
     padding: 0;
 }
@@ -124,7 +124,8 @@
 .admin-main-flex {
     display: flex;
     width: 100%;
-    height: calc(100% - 255px);
+    min-height: calc(100% - 255px);
+    padding-bottom: 20px;
 }
 
 .admin-main-title {
@@ -140,7 +141,7 @@
 
 .admin-player-counter {
     width: 100vw;
-    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
     margin: 0;
     padding: 0;
     padding-top: 80px;
@@ -148,7 +149,9 @@
 }
 
 .player-count-text-wrapper {
-    width: 400px;
+    min-width: 250px;
+    width: 25vw;
+    max-width: 400px;
     height: 200px;
     border-radius: 100%;
     display: inline-block;
@@ -202,5 +205,35 @@
 
     50% {
         transform: translateY(-20px);
+    }
+}
+
+@media (max-width: 1010px) {
+    .admin-top-left {
+        min-width: 100px;
+    }
+
+    .admin-top-mid {
+        min-width: 100px;
+    }
+
+    .admin-top-leftIcon {
+        height: 30px;
+        margin: 0;
+        padding: 0;
+        margin-top: 25px;
+        margin-left: 25px;
+    }
+
+    .admin-top-right {
+        min-width: 100px;
+    }
+
+    .top-button {
+        height: 40px;
+        flex: 1;
+        margin: 20px 8% 20px 8% !important;
+        font-size: 10px !important;
+        line-height: 10px !important;
     }
 }
