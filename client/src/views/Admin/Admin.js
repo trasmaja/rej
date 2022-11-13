@@ -53,7 +53,7 @@ export default function Admin(props) {
             console.log(gameData)
             setGameData(gameData);
         });
-        window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
+        // window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
 
         return () => {
             props.socket.off("adminGameData");
