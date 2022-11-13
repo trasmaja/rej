@@ -31,15 +31,27 @@ class Model {
     this.playerCount = [0, 0, 0, 0];
   }
 
-  getSectorForPlayer() {
+  getSectorForPlayer(hasSectorInUrlID) {
     console.log("added player")
     console.log(this.playerCount)
+    console.log(hasSectorInUrlID)
+    if(hasSectorInUrlID) {
+      if(hasSectorInUrlID === 4) {
+        return 4
+      }
+
+      this.playerCount[hasSectorInUrlID] += 1;
+      return hasSectorInUrlID;
+    }
     const sectorIndex = indexOfSmallest(this.playerCount);
     this.playerCount[sectorIndex] += 1;
     return sectorIndex;
   }
 
   removePlayerSector(sectorIndex) {
+    if(sectorIndex === 4) {
+      return
+    }
     console.log("removed player")
     this.playerCount[sectorIndex] -= 1;
   }

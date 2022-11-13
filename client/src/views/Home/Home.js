@@ -5,10 +5,11 @@ import PolicyView from '../PolicyView/PolicyView';
 import ElcoView from '../ElcoView/ElcoView';
 import Voters from '../Voters/Voters';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const Home = (props) => {
     const { socket } = props;
-
+    const navigate = useNavigate();
     const [sectorIndex, setsectorIndex] = useState(null);
 
     // Körs varje gång komponenten uppdateras
@@ -34,21 +35,38 @@ const Home = (props) => {
 
     // Alla spelbara sektorer
     const sectors = [<IndustryView socket={socket} sectorName="Industrin" />, <PolicyView socket={socket} sectorName="Politiker" />, <ElcoView socket={socket} sectorName="Elbolag" />, <Voters socket={socket} sectorName="Väljare" />]
-
     // En switch som renderar olika saker baserat på index
     switch (sectorIndex) {
         case 0:
-            return <main className="industryMain">{sectors[0]}</main>
+            navigate("/industri");
+            break;
+            // return <main className="industryMain">{sectors[0]}</main>
         case 1:
-            return <main className="policyMain">{sectors[1]}</main>
+            navigate("/politiker");
+            break;
+            // return <main className="policyMain">{sectors[1]}</main>
         case 2:
-            return <main className="elcoMain">{sectors[2]}</main>
+            navigate("/elbolag");
+            break;
+            // return <main className="elcoMain">{sectors[2]}</main>
         case 3:
-            return <main className="voterMain">{sectors[3]}</main>
+            navigate("/valjare");
+            break;
+            // return <main className="voterMain">{sectors[3]}</main>
         default:
             // Fallback om sectorIndex är något annat än 0,1,2,3
             const random = Math.floor(Math.random() * sectors.length);
-            return <main>{sectors[random]}</main>
+            if(random === 0) {
+                navigate("/industri");
+            } else if (random === 1) {
+                navigate("/politiker");
+            } else if (random === 2) {
+                navigate("/elbolag");
+            } else if (random === 3) {
+                navigate("/valjare");
+            } else {
+                navigate("/industri");
+            }
     }
 
 }

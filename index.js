@@ -69,8 +69,26 @@ io.on("connection", (socket) => {
     if (err) console.error(err);
     else console.debug(`Saved socketID: ${session.socketID}`);
   });
+  let currentUrl = "";
+  let hasSectorInUrlID;
+  try {
+    currentUrl = socket.handshake.headers.referer
+  }
+  catch (e) { console.log(e) }
 
-  players[session.socketID] = model.getSectorForPlayer();
+  if (currentUrl.includes("industri")) {
+    hasSectorInUrlID = 0
+  } else if (currentUrl.includes("politiker")) {
+    hasSectorInUrlID = 1
+  } else if (currentUrl.includes("elbolag")) {
+    hasSectorInUrlID = 2
+  } else if (currentUrl.includes("valjare")) {
+    hasSectorInUrlID = 3
+  } else if (currentUrl.includes("admin")) {
+    hasSectorInUrlID = 4
+  }
+
+  players[session.socketID] = model.getSectorForPlayer(hasSectorInUrlID);
   io.emit("adminGameData", model.getGameData());
 
   socket.on("vote", (data) => {
