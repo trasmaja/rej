@@ -64,7 +64,7 @@ export class Industri extends Sector {
                 percentageBio = 0
                 percentageEl = 0.1
                 percentageRnD = 0.5
-                percentageEnergyEfficency = 0.4 
+                percentageEnergyEfficency = 0.4
             }
             this.params.industry_biofy(percentageBio);
             this.params.industry_electrify(percentageEl);
@@ -82,7 +82,7 @@ export class Industri extends Sector {
                 percentageBio = 0
                 percentageEl = 0.1
                 percentageRnD = 0.5
-                percentageEnergyEfficency = 0.4 
+                percentageEnergyEfficency = 0.4
             }
 
             this.params.industry_biofy(percentageBio);
@@ -126,13 +126,27 @@ export class Policy extends Sector {
     executeVote(turn) {
         // Kan bli delat med noll todo fix later
         // const decisionIndexCo2 = 1 + indexOfMax(this.co2Vote);
-        let decisionIndexCo2 = (1 * this.co2Vote[0] + 2 * this.co2Vote[1] + 3 * this.co2Vote[2] + 4 * this.co2Vote[3] + 5 * this.co2Vote[4]) / (this.co2Vote[0] + this.co2Vote[1] + this.co2Vote[2] + this.co2Vote[3] + this.co2Vote[4]);
+        let decisionIndexCo2;
+        if ((this.co2Vote[0] + this.co2Vote[1] + this.co2Vote[2] + this.co2Vote[3] + this.co2Vote[4]) === 0) {
+            decisionIndexCo2 = 2;
+        } else {
+            decisionIndexCo2 = (1 * this.co2Vote[0] + 2 * this.co2Vote[1] + 3 * this.co2Vote[2] + 4 * this.co2Vote[3] + 5 * this.co2Vote[4]) / (this.co2Vote[0] + this.co2Vote[1] + this.co2Vote[2] + this.co2Vote[3] + this.co2Vote[4]);
+        }
         // const decisionIndexGreen = 1 + indexOfMax(this.greenPackage);
-        let decisionIndexGreen = Math.round((1 * this.greenPackage[0] + 2 * this.greenPackage[1] + 3 * this.greenPackage[2]) / (this.greenPackage[0] + this.greenPackage[1] + this.greenPackage[2]));
+        let decisionIndexGreen;
+        if ((this.greenPackage[0] + this.greenPackage[1] + this.greenPackage[2]) === 0) {
+            decisionIndexGreen = 2;
+        } else {
+            decisionIndexGreen = Math.round((1 * this.greenPackage[0] + 2 * this.greenPackage[1] + 3 * this.greenPackage[2]) / (this.greenPackage[0] + this.greenPackage[1] + this.greenPackage[2]));
+        }
         // const decisionIndexSVK = 1 + indexOfMax(this.svk);
-        let decisionIndexSVK = (1 * this.svk[0] + 2 * this.svk[1] + 3 * this.svk[2]) / (this.svk[0] + this.svk[1] + this.svk[2])
-
-        if(turn === 1) {
+        let decisionIndexSVK;
+        if ((this.svk[0] + this.svk[1] + this.svk[2]) === 0) {
+            decisionIndexSVK = 2;
+        } else {
+            decisionIndexSVK = (1 * this.svk[0] + 2 * this.svk[1] + 3 * this.svk[2]) / (this.svk[0] + this.svk[1] + this.svk[2])
+        }
+        if (turn === 1) {
             decisionIndexCo2 = 2;
             decisionIndexGreen = 2;
             decisionIndexSVK = 2;
@@ -207,8 +221,14 @@ export class Elco extends Sector {
 
     executeVote(turn) {
         // const decisionIndex = 1 + indexOfMax(this.votesOnDecisions);
-        let decisionIndex = (1 * this.votesOnDecisions[0] + 2 * this.votesOnDecisions[1] + 3 * this.votesOnDecisions[2]) / (this.votesOnDecisions[0] + this.votesOnDecisions[1] + this.votesOnDecisions[2])
-        if(turn === 1) {
+        let decisionIndex;
+        if ((this.votesOnDecisions[0] + this.votesOnDecisions[1] + this.votesOnDecisions[2]) === 0) {
+            decisionIndex = 1.4;
+        } else {
+            decisionIndex = (1 * this.votesOnDecisions[0] + 2 * this.votesOnDecisions[1] + 3 * this.votesOnDecisions[2]) / (this.votesOnDecisions[0] + this.votesOnDecisions[1] + this.votesOnDecisions[2])
+        }
+
+        if (turn === 1) {
             decisionIndex = 1.4;
         }
         this.params.elco_investing(decisionIndex);
@@ -264,7 +284,7 @@ export class Voter extends Sector {
         let decisionString = "";
 
         if (totalVotesRating === 0) {
-            if(turn === 1) {
+            if (turn === 1) {
                 this.params.voters_rate_policy(0.6); // Ska matcha ovanstående if sats
                 decisionString += "förtroende för politikerna är 60 %, "
             } else {
@@ -275,7 +295,7 @@ export class Voter extends Sector {
         } else {
             const rating = (1 * this.ratingDec[0] + 0.7 * this.ratingDec[1] + 0.4 * this.ratingDec[2] + 0 * this.ratingDec[3]) / totalVotesRating;
             let roundedRating = Math.round(rating * 100) / 100;
-            if(turn === 1) {
+            if (turn === 1) {
                 roundedRating = 0.6
             }
             this.params.voters_rate_policy(roundedRating);
@@ -283,7 +303,7 @@ export class Voter extends Sector {
         }
 
         if (totalVotesCar === 0) {
-            if(turn === 1) {
+            if (turn === 1) {
                 const roundedPercentage = 0.15
                 if (roundedPercentage > this.highestElCar) {
                     this.highestElCar = roundedPercentage;
@@ -296,7 +316,7 @@ export class Voter extends Sector {
         } else {
             const electrifyPercentage = this.carChoice[0] / totalVotesCar;
             let roundedPercentage = Math.round(electrifyPercentage * 100) / 100;
-            if(turn === 1) {
+            if (turn === 1) {
                 roundedPercentage = 0.15
             }
             if (roundedPercentage > this.highestElCar) {
@@ -306,7 +326,7 @@ export class Voter extends Sector {
             decisionString += `${Math.floor(this.highestElCar * 100)} % kör elbil `
         }
 
-        if(turn === 1) {
+        if (turn === 1) {
             votersPriorityChoice = 0;
         }
         this.params.voters_set_priority(votersPriorityChoice)
