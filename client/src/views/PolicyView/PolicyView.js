@@ -72,7 +72,7 @@ const PolicyView = (props) => {
 
     let mainBody;
     let introText = null;
-    if (gameData && gameData.turn === 1) {
+    if (gameData && (gameData.turn === 1 || gameData.turn === 2)) {
         introText = (<p style={{ color: "#484d52" }}>Politikern ansvarar för:
             <ul>
                 <li>att sätta ramarna för industrins investeringsbeslut genom straffskatter på utsläpp och investeringsstöd genom ”gröna givar”.</li>

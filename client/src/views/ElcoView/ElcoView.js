@@ -68,7 +68,7 @@ const ElcoView = (props) => {
 
     let mainBody;
     let introText = null;
-    if (gameData && gameData.turn === 1) {
+    if (gameData && (gameData.turn === 1 || gameData.turn === 2)) {
         introText = (<p style={{ color: "#484d52" }}>Elbolaget reglerar utbudet av el på marknaden och har därmed
         en stor inverkan på elpriset som bestäms som en funktion av utbud och efterfrågan.
         Elpris och marknadsbalans påverkar även verksamhetens lönsamhet.</p>

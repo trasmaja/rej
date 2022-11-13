@@ -73,7 +73,7 @@ const IndustryView = (props) => {
 
     let mainBody;
     let introText = null;
-    if (gameData && gameData.turn === 1) {
+    if (gameData && (gameData.turn === 1 || gameData.turn === 2)) {
         introText = (<p style={{ color: "#484d52" }}>Industrins verksamhet styrs av rörelsemarginalen (rörelseresultat/omsättning) och investeringsbeslut fattas utifrån en internräntekalkyl.
             Rörelsemarginalen kan variera beroende på kostnaden för:<br />
             <ul>

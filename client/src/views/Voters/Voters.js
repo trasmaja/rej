@@ -73,7 +73,7 @@ const Voters = (props) => {
 
     let mainBody;
     let introText = null;
-    if (gameData && gameData.turn === 1) {
+    if (gameData && (gameData.turn === 1 || gameData.turn === 2)) {
         introText = (<p style={{ color: "#c1c2c3" }}>Väljaren har som uppgift att ge politikern input om hur väl denne gör sitt jobb. Väljaren får en överblick över utsläppen och arbetslösheten. Den får även en bild av sin egen ekonomi. Denna bestäms av hur det går för industrin/arbetslösheten och hur dyrt det är att leva för närvarande. Detta senare bestäms av två faktorer: Priset för att släppa ut samt hur mycket ekonomin släpper ut. Väljaren får också en kalkyl över vad det i dagsläget kostar att ha en elbil eller en bensinbil. Utifrån detta ska den fatta ett beslut om vilket av alternativen den hade valt. Detta kommer i sin tur påverka hur stora utsläppen blir från transportsektorn.
         </p>);
         introText = (<p style={{ color: "#c1c2c3" }}>Väljaren har som uppgift att ge politikerna återkoppling. De viktigaste frågorna vi valt att belysa är:
