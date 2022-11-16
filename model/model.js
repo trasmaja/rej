@@ -35,7 +35,7 @@ class Model {
     console.log("added player")
     console.log(this.playerCount)
     console.log(hasSectorInUrlID)
-    if(hasSectorInUrlID) {
+    if(hasSectorInUrlID !== null) {
       if(hasSectorInUrlID === 4) {
         return 4
       }

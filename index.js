@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
     else console.debug(`Saved socketID: ${session.socketID}`);
   });
   let currentUrl = "";
-  let hasSectorInUrlID;
+  let hasSectorInUrlID = null;
   try {
     currentUrl = socket.handshake.headers.referer
   }
